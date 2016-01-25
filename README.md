@@ -1,6 +1,8 @@
 Adkintun Mobile Server
 ======================
 
+Adkintun Mobile server.
+
 Current requirements
 --------------------
 
@@ -48,8 +50,6 @@ Install requirements (in the virtual enviroment):
 $ pip install -r requirements.txt
 ```
 
-Run server
-=======
 Database config
 ---------------
 In postgres:
@@ -75,8 +75,16 @@ $ python manage.py db migrate
 $ python manage.py db upgrade
 ```
 
-Finally run the server:
+Run server
+----------
+To run the server:
 
 ```
 $ python manage.py runserver
+```
+
+To run the tests:
+
+```
+$ python manage.py test
 ```
