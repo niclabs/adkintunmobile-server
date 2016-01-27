@@ -1,9 +1,8 @@
 from sqlalchemy import Column, Integer, Date
-from app import db
-from . import model_mixin
+from . import base_model
 
 
-class Sim(db.Model, model_mixin.ModelMixin):
+class Sim(base_model.BaseModel):
     '''
     Clase tarjeta sim.
     '''

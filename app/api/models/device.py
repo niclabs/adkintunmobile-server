@@ -1,9 +1,8 @@
 from sqlalchemy import Column, Integer, String, Date
-from app import db
-from . import model_mixin
+from . import base_model
 
 
-class Device(db.Model, model_mixin.ModelMixin):
+class Device(base_model.BaseModel):
     '''
     Clase Dispositivo.
     '''
