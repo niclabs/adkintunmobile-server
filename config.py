@@ -4,7 +4,7 @@ class Config(object):
     TESTING = False
     CSRF_ENABLED = True
     SECRET_KEY = 'this-really-needs-to-be-changed'
-    SQLALCHEMY_DATABASE_URI = 'postgresql://batman:cocacolaamediollenar@localhost/adkintun'
+    SQLALCHEMY_DATABASE_URI = 'postgresql://batman:'+ SECRET_KEY +'@localhost/adkintun'
     SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 class ProductionConfig(Config):
@@ -14,7 +14,7 @@ class DevelopmentConfig(Config):
     DEBUG = True
 
 class TestingConfig(Config):
-    SQLALCHEMY_DATABASE_URI = 'postgresql://batman:cocacolaamediollenar@localhost/test_adkintun'
+    SQLALCHEMY_DATABASE_URI = 'postgresql://user_test:password_test@localhost/adkintun_test'
     PRESERVE_CONTEXT_ON_EXCEPTION = False
     TESTING = True
     DEBUG = True
