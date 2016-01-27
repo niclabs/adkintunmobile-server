@@ -1,4 +1,4 @@
-Adkintun Mobile Server
+Adkintun Mobile Server [![Build Status](https://travis-ci.org/niclabs/AdkintunMobile-Server.svg?branch=master)](https://travis-ci.org/niclabs/AdkintunMobile-Server)
 ======================
 
 Adkintun Mobile server.
