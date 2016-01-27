@@ -1,9 +1,8 @@
 from sqlalchemy import Column, Integer, String
-from app import db
-from . import model_mixin
+from . import base_model
 
 
-class Carrier(db.Model, model_mixin.ModelMixin):
+class Carrier(base_model.BaseModel):
     '''
     Clase empresa de telecomunicaciones.
     name: Nombre de la empresa (Claro, Entel, etc.)

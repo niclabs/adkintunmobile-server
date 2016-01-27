@@ -1,9 +1,8 @@
 from sqlalchemy import Column, Integer, String, Float
-from app import db
-from . import model_mixin
+from . import base_model
 
 
-class Antenna(db.Model, model_mixin.ModelMixin):
+class Antenna(base_model.BaseModel):
     '''
     Clase antena.
     '''
