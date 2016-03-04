@@ -1,10 +1,8 @@
-from .. import db
-from . import admin
+from app.models.sim import Sim
+
 from flask_admin.contrib import sqla
-from app.api.models.antenna import Antenna
-from app.api.models.device import Device
-from app.api.models.carrier import Carrier
-from app.api.models.sim import Sim
+from . import admin
+from .. import db
 
 
 class SimView(sqla.ModelView):

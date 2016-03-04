@@ -1,5 +1,5 @@
-from . import utils
 from app import db
+from . import utils
 
 
 class BaseModel(db.Model):
