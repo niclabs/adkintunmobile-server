@@ -1,5 +1,4 @@
-from flask_restful import Resource, reqparse
-from dateutil.parser import parse
+from flask_restful import Resource
 # from flask import jsonify
 from .. import db
 from . import api
@@ -7,7 +6,7 @@ from datetime import datetime
 
 class Registration(Resource):
     def post(self):
-        from app.api.models.sim import Sim
+        from app.models.sim import Sim
         sim = Sim(creation_date=datetime.now().date())
         db.session.add(sim)
         db.session.commit()

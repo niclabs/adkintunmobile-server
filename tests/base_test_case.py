@@ -1,8 +1,8 @@
-from app import app, db
-from dateutil.parser import parse
-from app.api.models.sim import Sim
-
 import unittest
+
+from app import app, db
+from app.models.sim import Sim
+from dateutil.parser import parse
 
 
 class BaseTestCase(unittest.TestCase):
