@@ -18,3 +18,4 @@ class APITestCase(base_test_case.BaseTestCase):
             assert len(Sim) == 1
             assert Sim[0].serial_number == 1
             assert Sim[0].creation_date == date
+            #TODO: Cambiar última comprobación por una diferencia de tiempo en vez de la fecha
