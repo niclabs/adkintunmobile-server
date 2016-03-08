@@ -8,9 +8,9 @@ class Sim(base_model.BaseModel):
     Clase tarjeta sim.
     '''
     __tablename__ = 'sims'
-    serial_number = Column(Integer, primary_key=True, nullable=False)
+    serial_number = Column(Integer, primary_key=True)
     creation_date = Column(Date())
-    carrier = Column(Integer, ForeignKey("carriers.id"), nullable=False)
+    carrier = Column(Integer, ForeignKey("carriers.id"))
 
     def __init__(self, serial_number, creation_date, carrier):
         self.serial_number = serial_number
