@@ -22,7 +22,7 @@ class Device(base_model.BaseModel):
     sdk = Column(Integer)
 
     def __init__(self, brand, board, build, build_id, device, hardware,
-    manufacturer, model, release, release_type, product, sdk):
+                 manufacturer, model, release, release_type, product, sdk):
         self.brand = brand
         self.board = board
         self.build_id = build_id
@@ -36,4 +36,4 @@ class Device(base_model.BaseModel):
         self.sdk = sdk
 
     def __repr__(self):
-        return '<Device %r>' % (self.device)
+        return '<Device %r, device_id %r>' % (self.device, self.device_id)
