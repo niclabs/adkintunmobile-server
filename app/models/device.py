@@ -21,8 +21,8 @@ class Device(base_model.BaseModel):
     product = Column(String(50))
     sdk = Column(Integer)
 
-    def __init__(self, brand, board, build, build_id, device, hardware,
-                 manufacturer, model, release, release_type, product, sdk):
+    def __init__(self, brand, board, build_id, device, hardware,
+                 manufacturer, model, release, release_type, product, sdk, creation_date):
         self.brand = brand
         self.board = board
         self.build_id = build_id
@@ -34,6 +34,7 @@ class Device(base_model.BaseModel):
         self.release_type = release_type
         self.product = product
         self.sdk = sdk
+        self.creation_date = creation_date
 
     def __repr__(self):
         return '<Device %r, device_id %r>' % (self.device, self.device_id)
