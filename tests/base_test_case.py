@@ -2,6 +2,7 @@ import unittest
 
 from app import app, db
 from app.models.sim import Sim
+from app.models.carrier import Carrier
 from dateutil.parser import parse
 
 
@@ -23,17 +24,22 @@ class BaseTestCase(unittest.TestCase):
         self.context.push()
 
         # load data
-        # if (populate):
-        #     self.populate()
+        if (populate):
+            self.populate()
 
     def populate(self):
         '''
         Populate the model with test data
         '''
         # Create the default sim
-        sim = Sim(creation_date=parse(self.sim.get('creation_date')))
-        db.session.add(sim)
-        db.session.commit()
+        carrier = Carrier("test", 1, 456)
+        sim = Sim(creation_date=parse(self.sim.get('creation_date')), serial_number=1234, carrier=carrier)
+        try:
+            db.session.add(sim)
+            db.session.add(carrier)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
 
     def tearDown(self):
         db.drop_all(bind=None)
