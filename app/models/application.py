@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from app import db
 from . import base_model
 
 
@@ -7,8 +7,8 @@ class Application(base_model.BaseModel):
     Clase aplicaciones android
     '''
     __tablename__ = 'applications'
-    id = Column(Integer, primary_key=True)
-    package_name = Column(String(100), unique=True)
+    id = db.Column(db.Integer, primary_key=True)
+    package_name = db.Column(db.String(100), unique=True)
 
     def __init__(self, package_name):
         self.package_name = package_name

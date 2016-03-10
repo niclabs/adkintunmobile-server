@@ -1,22 +1,9 @@
-from sqlalchemy import Column, Integer, Date
-from sqlalchemy.sql.schema import ForeignKey
-from . import base_model
+from app import db
 
-
-class DeviceSim(base_model.BaseModel):
-    '''
-    Clase device_sim, que crea una relación entre un device y una tarjeta sim.
-    '''
-    __tablename__ = 'devices_sims'
-    id = Column(Integer, primary_key=True)
-    creation_date = Column(Date())
-    device = Column(Integer, ForeignKey("device.device_id"))
-    sim = Column(Integer, ForeignKey("sim.serial_number"))
-
-    def __init__(self, device, sim):
-        self.device = device
-        self.sim = sim
-
-    def __repr__(self):
-        return '<DeviceSim, id %r, device: %r, sim: %r>' % \
-               (self.id, self.device.device_id, self.sim.serial_number)
+# Tabla para manejar la relacion many_to_many entre antenas y carriers entre devices y simss
+devices_sims = db.Table('devices_sims',
+                         db.Column('device_id', db.Integer, db.ForeignKey('devices.device_id')),
+                         db.Column('sim_id', db.Integer, db.ForeignKey('sims.serial_number')),
+                         # db.Column('creation_date', db.Date),
+                         db.Column('id', db.Integer, primary_key=True)
+                         )
