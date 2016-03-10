@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from app import db
 from . import base_model
 
 
@@ -8,12 +8,13 @@ class Carrier(base_model.BaseModel):
     name: Nombre de la empresa (Claro, Entel, etc.)
     '''
     __tablename__='carriers'
-    id = Column(Integer, primary_key=True)
-    name = Column(String(50))
-    mcc = Column(Integer)
-    mnc = Column(Integer)
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50))
+    mcc = db.Column(db.Integer)
+    mnc = db.Column(db.Integer)
+    sims = db.relationship('Sim', backref='carrier', lazy='dynamic')
 
-    def __init__(self, name=None, mcc=None, mnc=None):
+    def __init__(self, name, mcc, mnc):
         self.name = name
         self.mcc = mcc
         self.mnc = mnc
