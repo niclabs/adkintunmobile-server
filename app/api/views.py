@@ -1,5 +1,4 @@
 from flask_restful import Resource, reqparse
-# from flask import jsonify
 from .. import db
 from . import api
 from datetime import datetime
@@ -9,28 +8,13 @@ class Registration(Resource):
     def post(self):
         from app.models.sim import Sim
         from app.models.carrier import Carrier
-
-        post_parser = reqparse.RequestParser()
-        post_parser.add_argument('serial_number', required=True)
-        post_parser.add_argument('carrier_id', required=True)
-        args = post_parser.parse_args()
-        carrier = Carrier.query.filter(Carrier.mnc == args.carrier_id).first()
-        if carrier:
-            sim = Sim(serial_number=args.serial_number, creation_date=datetime.now().date())
-            carrier.sims.append(sim)
-            db.session.add(sim)
-            db.session.commit()
-            return 'registration complete', 201
-
-        else:
-            return 'Carrier no existe', 400
-
-
-class SaveDevice(Resource):
-    def post(self):
         from app.models.device import Device
 
-        post_parser = reqparse.RequestParser()
+        post_parser = reqparse.RequestParser(bundle_errors=True)
+        #SIM
+        post_parser.add_argument('serial_number', required=True)
+        post_parser.add_argument('carrier_id', required=True)
+        #Device
         post_parser.add_argument('brand', required=True)
         post_parser.add_argument('board', required=True)
         post_parser.add_argument('build_id', required=True)
@@ -44,8 +28,6 @@ class SaveDevice(Resource):
         post_parser.add_argument('sdk', required=True)
 
         args = post_parser.parse_args()
-
-        # todo validate
 
         device = Device(
                 brand=args.brand,
@@ -62,31 +44,19 @@ class SaveDevice(Resource):
                 creation_date=datetime.now().date()
         )
 
-        try:
+        #TODO validate device
+
+        carrier = Carrier.query.filter(Carrier.mnc == args.carrier_id).first()
+        if carrier:
+            sim = Sim(serial_number=args.serial_number, creation_date=datetime.now().date())
+            carrier.sims.append(sim)
+            db.session.add(sim)
             db.session.add(device)
             db.session.commit()
-        except Exception as e:
-            db.session.rollback()
-            return e, 500
+            return 'registration complete', 201
 
-        return 'device saved', 201
+        else:
+            return 'Carrier no existe', 400
 
 
-class User(Resource):
-    def get(self, user_id):
-        from app.api.models.user import User
-        user = User.query.filter_by(id=user_id).first()
-        if user == None:
-            # What status code should return?
-            return 'user id ' + user_id + ' not found', 404
-        return jsonify(user.dict)
-
-    def put(self, user_id):
-        return '', 204
-
-    def delete(self, user_id):
-        pass
-
-api.add_resource(User, '/api/users/<string:user_id>')
 api.add_resource(Registration, '/api/registration')
-api.add_resource(SaveDevice, '/api/save_device')
