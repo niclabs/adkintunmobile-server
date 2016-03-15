@@ -1,6 +1,6 @@
 from app import db
 from app.models.antenna_carrier import antennas_carriers
-from . import base_model
+from app.models import base_model
 
 
 class Antenna(base_model.BaseModel):

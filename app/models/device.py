@@ -1,5 +1,5 @@
 from app import db
-from . import base_model
+from app.models import base_model
 
 
 class Device(base_model.BaseModel):
@@ -20,6 +20,8 @@ class Device(base_model.BaseModel):
     release_type = db.Column(db.String(50))
     product = db.Column(db.String(50))
     sdk = db.Column(db.Integer)
+
+    # TODO: vinculo devices events
 
     def __init__(self, brand, board, build_id, device, hardware,
                  manufacturer, model, release, release_type, product, sdk, creation_date):
