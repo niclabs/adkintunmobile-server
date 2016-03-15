@@ -38,8 +38,6 @@ class BaseTestCase(unittest.TestCase):
         sim = Sim(creation_date=parse(self.sim.get('creation_date')), serial_number=1234)
         try:
             db.session.add(carrier)
-            db.session.add(sim)
-            carrier.sims.append(sim) #Establece relacion sim-carrier
             db.session.commit()
         except Exception as e:
             db.session.rollback()
