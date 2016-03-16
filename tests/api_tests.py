@@ -31,10 +31,10 @@ class APITestCase(base_test_case.BaseTestCase):
             ))
             assert request.status_code == 201
             #assert SIM
-            Sim = Sim.query.all()
-            assert len(Sim) == 1
-            assert Sim[0].serial_number == 123
-            assert Sim[0].creation_date == date
+            sim = Sim.query.all()
+            assert len(sim) == 1
+            assert sim[0].serial_number == 123
+            assert sim[0].creation_date == date
 
             #assert Device
             devices = Device.query.all()

@@ -11,10 +11,10 @@ class Registration(Resource):
         from app.models.device import Device
 
         post_parser = reqparse.RequestParser(bundle_errors=True)
-        #SIM
+        # SIM
         post_parser.add_argument('serial_number', required=True)
         post_parser.add_argument('carrier_id', required=True)
-        #Device
+        # Device
         post_parser.add_argument('brand', required=True)
         post_parser.add_argument('board', required=True)
         post_parser.add_argument('build_id', required=True)
@@ -29,27 +29,32 @@ class Registration(Resource):
 
         args = post_parser.parse_args()
 
-        device = Device(
-                brand=args.brand,
-                board=args.board,
-                build_id=args.build_id,
-                device=args.device,
-                hardware=args.hardware,
-                manufacturer=args.manufacturer,
-                model=args.model,
-                release=args.release,
-                release_type=args.release_type,
-                product=args.product,
-                sdk=args.sdk,
-                creation_date=datetime.now().date()
-        )
-
-        #TODO validate device
-
         carrier = Carrier.query.filter(Carrier.mnc == args.carrier_id).first()
         if carrier:
-            sim = Sim(serial_number=args.serial_number, creation_date=datetime.now().date())
+
+            sim = Sim.query.filter(Sim.serial_number == args.serial_number).first()
+            device = Device.query.filter(Device.build_id == args.build_id).first()
+
+            if not device:
+                device = Device(
+                        brand=args.brand,
+                        board=args.board,
+                        build_id=args.build_id,
+                        device=args.device,
+                        hardware=args.hardware,
+                        manufacturer=args.manufacturer,
+                        model=args.model,
+                        release=args.release,
+                        release_type=args.release_type,
+                        product=args.product,
+                        sdk=args.sdk,
+                        creation_date=datetime.now().date())
+
+            if not sim:
+                sim = Sim(serial_number=args.serial_number, creation_date=datetime.now().date())
+
             carrier.sims.append(sim)
+            sim.devices.append(device)
             db.session.add(sim)
             db.session.add(device)
             db.session.commit()
