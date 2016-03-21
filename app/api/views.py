@@ -1,7 +1,11 @@
-from flask_restful import Resource, reqparse
-from .. import db
-from . import api
 from datetime import datetime
+
+import werkzeug
+from flask import request
+from flask_restful import Resource, reqparse
+from . import api
+from . import app
+from .. import db
 
 
 class Registration(Resource):
@@ -11,10 +15,10 @@ class Registration(Resource):
         from app.models.device import Device
 
         post_parser = reqparse.RequestParser(bundle_errors=True)
-        #SIM
+        # SIM
         post_parser.add_argument('serial_number', required=True)
         post_parser.add_argument('carrier_id', required=True)
-        #Device
+        # Device
         post_parser.add_argument('brand', required=True)
         post_parser.add_argument('board', required=True)
         post_parser.add_argument('build_id', required=True)
@@ -29,32 +33,65 @@ class Registration(Resource):
 
         args = post_parser.parse_args()
 
-        device = Device(
-                brand=args.brand,
-                board=args.board,
-                build_id=args.build_id,
-                device=args.device,
-                hardware=args.hardware,
-                manufacturer=args.manufacturer,
-                model=args.model,
-                release=args.release,
-                release_type=args.release_type,
-                product=args.product,
-                sdk=args.sdk,
-                creation_date=datetime.now().date()
-        )
-
         carrier = Carrier.query.filter(Carrier.mnc == args.carrier_id).first()
         if carrier:
-            sim = Sim(serial_number=args.serial_number, creation_date=datetime.now().date())
+
+            sim = Sim.query.filter(Sim.serial_number == args.serial_number).first()
+            device = Device.query.filter(Device.build_id == args.build_id).first()
+
+            if not device:
+                device = Device(
+                        brand=args.brand,
+                        board=args.board,
+                        build_id=args.build_id,
+                        device=args.device,
+                        hardware=args.hardware,
+                        manufacturer=args.manufacturer,
+                        model=args.model,
+                        release=args.release,
+                        release_type=args.release_type,
+                        product=args.product,
+                        sdk=args.sdk,
+                        creation_date=datetime.now().date())
+
+            if not sim:
+                sim = Sim(serial_number=args.serial_number, creation_date=datetime.now().date())
+
             carrier.sims.append(sim)
+            sim.devices.append(device)
             db.session.add(sim)
             db.session.add(device)
             db.session.commit()
             return 'registration complete', 201
 
         else:
-            return 'Carrier no existe', 400
+            return 'Carrier does not exist', 400
+
+
+class SaveEvents(Resource):
+    def post(self):
+        post_parser = reqparse.RequestParser(bundle_errors=True)
+        post_parser.add_argument('picture', type=werkzeug.datastructures.FileStorage, location='files')
+
+        #args = post_parser.parse_args()
+        pass
+
+
+import zipfile
+
+
+@app.route("/send_file", methods=['POST'])
+def read_events():
+    f = request.files['pic']
+
+    z = zipfile.ZipFile(f)
+    for name in z.namelist():
+        json = z.open(name)
+        lines = json.readlines()
+        string = ' '.join(str(x) for x in lines)
+        print(string)
+
+    return f
 
 
 api.add_resource(Registration, '/api/registration')
