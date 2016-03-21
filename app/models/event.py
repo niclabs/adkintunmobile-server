@@ -7,9 +7,13 @@ class Event(BaseModel):
     Clase Eventos, base de todos los eventos
     '''
     __tablename__ = 'events'
-    __abstract__ = True
 
     id = db.Column(db.Integer, primary_key=True)
-    app_version_code = db.Column(db.String(10))
     date = db.Column(db.Date())
+    app_version_code = db.Column(db.String(10))
+    sim_serial_number = db.Column(db.Integer, db.ForeignKey("sims.serial_number"))
+    device_id = db.Column(db.Integer, db.ForeignKey("devices.device_id"))
 
+    # Herencia
+    type = db.Column(db.String(50))
+    __mapper_args__ = {'polymorphic_on': type}
