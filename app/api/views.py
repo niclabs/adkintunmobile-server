@@ -44,8 +44,6 @@ class Registration(Resource):
                 creation_date=datetime.now().date()
         )
 
-        #TODO validate device
-
         carrier = Carrier.query.filter(Carrier.mnc == args.carrier_id).first()
         if carrier:
             sim = Sim(serial_number=args.serial_number, creation_date=datetime.now().date())

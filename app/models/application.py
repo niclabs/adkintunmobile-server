@@ -9,6 +9,7 @@ class Application(base_model.BaseModel):
     __tablename__ = 'applications'
     id = db.Column(db.Integer, primary_key=True)
     package_name = db.Column(db.String(100), unique=True)
+    application_traffic_event = db.relationship('ApplicationTrafficEvent', backref='application', lazy='dynamic')
 
     def __init__(self, package_name):
         self.package_name = package_name

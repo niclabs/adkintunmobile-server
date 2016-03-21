@@ -7,7 +7,9 @@ class ConnectivityEvent(Event):
     Clase para los eventos de conectividad
     '''
     __tablename__ = 'connectivity_events'
+    __mapper_args__ = {'polymorphic_identity': 'connectivity_event'}
 
+    id = db.Column(db.Integer, db.ForeignKey('events.id'), primary_key=True)
     detailed_state = db.Column(db.Integer)
     available = db.Column(db.Boolean)
     connected = db.Column(db.Boolean)
@@ -15,10 +17,12 @@ class ConnectivityEvent(Event):
     connection_type = db.Column(db.Integer)
     connection_type_other = db.Column(db.Integer)
 
-    def __init__(self, date, app_version_code, detailed_state, available, connected, roaming, connection_type,
-                 connection_type_other):
+    def __init__(self, date, app_version_code, sim_serial_number, device_id, detailed_state, available, connected,
+                roaming, connection_type, connection_type_other):
         self.date = date
         self.app_version_code = app_version_code
+        self.sim_serial_number = sim_serial_number
+        self.device_id = device_id
         self.detailed_state = detailed_state
         self.available = available
         self.connected = connected
