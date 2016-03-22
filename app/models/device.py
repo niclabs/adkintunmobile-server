@@ -7,7 +7,7 @@ class Device(base_model.BaseModel):
     Clase Dispositivo.
     '''
     __tablename__ = 'devices'
-    device_id = db.Column (db.Integer, primary_key=True)
+    device_id = db.Column(db.Integer, primary_key=True)
     brand = db.Column(db.String(50))
     board = db.Column(db.String(50))
     build_id = db.Column(db.String(50))
@@ -22,8 +22,9 @@ class Device(base_model.BaseModel):
     sdk = db.Column(db.Integer)
     events = db.relationship('Event', backref='device', lazy='dynamic')
 
-    def __init__(self, brand, board, build_id, device, hardware,
-                 manufacturer, model, release, release_type, product, sdk, creation_date):
+    def __init__(self, brand=None, board=None, build_id=None, device=None, hardware=None,
+                 manufacturer=None, model=None, release=None, release_type=None, product=None, sdk=None,
+                 creation_date=None):
         self.brand = brand
         self.board = board
         self.build_id = build_id

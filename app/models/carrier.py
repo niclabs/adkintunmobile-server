@@ -15,7 +15,7 @@ class Carrier(base_model.BaseModel):
     sims = db.relationship('Sim', backref='carrier', lazy='dynamic')
     telephony_observation_events = db.relationship('TelephonyObservationEvent', backref='carrier', lazy='dynamic')
 
-    def __init__(self, name, mcc, mnc):
+    def __init__(self, name=None, mcc=None, mnc=None):
         self.name = name
         self.mcc = mcc
         self.mnc = mnc

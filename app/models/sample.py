@@ -12,7 +12,7 @@ class Sample(base_model.BaseModel):
     mean = db.Column(db.Float)
     variance = db.Column(db.Float)
 
-    def __init__(self, size, mean, variance):
+    def __init__(self, size=None, mean=None, variance=None):
         self.size = size
         self.mean = mean
         self.variance = variance

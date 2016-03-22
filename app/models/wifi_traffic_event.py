@@ -11,8 +11,8 @@ class WifiTrafficEvent(TrafficEvent):
 
     id = db.Column(db.Integer, db.ForeignKey('traffic_events.id'), primary_key=True)
 
-    def __init__(self, date, app_version_code, sim_serial_number, device_id, network_type, rx_bytes, tx_bytes,
-                 rx_packets, tx_packets, tcp_rx_bytes, tcp_tx_bytes):
+    def __init__(self, date=None, app_version_code=None, sim_serial_number=None, device_id=None, network_type=None,
+                 rx_bytes=None, tx_bytes=None, rx_packets=None, tx_packets=None, tcp_rx_bytes=None, tcp_tx_bytes=None):
         self.date = date
         self.app_version_code = app_version_code
         self.sim_serial_number = sim_serial_number

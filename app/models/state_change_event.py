@@ -14,7 +14,7 @@ class StateChangeEvent(Event):
     state = db.Column(db.Integer)
     event_type = db.Column(db.Integer)
 
-    def __init__(self, date, app_version_code, sim_serial_number, device_id, state_type, state, event_type):
+    def __init__(self, date=None, app_version_code=None, sim_serial_number=None, device_id=None, state_type=None, state=None, event_type=None):
         self.date = date
         self.app_version_code = app_version_code
         self.sim_serial_number = sim_serial_number

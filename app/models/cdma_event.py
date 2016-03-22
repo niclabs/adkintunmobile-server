@@ -28,8 +28,9 @@ class CdmaEvent(TelephonyObservationEvent):
     evdo_snr_mean = db.Column(db.Float)
     evdo_snr_variance = db.Column(db.Float)
 
-    def __init__(self, date, app_version_code, sim_serial_number, device_id, telephony_standard, network_type,
-                 cdma_base_latitude, cdma_base_longitude, cdma_base_station_id, network_id, system_id,
+    def __init__(self, date=None, app_version_code=None, sim_serial_number=None, device_id=None,
+                 telephony_standard=None, network_type=None, cdma_base_latitude=None, cdma_base_longitude=None,
+                 cdma_base_station_id=None, network_id=None, system_id=None,
                  signal_strength_size=None, signal_strength_mean=None, signal_strength_variance=None,
                  cdma_ecio_size=None, cdma_ecio_mean=None, cdma_ecio_variance=None, evdo_dbm_size=None,
                  evdo_dbm_mean=None, evdo_dbm_variance=None, evdo_ecio_size=None, evdo_ecio_mean=None,
