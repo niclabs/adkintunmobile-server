@@ -1,31 +1,94 @@
-import werkzeug
 from flask import request
-from flask_restful import Resource, reqparse
 
 from . import app
 
 
-class SaveEvents(Resource):
-    def post(self):
-        post_parser = reqparse.RequestParser(bundle_errors=True)
-        post_parser.add_argument('picture', type=werkzeug.datastructures.FileStorage, location='files')
-
-        #args = post_parser.parse_args()
-        pass
-
-
-import zipfile
-
-
 @app.route("/send_file", methods=['POST'])
 def read_events():
-    f = request.files['pic']
+    import json
+    f = request.files['events']
+    lines = f.readlines()
 
-    z = zipfile.ZipFile(f)
-    for name in z.namelist():
-        json = z.open(name)
-        lines = json.readlines()
-        string = ' '.join(str(x) for x in lines)
-        print(string)
+    string = ' '.join(str(x) for x in lines)
+    jsonvar = json.load(f)
 
-    return f
+    # TODO tomar device del json
+    device = None
+    for events in jsonvar:
+        events_name = None
+        save_events(events_name, events, device)
+
+    return "hola"
+
+
+def save_application_traffic_events(events, device):
+    for event in events:
+        # TODO validar
+        # TODO guardar
+        pass  # TODO borrar pass
+
+
+def save_cdma_events(events, device):
+    for event in events:
+        # TODO validar
+        # TODO guardar
+        pass  # TODO borrar pass
+
+
+def save_connectivity_events(events, device):
+    for event in events:
+        # TODO validar
+        # TODO guardar
+        pass  # TODO borrar pass
+
+
+def save_gsm_events(events, device):
+    for event in events:
+        # TODO validar
+        # TODO guardar
+        pass  # TODO borrar pass
+
+
+def save_mobile_traffic_events(events, device):
+    for event in events:
+        # TODO validar
+        # TODO guardar
+        pass  # TODO borrar pass
+
+
+def save_state_change_events(events, device):
+    for event in events:
+        # TODO validar
+        # TODO guardar
+        pass  # TODO borrar pass
+
+
+def save_telephony_observation_events(events, device):
+    for event in events:
+        # TODO validar
+        # TODO guardar
+        pass  # TODO borrar pass
+
+
+def save_wifi_traffic_events(events, device):
+    for event in events:
+        # TODO validar
+        # TODO guardar
+        pass  # TODO borrar pass
+
+
+# TODO los nombres deben coincidir con json enviado por celular
+events_names = {
+    'traffic': save_application_traffic_events,
+    'cdma': save_cdma_events,
+    'connectivity': save_connectivity_events,
+    'gsm': save_gsm_events,
+    'mobile': save_mobile_traffic_events,
+    'state': save_state_change_events,
+    'observation': save_telephony_observation_events,
+    'wifi': save_wifi_traffic_events
+}
+
+
+def save_events(events_name, events, device):
+    events_names[events_name](events, device)
