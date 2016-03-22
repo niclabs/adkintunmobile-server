@@ -20,8 +20,9 @@ class GsmEvent(TelephonyObservationEvent):
     antennas = db.relationship('Antenna', secondary=antennas_gsm_events,
                                backref=db.backref('gsm_events', lazy='dynamic'), lazy='dynamic')
 
-    def __init__(self, date, app_version_code, sim_serial_number, device_id, telephony_standard, network_type, gsm_cid,
-                 gsm_lac, gsm_psc, signal_strength_size=None, signal_strength_mean=None, signal_strength_variance=None,
+    def __init__(self, date=None, app_version_code=None, sim_serial_number=None, device_id=None,
+                 telephony_standard=None, network_type=None, gsm_cid=None, gsm_lac=None, gsm_psc=None,
+                 signal_strength_size=None, signal_strength_mean=None, signal_strength_variance=None,
                  signal_ber_size=None, signal_ber_mean=None, signal_ber_variance=None):
         self.date = date
         self.app_version_code = app_version_code

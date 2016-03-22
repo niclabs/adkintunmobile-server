@@ -16,7 +16,7 @@ class Sim(base_model.BaseModel):
                               lazy='dynamic')
     events = db.relationship('Event', backref='sim', lazy='dynamic')
 
-    def __init__(self, serial_number, creation_date, carrier_id=None):
+    def __init__(self, serial_number=None, creation_date=None, carrier_id=None):
         self.serial_number = serial_number
         self.creation_date = creation_date
         self.carrier_id = carrier_id

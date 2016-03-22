@@ -17,8 +17,8 @@ class ConnectivityEvent(Event):
     connection_type = db.Column(db.Integer)
     connection_type_other = db.Column(db.Integer)
 
-    def __init__(self, date, app_version_code, sim_serial_number, device_id, detailed_state, available, connected,
-                roaming, connection_type, connection_type_other):
+    def __init__(self, date=None, app_version_code=None, sim_serial_number=None, device_id=None, detailed_state=None,
+                 available=None, connected=None, roaming=None, connection_type=None, connection_type_other=None):
         self.date = date
         self.app_version_code = app_version_code
         self.sim_serial_number = sim_serial_number

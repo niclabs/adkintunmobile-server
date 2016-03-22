@@ -11,7 +11,7 @@ class Application(base_model.BaseModel):
     package_name = db.Column(db.String(100), unique=True)
     application_traffic_event = db.relationship('ApplicationTrafficEvent', backref='application', lazy='dynamic')
 
-    def __init__(self, package_name):
+    def __init__(self, package_name=None):
         self.package_name = package_name
 
     def __repr__(self):
