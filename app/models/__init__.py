@@ -4,7 +4,6 @@ from app.models import antenna_carrier
 from app.models import application
 from app.models import device
 from app.models import device_sim
-from app.models import sample
 from app.models import event
 from app.models import sim
 from app.models import telephony_observation_event
