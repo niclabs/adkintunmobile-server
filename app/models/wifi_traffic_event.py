@@ -26,4 +26,4 @@ class WifiTrafficEvent(TrafficEvent):
         self.tcp_tx_bytes = tcp_tx_bytes
 
     def __repr__(self):
-        return '<WifiChangeEvent, id: %r, date: %r>' % (self.id, self.date)
+        return '<WifiTrafficEvent, id: %r, date: %r>' % (self.id, self.date)
