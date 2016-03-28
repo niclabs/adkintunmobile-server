@@ -59,12 +59,12 @@ class Registration(Resource):
                 db.session.add(sim)
 
             # Se vincula sim con carrier
-            existent_sim = carrier.sims.filter(sim.serial_number == args.serial_number).first()
+            existent_sim = carrier.sims.filter(Sim.serial_number == args.serial_number).first()
             if not existent_sim:
                 carrier.sims.append(sim)
 
             # Se vinculan sim con device
-            existent_device = sim.devices.filter(device.build_id == args.build_id).first()
+            existent_device = sim.devices.filter(Device.build_id == args.build_id).first()
             if not existent_device:
                 sim.devices.append(device)
 
