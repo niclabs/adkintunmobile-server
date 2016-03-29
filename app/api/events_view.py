@@ -59,7 +59,6 @@ api.add_resource(ReadEvents, '/api/send_file')
 
 
 def save_traffics_events(events, device, sim):
-
     for event in events:
         if event["event_type"] == 2:
             save_mobile_traffic_event(event, device, sim)
@@ -77,9 +76,11 @@ def save_wifi_traffic_event(event, device, sim):
     from app.models.wifi_traffic_event import WifiTrafficEvent
     eventModel = WifiTrafficEvent()
     for k, v in event.items():
+
+        if k == "timestamp":
+            eventModel.date = datetime.fromtimestamp(timestamp=v / 1000)
+
         if hasattr(eventModel, k):
-            if k == "timestamp":
-                v = datetime.fromtimestamp(timestamp=v)
             setattr(eventModel, k, v)
 
     device.events.append(eventModel)
@@ -105,8 +106,10 @@ def save_connectivity_events(events, device, sim):
 def save_gsm_events(events, device, sim):
     pass
 
+
 def save_telephony_events(events, device, sim):
     pass
+
 
 def save_wifi_records(events, device, sim):
     pass
@@ -117,9 +120,11 @@ def save_state_events(events, device, sim):
     for event in events:
         eventModel = StateChangeEvent()
         for k, v in event.items():
+
+            if k == "timestamp":
+                eventModel.date = datetime.fromtimestamp(timestamp=v / 1000)
+
             if hasattr(eventModel, k):
-                if k == "timestamp":
-                    v = datetime.fromtimestamp(timestamp=v)
                 setattr(eventModel, k, v)
 
         device.events.append(eventModel)
@@ -128,6 +133,7 @@ def save_state_events(events, device, sim):
         db.session.add(eventModel)
         db.session.add(device)
         db.session.commit()
+
 
 events_names = {
     'traffic_records': save_traffics_events,
