@@ -1,16 +1,11 @@
+from flask_restful import Resource, reqparse
+from . import api
+from app import db
 from datetime import datetime
 
-from flask_restful import Resource, reqparse
-
-from . import api
-from .. import db
 
 class Registration(Resource):
     def post(self):
-        from app.models.sim import Sim
-        from app.models.carrier import Carrier
-        from app.models.device import Device
-
         post_parser = reqparse.RequestParser(bundle_errors=True)
         # SIM
         post_parser.add_argument('serial_number', required=True)
@@ -30,9 +25,16 @@ class Registration(Resource):
 
         args = post_parser.parse_args()
 
+        return Registration.add_device_sim_carrier(args)
+
+    def add_device_sim_carrier(args):
+        from app.models.sim import Sim
+        from app.models.carrier import Carrier
+        from app.models.device import Device
+
         carrier = Carrier.query.filter(Carrier.mnc == args.carrier_id).first()
         if carrier:
-
+            # TODO habrá que agregar alguna vez carriers nuevos (?)
             sim = Sim.query.filter(Sim.serial_number == args.serial_number).first()
             device = Device.query.filter(Device.build_id == args.build_id).first()
 
@@ -50,14 +52,22 @@ class Registration(Resource):
                         product=args.product,
                         sdk=args.sdk,
                         creation_date=datetime.now().date())
+                db.session.add(device)
 
             if not sim:
                 sim = Sim(serial_number=args.serial_number, creation_date=datetime.now().date())
+                db.session.add(sim)
 
-            carrier.sims.append(sim)
-            sim.devices.append(device)
-            db.session.add(sim)
-            db.session.add(device)
+            # Se vincula sim con carrier
+            existent_sim = carrier.sims.filter(Sim.serial_number == args.serial_number).first()
+            if not existent_sim:
+                carrier.sims.append(sim)
+
+            # Se vinculan sim con device
+            existent_device = sim.devices.filter(Device.build_id == args.build_id).first()
+            if not existent_device:
+                sim.devices.append(device)
+
             db.session.commit()
             return 'registration complete', 201
 
