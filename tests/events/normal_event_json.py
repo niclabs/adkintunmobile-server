@@ -207,6 +207,6 @@ events_json = '''{
             "tableName": "CONNECTIVITY_OBSERVATION_WRAPPER",
             "timestamp": 1330641527540
         }
-    ],
+    ]
 }
 '''
