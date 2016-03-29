@@ -21,7 +21,6 @@ class StateChangeEvent(Event):
         self.device_id = device_id
         self.state_type = state_type
         self.state = state
-        self.event_type = event_type
 
     def __repr__(self):
         return '<StateChangeEvent, id: %r, date: %r>' % (self.id, self.date)
