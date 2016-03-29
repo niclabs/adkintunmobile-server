@@ -59,18 +59,38 @@ api.add_resource(ReadEvents, '/api/send_file')
 
 
 def save_traffics_events(events, device, sim):
+
+    for event in events:
+        if event["event_type"] == 2:
+            save_mobile_traffic_event(event, device, sim)
+        elif event["event_type"] == 4:
+            save_wifi_traffic_event(event, device, sim)
+        elif event["event_type"] == 8:
+            save_application_traffic_event(event, device, sim)
+
+
+def save_application_traffic_event(event, device, sim):
     pass
 
 
-def save_application_traffic_event(events, device, sim):
-    pass
+def save_wifi_traffic_event(event, device, sim):
+    from app.models.wifi_traffic_event import WifiTrafficEvent
+    eventModel = WifiTrafficEvent()
+    for k, v in event.items():
+        if hasattr(eventModel, k):
+            if k == "timestamp":
+                v = datetime.fromtimestamp(timestamp=v)
+            setattr(eventModel, k, v)
+
+    device.events.append(eventModel)
+    sim.events.append(eventModel)
+    db.session.add(sim)
+    db.session.add(eventModel)
+    db.session.add(device)
+    db.session.commit()
 
 
-def save_wifi_traffic_event(events, device, sim):
-    pass
-
-
-def save_mobile_traffic_event(events, device, sim):
+def save_mobile_traffic_event(event, device, sim):
     pass
 
 
@@ -85,8 +105,10 @@ def save_connectivity_events(events, device, sim):
 def save_gsm_events(events, device, sim):
     pass
 
-
 def save_telephony_events(events, device, sim):
+    pass
+
+def save_wifi_records(events, device, sim):
     pass
 
 
@@ -102,7 +124,6 @@ def save_state_events(events, device, sim):
 
         device.events.append(eventModel)
         sim.events.append(eventModel)
-        sim.carrier.telephony_observation_events.append(eventModel)
         db.session.add(sim)
         db.session.add(eventModel)
         db.session.add(device)
@@ -111,10 +132,11 @@ def save_state_events(events, device, sim):
 events_names = {
     'traffic_records': save_traffics_events,
     'cdma_records': save_cdma_events,
-    'connectivity': save_connectivity_events,
+    'connectivity_records': save_connectivity_events,
     'gsm_records': save_gsm_events,
     'telephony_records': save_telephony_events,
-    'state_records': save_state_events
+    'state_records': save_state_events,
+    'wifi_records': save_wifi_records
 }
 
 
