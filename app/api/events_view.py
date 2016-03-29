@@ -154,7 +154,7 @@ def save_state_events(events, device, sim):
 events_names = {
     'traffic_records': save_traffics_events,
     'cdma_records': save_cdma_event,
-    'connectivity': save_connectivity_events,
+    'connectivity_records': save_connectivity_events,
     'gsm_records': save_gsm_event,
     'telephony_records': save_telephony_events,
     'state_records': save_state_events,
