@@ -94,7 +94,7 @@ def save_mobile_traffic_event(event, device, sim):
     pass
 
 
-def save_cdma_events(events, device, sim):
+def save_cdma_event(event, device, sim):
     pass
 
 
@@ -102,8 +102,24 @@ def save_connectivity_events(events, device, sim):
     pass
 
 
-def save_gsm_events(events, device, sim):
+def save_gsm_event(event, device, sim):
     pass
+    # from app.models.gsm_event import GsmEvent
+    #
+    # eventModel = GsmEvent()
+    # for k, v in event.items():
+    #     if hasattr(eventModel, k):
+    #         if k == "timestamp":
+    #             v = datetime.fromtimestamp(timestamp=v)
+    #         setattr(eventModel, k, v)
+    #
+    # device.events.append(eventModel)
+    # sim.events.append(eventModel)
+    # sim.carrier.telephony_observation_events.append(eventModel)
+    # db.session.add(sim)
+    # db.session.add(eventModel)
+    # db.session.add(device)
+    # db.session.commit()
 
 def save_telephony_events(events, device, sim):
     pass
@@ -131,9 +147,9 @@ def save_state_events(events, device, sim):
 
 events_names = {
     'traffic_records': save_traffics_events,
-    'cdma_records': save_cdma_events,
-    'connectivity_records': save_connectivity_events,
-    'gsm_records': save_gsm_events,
+    'cdma_records': save_cdma_event,
+    'connectivity': save_connectivity_events,
+    'gsm_records': save_gsm_event,
     'telephony_records': save_telephony_events,
     'state_records': save_state_events,
     'wifi_records': save_wifi_records
