@@ -58,63 +58,63 @@ def read_events():
 api.add_resource(ReadEvents, '/api/send_file')
 
 
-def save_events(model):
-    def save_event_with_model(events, device, sim):
-        for event in events:
-            eventModel = model()
-            for k, v in event.items():
-                if hasattr(eventModel, k):
-                    if k == "timestamp":
-                        v = datetime.fromtimestamp(timestamp=v)
-                    setattr(eventModel, k, v)
-            device.events.append(eventModel)
-            sim.events.append(eventModel)
-            db.session.add(sim)
-            db.session.add(eventModel)
-            db.session.add(device)
-            db.session.commit()
-
-    return save_event_with_model
+def save_traffics_events(events, device, sim):
+    pass
 
 
-def save_observations(model):
-    def save_event_with_model(events, device, sim):
-        for event in events:
-            eventModel = model()
-            for k, v in event.items():
-                if hasattr(eventModel, 'k'):
-                    if k == "timestamp":
-                        v = datetime.fromtimestamp(timestamp=v)
-                    setattr(eventModel, k, v)
-
-            device.events.append(eventModel)
-            sim.events.append(eventModel)
-            sim.carrier.telephony_observation_events.append(eventModel)
-            db.session.add(sim)
-            db.session.add(eventModel)
-            db.session.add(device)
-            db.session.commit()
-
-    return save_event_with_model
+def save_application_traffic_event(events, device, sim):
+    pass
 
 
-from app.models.application_traffic_event import ApplicationTrafficEvent
-from app.models.cdma_event import CdmaEvent
-from app.models.connectivity_event import ConnectivityEvent
-from app.models.gsm_event import GsmEvent
-from app.models.mobile_traffic_event import MobileTrafficEvent
-from app.models.state_change_event import StateChangeEvent
-from app.models.traffic_event import TrafficEvent
-from app.models.wifi_traffic_event import WifiTrafficEvent
+def save_wifi_traffic_event(events, device, sim):
+    pass
+
+
+def save_mobile_traffic_event(events, device, sim):
+    pass
+
+
+def save_cdma_events(events, device, sim):
+    pass
+
+
+def save_connectivity_events(events, device, sim):
+    pass
+
+
+def save_gsm_events(events, device, sim):
+    pass
+
+
+def save_telephony_events(events, device, sim):
+    pass
+
+
+def save_state_events(events, device, sim):
+    from app.models.state_change_event import StateChangeEvent
+    for event in events:
+        eventModel = StateChangeEvent()
+        for k, v in event.items():
+            if hasattr(eventModel, k):
+                if k == "timestamp":
+                    v = datetime.fromtimestamp(timestamp=v)
+                setattr(eventModel, k, v)
+
+        device.events.append(eventModel)
+        sim.events.append(eventModel)
+        sim.carrier.telephony_observation_events.append(eventModel)
+        db.session.add(sim)
+        db.session.add(eventModel)
+        db.session.add(device)
+        db.session.commit()
 
 events_names = {
-    'traffic_records': save_events(ApplicationTrafficEvent),
-    'cdma_records': save_observations(CdmaEvent),
-    'connectivity': save_events(ConnectivityEvent),
-    'gsm_records': save_observations(GsmEvent),
-    'telephony_records': save_events(MobileTrafficEvent),
-    'state_records': save_events(StateChangeEvent),
-    'wifi_records': save_events(WifiTrafficEvent)
+    'traffic_records': save_traffics_events,
+    'cdma_records': save_cdma_events,
+    'connectivity': save_connectivity_events,
+    'gsm_records': save_gsm_events,
+    'telephony_records': save_telephony_events,
+    'state_records': save_state_events
 }
 
 
