@@ -19,7 +19,6 @@ class EventTestCase(base_test_case.BaseTestCase):
     '''
 
     def populate(self):
-        # TODO: Ponerle un nombre más representativo del test en el cual se usará (tiene sentido que esté en esta clase?)
         '''
         Populate the model with test data
         '''

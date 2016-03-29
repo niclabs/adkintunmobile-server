@@ -1,1 +1,1 @@
-from .api_tests import APITestCase
+from .registration_test import TestRegistration
