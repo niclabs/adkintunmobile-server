@@ -8,7 +8,7 @@ class TelephonyObservationEvent(Event):
     Clase para los eventos de observaciones de telefonía
     '''
     __tablename__ = 'telephony_observation_events'
-    __mapper_args__ = {'polymorphic_identity': 'telephony_observation_event'}
+    #__mapper_args__ = {'polymorphic_identity': 'telephony_observation_event'}
 
     id = db.Column(db.Integer, db.ForeignKey('events.id'), primary_key=True)
 
@@ -23,5 +23,5 @@ class TelephonyObservationEvent(Event):
         return db.Column(db.Integer, db.ForeignKey("carriers.id"))
 
     # Herencia
-    type_telephony_observation = db.Column(db.String(50))
-    __mapper_args__ = {'polymorphic_on': type_telephony_observation}
+    #type_telephony_observation = db.Column(db.String(50))
+    #__mapper_args__ = {'polymorphic_on': type_telephony_observation}
