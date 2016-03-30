@@ -85,12 +85,7 @@ def save_application_traffic_event(event, device, sim):
             addApplication(v, eventModel)
             continue
 
-    device.events.append(eventModel)
-    sim.events.append(eventModel)
-    db.session.add(sim)
-    db.session.add(eventModel)
-    db.session.add(device)
-    db.session.commit()
+    store_event_in_db(eventModel, device, sim)
 
 
 def addApplication(packageName, eventModel):
@@ -129,12 +124,7 @@ def save_mobile_traffic_event(event, device, sim):
             setattr(eventModel, k, v)
             continue
 
-    device.events.append(eventModel)
-    sim.events.append(eventModel)
-    db.session.add(sim)
-    db.session.add(eventModel)
-    db.session.add(device)
-    db.session.commit()
+    store_event_in_db(eventModel, device, sim)
 
 
 def save_cdma_events(events, device, sim):
@@ -146,6 +136,32 @@ def save_cdma_events(events, device, sim):
         for k, v in event.items():
             if k == "timestamp":
                 eventModel.date = datetime.fromtimestamp(timestamp=v / 1000)
+            elif k == "signal_strength":
+                #agregar atributos de signal_strength
+                setattr(eventModel, k+"_size", event[k]['size'])
+                setattr(eventModel, k+"_mean", event[k]['mean'])
+                setattr(eventModel, k+"_variance", event[k]['variance'])
+            elif k == "cdma_ecio":
+                #agregar atributos de cdma_ecio
+                setattr(eventModel, k+"_size", event[k]['size'])
+                setattr(eventModel, k+"_mean", event[k]['mean'])
+                setattr(eventModel, k+"_variance", event[k]['variance'])
+            elif k == "evdo_dbm":
+                #agregar atributos de evdo_dbm
+                setattr(eventModel, k+"_size", event[k]['size'])
+                setattr(eventModel, k+"_mean", event[k]['mean'])
+                setattr(eventModel, k+"_variance", event[k]['variance'])
+            elif k == "evdo_ecio":
+                #agregar atributos de evdo_ecio
+                setattr(eventModel, k+"_size", event[k]['size'])
+                setattr(eventModel, k+"_mean", event[k]['mean'])
+                setattr(eventModel, k+"_variance", event[k]['variance'])
+            elif k == "evdo_snr":
+                #agregar atributos de evdo_snr
+                setattr(eventModel, k+"_size", event[k]['size'])
+                setattr(eventModel, k+"_mean", event[k]['mean'])
+                setattr(eventModel, k+"_variance", event[k]['variance'])
+
             if hasattr(eventModel, k):
                 setattr(eventModel, k, v)
 
@@ -177,7 +193,8 @@ def save_gsm_events(events, device, sim):
             elif hasattr(eventModel, k):
                 setattr(eventModel, k, v)
 
-        sim.carrier.telephony_observation_events.append(eventModel)
+        #arreglar esta union
+        #sim.carrier.telephony_observation_events.append(eventModel)
         store_event_in_db(eventModel, device, sim)
 
 def save_telephony_events(events, device, sim):
