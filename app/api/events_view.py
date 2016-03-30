@@ -174,10 +174,6 @@ def save_telephony_events(events, device, sim):
     pass
 
 
-def save_wifi_records(events, device, sim):
-    pass
-
-
 def save_state_events(events, device, sim):
     from app.models.state_change_event import StateChangeEvent
     for event in events:
@@ -205,7 +201,6 @@ events_names = {
     'gsm_records': save_gsm_event,
     'telephony_records': save_telephony_events,
     'state_records': save_state_events,
-    'wifi_records': save_wifi_records
 }
 
 
