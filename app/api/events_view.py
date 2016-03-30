@@ -69,7 +69,37 @@ def save_traffics_events(events, device, sim):
 
 
 def save_application_traffic_event(event, device, sim):
-    pass
+    from app.models.application_traffic_event import ApplicationTrafficEvent
+    eventModel = ApplicationTrafficEvent()
+    for k, v in event.items():
+
+        if hasattr(eventModel, k):
+            setattr(eventModel, k, v)
+            continue
+
+        if k == "timestamp":
+            eventModel.date = datetime.fromtimestamp(timestamp=v / 1000)
+            continue
+
+        if k == "package_name":
+            addApplication(v, eventModel)
+            continue
+
+    device.events.append(eventModel)
+    sim.events.append(eventModel)
+    db.session.add(sim)
+    db.session.add(eventModel)
+    db.session.add(device)
+    db.session.commit()
+
+
+def addApplication(packageName, eventModel):
+    from app.models.application import Application
+    application = Application.query.filter(Application.package_name == packageName).first()
+    if not application:
+        application = Application(package_name=packageName)
+        db.session.add(application)
+    eventModel.application = application
 
 
 def save_wifi_traffic_event(event, device, sim):
@@ -87,7 +117,24 @@ def save_wifi_traffic_event(event, device, sim):
 
 
 def save_mobile_traffic_event(event, device, sim):
-    pass
+    from app.models.mobile_traffic_event import MobileTrafficEvent
+    eventModel = MobileTrafficEvent()
+    for k, v in event.items():
+
+        if k == "timestamp":
+            eventModel.date = datetime.fromtimestamp(timestamp=v / 1000)
+            continue
+
+        if hasattr(eventModel, k):
+            setattr(eventModel, k, v)
+            continue
+
+    device.events.append(eventModel)
+    sim.events.append(eventModel)
+    db.session.add(sim)
+    db.session.add(eventModel)
+    db.session.add(device)
+    db.session.commit()
 
 
 def save_cdma_events(events, device, sim):
@@ -137,10 +184,6 @@ def save_telephony_events(events, device, sim):
     pass
 
 
-def save_wifi_records(events, device, sim):
-    pass
-
-
 def save_state_events(events, device, sim):
     from app.models.state_change_event import StateChangeEvent
     for event in events:
@@ -162,7 +205,6 @@ events_names = {
     'gsm_records': save_gsm_events,
     'telephony_records': save_telephony_events,
     'state_records': save_state_events,
-    'wifi_records': save_wifi_records
 }
 
 
