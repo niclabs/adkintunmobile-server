@@ -62,19 +62,6 @@ events_json = '''{
             "app_version_code": "1.1"
         }
     ],
-    "wifi_records": [
-        {
-            "timestamp": 1447019305832,
-            "network_type": 1,
-            "rx_bytes": 2,
-            "tx_bytes": 3,
-            "rx_packets": 4,
-            "tx_packets": 5,
-            "tcp_rx_bytes": 6,
-            "tcp_tx_bytes": 7,
-            "app_version_code": "1.1"
-        }
-    ],
     "telephony_records": [],
     "traffic_records":[
         {
