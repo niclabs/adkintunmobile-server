@@ -1,19 +1,14 @@
 from datetime import datetime
 
-from app import app, db
-from tests import base_test_case
-from tests.events.normal_event_json import events_json
-from app.models.carrier import Carrier
-from app.models.sim import Sim
-from app.models.device import Device
-from app.models.wifi_traffic_event import WifiTrafficEvent
-from app.models.state_change_event import StateChangeEvent
-from app.models.mobile_traffic_event import MobileTrafficEvent
-from app.models.application_traffic_event import ApplicationTrafficEvent
-from app.models.application import Application
-from app.models.traffic_event import TrafficEvent
-from app.models.event import Event
 from dateutil.parser import parse
+
+from app import app, db
+from app.models.carrier import Carrier
+from app.models.device import Device
+from app.models.sim import Sim
+from app.models.connectivity_event import ConnectivityEvent
+from tests import base_test_case
+from tests.events.one_event_in_type_json import events_json
 
 
 class EventTestCase(base_test_case.BaseTestCase):
@@ -60,23 +55,16 @@ class EventTestCase(base_test_case.BaseTestCase):
             ))
 
             assert request.status_code == 201
-            # assert events
-            events = Event.query.all()
-            wifi_events = WifiTrafficEvent.query.all()
-            state_events = StateChangeEvent.query.all()
-            traffic_events = TrafficEvent.query.all()
-            application_events = ApplicationTrafficEvent.query.all()
-            mobile_events = MobileTrafficEvent.query.all()
-            assert len(events) == 12
+            connectivity_events = ConnectivityEvent.query.all()
+            assert len(connectivity_events) == 1
 
-            # assert application event cl.niclabs.adkintunmobile
-            application = Application.query.filter(Application.package_name == "cl.niclabs.adkintunmobile").first()
-            assert application.package_name == "cl.niclabs.adkintunmobile"
-            application_event = ApplicationTrafficEvent.query.filter(
-                ApplicationTrafficEvent.application == application).first()
-            assert application_event.tx_bytes == 5615
+            connectivity_event = connectivity_events[0]
 
-            #assert mobile event
-            assert len(mobile_events) == 3
+            assert connectivity_event.available == True
+            assert connectivity_event.connected == True
+            assert connectivity_event.connection_type == 6
+            assert connectivity_event.detailed_state == 4
+            assert connectivity_event.date == datetime.fromtimestamp(1330641527540/1000).date()
 
-            # TODO: Cambiar última comprobación por una diferencia de tiempo en vez de la fecha
+            assert connectivity_event.sim.serial_number == 8956080124002959472
+            assert connectivity_event.device.build_id == "JZO54K.I8190LUBAMH1"
