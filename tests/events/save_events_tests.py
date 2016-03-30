@@ -67,7 +67,7 @@ class EventTestCase(base_test_case.BaseTestCase):
             traffic_events = TrafficEvent.query.all()
             application_events = ApplicationTrafficEvent.query.all()
             mobile_events = MobileTrafficEvent.query.all()
-            assert len(events) == 12
+            assert len(events) == 15
 
             # assert application event cl.niclabs.adkintunmobile
             application = Application.query.filter(Application.package_name == "cl.niclabs.adkintunmobile").first()
