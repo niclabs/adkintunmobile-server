@@ -169,7 +169,29 @@ def save_cdma_events(events, device, sim):
 
 
 def save_connectivity_events(events, device, sim):
-    pass
+    from app.models.connectivity_event import ConnectivityEvent
+
+    for event in events:
+        eventModel = ConnectivityEvent()
+        for k, v in event.items():
+
+            if k == "timestamp":
+                eventModel.date = datetime.fromtimestamp(timestamp=v / 1000)
+                continue
+
+            if k == "id":
+                continue
+
+            if hasattr(eventModel, k):
+                setattr(eventModel, k, v)
+                continue
+
+        device.events.append(eventModel)
+        sim.events.append(eventModel)
+        db.session.add(sim)
+        db.session.add(eventModel)
+        db.session.add(device)
+        db.session.commit()
 
 
 def save_gsm_events(events, device, sim):
