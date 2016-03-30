@@ -21,6 +21,26 @@ events_json = '''{
     "gsm_records": [
         {
             "event_type": 16,
+            "gsm_cid": 1277982,
+            "gsm_lac": 55700,
+            "gsm_psc": -1,
+            "id": 523,
+            "mcc": 730,
+            "mnc": 2,
+            "network_type": 16,
+            "signal_strength": {
+                "id": 490,
+                "mean": -79.0,
+                "size": 1,
+                "tableName": "SAMPLE_WRAPPER",
+                "variance": 0.0
+            },
+            "tableName": "GSM_OBSERVATION_WRAPPER",
+            "telephony_standard": 1,
+            "timestamp": 1447019305848
+        },
+        {
+            "event_type": 16,
             "gsm_cid": 1259355,
             "gsm_lac": 55700,
             "gsm_psc": -1,

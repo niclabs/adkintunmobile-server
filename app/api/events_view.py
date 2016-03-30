@@ -74,54 +74,64 @@ def save_application_traffic_event(event, device, sim):
 
 def save_wifi_traffic_event(event, device, sim):
     from app.models.wifi_traffic_event import WifiTrafficEvent
-    eventModel = WifiTrafficEvent()
-    for k, v in event.items():
 
+    eventModel = WifiTrafficEvent()
+
+    for k, v in event.items():
         if k == "timestamp":
             eventModel.date = datetime.fromtimestamp(timestamp=v / 1000)
-
         if hasattr(eventModel, k):
             setattr(eventModel, k, v)
 
-    device.events.append(eventModel)
-    sim.events.append(eventModel)
-    db.session.add(sim)
-    db.session.add(eventModel)
-    db.session.add(device)
-    db.session.commit()
+    store_event_in_db(eventModel, device, sim)
 
 
 def save_mobile_traffic_event(event, device, sim):
     pass
 
 
-def save_cdma_event(event, device, sim):
-    pass
+def save_cdma_events(events, device, sim):
+    from app.models.cdma_event import CdmaEvent
+
+    for event in events:
+        eventModel = CdmaEvent()
+
+        for k, v in event.items():
+            if k == "timestamp":
+                eventModel.date = datetime.fromtimestamp(timestamp=v / 1000)
+            if hasattr(eventModel, k):
+                setattr(eventModel, k, v)
+
+        store_event_in_db(eventModel, device, sim)
 
 
 def save_connectivity_events(events, device, sim):
     pass
 
 
-def save_gsm_event(event, device, sim):
-    pass
-    # from app.models.gsm_event import GsmEvent
-    #
-    # eventModel = GsmEvent()
-    # for k, v in event.items():
-    #     if hasattr(eventModel, k):
-    #         if k == "timestamp":
-    #             v = datetime.fromtimestamp(timestamp=v)
-    #         setattr(eventModel, k, v)
-    #
-    # device.events.append(eventModel)
-    # sim.events.append(eventModel)
-    # sim.carrier.telephony_observation_events.append(eventModel)
-    # db.session.add(sim)
-    # db.session.add(eventModel)
-    # db.session.add(device)
-    # db.session.commit()
+def save_gsm_events(events, device, sim):
+    from app.models.gsm_event import GsmEvent
 
+    for event in events:
+        eventModel = GsmEvent()
+        for k, v in event.items():
+            if k == "timestamp":
+                v = datetime.fromtimestamp(timestamp=v / 1000)
+            elif k == "signal_ber":
+                #agregar atributos de signal_ber
+                setattr(eventModel, k+"_size", event[k]['size'])
+                setattr(eventModel, k+"_mean", event[k]['mean'])
+                setattr(eventModel, k+"_variance", event[k]['variance'])
+            elif k == "signal_strength":
+                #agregar atributos de signal_strength
+                setattr(eventModel, k+"_size", event[k]['size'])
+                setattr(eventModel, k+"_mean", event[k]['mean'])
+                setattr(eventModel, k+"_variance", event[k]['variance'])
+            elif hasattr(eventModel, k):
+                setattr(eventModel, k, v)
+
+        sim.carrier.telephony_observation_events.append(eventModel)
+        store_event_in_db(eventModel, device, sim)
 
 def save_telephony_events(events, device, sim):
     pass
@@ -143,19 +153,13 @@ def save_state_events(events, device, sim):
             if hasattr(eventModel, k):
                 setattr(eventModel, k, v)
 
-        device.events.append(eventModel)
-        sim.events.append(eventModel)
-        db.session.add(sim)
-        db.session.add(eventModel)
-        db.session.add(device)
-        db.session.commit()
-
+        store_event_in_db(eventModel, device, sim)
 
 events_names = {
     'traffic_records': save_traffics_events,
-    'cdma_records': save_cdma_event,
+    'cdma_records': save_cdma_events,
     'connectivity_records': save_connectivity_events,
-    'gsm_records': save_gsm_event,
+    'gsm_records': save_gsm_events,
     'telephony_records': save_telephony_events,
     'state_records': save_state_events,
     'wifi_records': save_wifi_records
@@ -164,3 +168,11 @@ events_names = {
 
 def save(events_name, events, device, sim):
     events_names[events_name](events, device, sim)
+
+def store_event_in_db(event, device, sim):
+        device.events.append(event)
+        sim.events.append(event)
+        db.session.add(sim)
+        db.session.add(event)
+        db.session.add(device)
+        db.session.commit()
