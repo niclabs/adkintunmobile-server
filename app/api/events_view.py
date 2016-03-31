@@ -1,12 +1,10 @@
-from flask import request
-
-from app.models.device import Device
-from app.models.sim import Sim
-from . import app
-from . import api
-from flask_restful import Resource, reqparse
-from .. import db
 from datetime import datetime
+
+from flask import request
+from flask_restful import Resource, reqparse
+from . import api
+from . import app
+from .. import db
 
 
 class ReadEvents(Resource):
@@ -45,9 +43,12 @@ def read_events():
     string = ''.join(x.decode("utf-8") for x in lines)
     string = string.replace('\n', '')
     jsonvar = json.loads(string)
-    device = Device.query.filter(Device.device == jsonvar["device_records"]["build_id"]).first()
-    sim = Sim.query.filter(Sim.serial_number == jsonvar["sim_records"]["serial_number"]).first()
+    from app.models.device import Device
+    device = Device.store_if_no_exist(jsonvar["device_records"])
     del jsonvar["device_records"]
+
+    from app.models.sim import Sim
+    sim = Sim.store_if_not_exist(jsonvar["sim_records"])
     del jsonvar["sim_records"]
     try:
         for events in jsonvar:
@@ -78,16 +79,12 @@ def save_application_traffic_event(event, device, sim):
     eventModel = ApplicationTrafficEvent()
     for k, v in event.items():
 
-        if hasattr(eventModel, k):
-            setattr(eventModel, k, v)
-            continue
-
         if k == "timestamp":
             eventModel.date = datetime.fromtimestamp(timestamp=v / 1000)
-            continue
-
-        if k == "package_name":
+        elif k == "package_name":
             addApplication(v, eventModel)
+        elif hasattr(eventModel, k):
+            setattr(eventModel, k, v)
             continue
 
     store_event_in_db(eventModel, device, sim)
@@ -123,11 +120,8 @@ def save_mobile_traffic_event(event, device, sim):
 
         if k == "timestamp":
             eventModel.date = datetime.fromtimestamp(timestamp=v / 1000)
-            continue
-
-        if hasattr(eventModel, k):
+        elif hasattr(eventModel, k):
             setattr(eventModel, k, v)
-            continue
 
     store_event_in_db(eventModel, device, sim)
 
@@ -142,30 +136,30 @@ def save_cdma_events(events, device, sim):
             if k == "timestamp":
                 eventModel.date = datetime.fromtimestamp(timestamp=v / 1000)
             elif k == "signal_strength":
-                #agregar atributos de signal_strength
-                setattr(eventModel, k+"_size", event[k]['size'])
-                setattr(eventModel, k+"_mean", event[k]['mean'])
-                setattr(eventModel, k+"_variance", event[k]['variance'])
+                # agregar atributos de signal_strength
+                setattr(eventModel, k + "_size", event[k]['size'])
+                setattr(eventModel, k + "_mean", event[k]['mean'])
+                setattr(eventModel, k + "_variance", event[k]['variance'])
             elif k == "cdma_ecio":
-                #agregar atributos de cdma_ecio
-                setattr(eventModel, k+"_size", event[k]['size'])
-                setattr(eventModel, k+"_mean", event[k]['mean'])
-                setattr(eventModel, k+"_variance", event[k]['variance'])
+                # agregar atributos de cdma_ecio
+                setattr(eventModel, k + "_size", event[k]['size'])
+                setattr(eventModel, k + "_mean", event[k]['mean'])
+                setattr(eventModel, k + "_variance", event[k]['variance'])
             elif k == "evdo_dbm":
-                #agregar atributos de evdo_dbm
-                setattr(eventModel, k+"_size", event[k]['size'])
-                setattr(eventModel, k+"_mean", event[k]['mean'])
-                setattr(eventModel, k+"_variance", event[k]['variance'])
+                # agregar atributos de evdo_dbm
+                setattr(eventModel, k + "_size", event[k]['size'])
+                setattr(eventModel, k + "_mean", event[k]['mean'])
+                setattr(eventModel, k + "_variance", event[k]['variance'])
             elif k == "evdo_ecio":
-                #agregar atributos de evdo_ecio
-                setattr(eventModel, k+"_size", event[k]['size'])
-                setattr(eventModel, k+"_mean", event[k]['mean'])
-                setattr(eventModel, k+"_variance", event[k]['variance'])
+                # agregar atributos de evdo_ecio
+                setattr(eventModel, k + "_size", event[k]['size'])
+                setattr(eventModel, k + "_mean", event[k]['mean'])
+                setattr(eventModel, k + "_variance", event[k]['variance'])
             elif k == "evdo_snr":
-                #agregar atributos de evdo_snr
-                setattr(eventModel, k+"_size", event[k]['size'])
-                setattr(eventModel, k+"_mean", event[k]['mean'])
-                setattr(eventModel, k+"_variance", event[k]['variance'])
+                # agregar atributos de evdo_snr
+                setattr(eventModel, k + "_size", event[k]['size'])
+                setattr(eventModel, k + "_mean", event[k]['mean'])
+                setattr(eventModel, k + "_variance", event[k]['variance'])
 
             if hasattr(eventModel, k):
                 setattr(eventModel, k, v)
@@ -182,21 +176,12 @@ def save_connectivity_events(events, device, sim):
 
             if k == "timestamp":
                 eventModel.date = datetime.fromtimestamp(timestamp=v / 1000)
+            elif k == "id":
                 continue
-
-            if k == "id":
-                continue
-
-            if hasattr(eventModel, k):
+            elif hasattr(eventModel, k):
                 setattr(eventModel, k, v)
-                continue
 
-        device.events.append(eventModel)
-        sim.events.append(eventModel)
-        db.session.add(sim)
-        db.session.add(eventModel)
-        db.session.add(device)
-        db.session.commit()
+        store_event_in_db(eventModel, device, sim)
 
 
 def save_gsm_events(events, device, sim):
@@ -208,21 +193,22 @@ def save_gsm_events(events, device, sim):
             if k == "timestamp":
                 v = datetime.fromtimestamp(timestamp=v / 1000)
             elif k == "signal_ber":
-                #agregar atributos de signal_ber
-                setattr(eventModel, k+"_size", event[k]['size'])
-                setattr(eventModel, k+"_mean", event[k]['mean'])
-                setattr(eventModel, k+"_variance", event[k]['variance'])
+                # agregar atributos de signal_ber
+                setattr(eventModel, k + "_size", event[k]['size'])
+                setattr(eventModel, k + "_mean", event[k]['mean'])
+                setattr(eventModel, k + "_variance", event[k]['variance'])
             elif k == "signal_strength":
-                #agregar atributos de signal_strength
-                setattr(eventModel, k+"_size", event[k]['size'])
-                setattr(eventModel, k+"_mean", event[k]['mean'])
-                setattr(eventModel, k+"_variance", event[k]['variance'])
+                # agregar atributos de signal_strength
+                setattr(eventModel, k + "_size", event[k]['size'])
+                setattr(eventModel, k + "_mean", event[k]['mean'])
+                setattr(eventModel, k + "_variance", event[k]['variance'])
             elif hasattr(eventModel, k):
                 setattr(eventModel, k, v)
 
-        #arreglar esta union
-        #sim.carrier.telephony_observation_events.append(eventModel)
+        # arreglar esta union
+        # sim.carrier.telephony_observation_events.append(eventModel)
         store_event_in_db(eventModel, device, sim)
+
 
 def save_telephony_events(events, device, sim):
     pass
@@ -236,11 +222,11 @@ def save_state_events(events, device, sim):
 
             if k == "timestamp":
                 eventModel.date = datetime.fromtimestamp(timestamp=v / 1000)
-
-            if hasattr(eventModel, k):
+            elif hasattr(eventModel, k):
                 setattr(eventModel, k, v)
 
         store_event_in_db(eventModel, device, sim)
+
 
 events_names = {
     'traffic_records': save_traffics_events,
@@ -255,10 +241,11 @@ events_names = {
 def save(events_name, events, device, sim):
     events_names[events_name](events, device, sim)
 
+
 def store_event_in_db(event, device, sim):
-        device.events.append(event)
-        sim.events.append(event)
-        db.session.add(sim)
-        db.session.add(event)
-        db.session.add(device)
-        db.session.commit()
+    device.events.append(event)
+    sim.events.append(event)
+    db.session.add(sim)
+    db.session.add(event)
+    db.session.add(device)
+    db.session.commit()
