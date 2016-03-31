@@ -17,10 +17,15 @@ class ReadEvents(Resource):
 
         args = post_parser.parse_args()
         jsonvar = json.loads(args.events)
-        device = Device.query.filter(Device.build_id == jsonvar["device_records"]["build_id"]).first()
-        sim = Sim.query.filter(Sim.serial_number == jsonvar["sim_records"]["serial_number"]).first()
+
+        from app.models.device import Device
+        device = Device.store_if_no_exist(jsonvar["device_records"])
         del jsonvar["device_records"]
+
+        from app.models.sim import Sim
+        sim = Sim.store_if_not_exist(jsonvar["sim_records"])
         del jsonvar["sim_records"]
+
         try:
             for events_name, events in jsonvar.items():
                 save(events_name, events, device, sim)
