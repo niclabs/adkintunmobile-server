@@ -22,9 +22,10 @@ class Device(base_model.BaseModel):
     sdk = db.Column(db.Integer)
     events = db.relationship('Event', backref='device', lazy='dynamic')
 
-    def __init__(self, brand=None, board=None, build_id=None, device=None, hardware=None,
+    def __init__(self, device_id, brand=None, board=None, build_id=None, device=None, hardware=None,
                  manufacturer=None, model=None, release=None, release_type=None, product=None, sdk=None,
                  creation_date=None):
+        self.device_id = device_id
         self.brand = brand
         self.board = board
         self.build_id = build_id
@@ -45,9 +46,10 @@ class Device(base_model.BaseModel):
     def store_if_no_exist(args):
         from datetime import datetime
 
-        device = Device.query.filter(Device.build_id == args['build_id']).first()
+        device = Device.query.filter(Device.device_id == args['device_id']).first()
         if not device:
             device = Device(
+                    device_id=args['device_id'],
                     brand=args['brand'],
                     board=args['board'],
                     build_id=args['build_id'],
