@@ -1,9 +1,9 @@
 import unittest
+
 from app import app, db
 
 
 class BaseTestCase(unittest.TestCase):
-
     def tearDown(self):
         db.drop_all(bind=None)
         self.context.pop()
