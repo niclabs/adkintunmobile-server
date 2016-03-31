@@ -1,7 +1,6 @@
+from app import db
 from flask_restful import Resource, reqparse
 from . import api
-from app import db
-from datetime import datetime
 
 
 class Registration(Resource):
@@ -35,38 +34,17 @@ class Registration(Resource):
         carrier = Carrier.query.filter(Carrier.mnc == args.carrier_id).first()
         if carrier:
             # TODO habrá que agregar alguna vez carriers nuevos (?)
-            sim = Sim.query.filter(Sim.serial_number == args.serial_number).first()
-            device = Device.query.filter(Device.build_id == args.build_id).first()
 
-            if not device:
-                device = Device(
-                        brand=args.brand,
-                        board=args.board,
-                        build_id=args.build_id,
-                        device=args.device,
-                        hardware=args.hardware,
-                        manufacturer=args.manufacturer,
-                        model=args.model,
-                        release=args.release,
-                        release_type=args.release_type,
-                        product=args.product,
-                        sdk=args.sdk,
-                        creation_date=datetime.now().date())
-                db.session.add(device)
+            device = Device.store_if_no_exist(args)
 
-            if not sim:
-                sim = Sim(serial_number=args.serial_number, creation_date=datetime.now().date())
-                db.session.add(sim)
-
-            # Se vincula sim con carrier
-            existent_sim = carrier.sims.filter(Sim.serial_number == args.serial_number).first()
-            if not existent_sim:
-                carrier.sims.append(sim)
+            #.store_if_not_exist(args)
+            sim = Sim().store_if_not_exist(args)
 
             # Se vinculan sim con device
-            existent_device = sim.devices.filter(Device.build_id == args.build_id).first()
-            if not existent_device:
-                sim.devices.append(device)
+            sim.add_device(device)
+
+            # Se vincula sim con carrier
+            carrier.add_sim(sim)
 
             db.session.commit()
             return 'registration complete', 201
