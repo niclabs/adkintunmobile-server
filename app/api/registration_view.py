@@ -21,6 +21,7 @@ class Registration(Resource):
         post_parser.add_argument('release_type', required=True)
         post_parser.add_argument('product', required=True)
         post_parser.add_argument('sdk', required=True)
+        post_parser.add_argument('device_id', required=True)
 
         args = post_parser.parse_args()
 
@@ -37,7 +38,7 @@ class Registration(Resource):
 
             device = Device.store_if_no_exist(args)
 
-            #.store_if_not_exist(args)
+            # .store_if_not_exist(args)
             sim = Sim().store_if_not_exist(args)
 
             # Se vinculan sim con device
