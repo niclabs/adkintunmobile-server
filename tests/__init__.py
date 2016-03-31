@@ -1,2 +1,2 @@
 from .registration_test import TestRegistration
-from .events.save_events_tests import EventTestCase
+from .events import *
