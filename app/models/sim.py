@@ -39,6 +39,6 @@ class Sim(base_model.BaseModel):
     def add_device(self, device):
         from app.models.device import Device
 
-        existent_device = self.devices.filter(Device.build_id == device.build_id).first()
+        existent_device = self.devices.filter(Device.device_id == device.device_id).first()
         if not existent_device:
             self.devices.append(device)
