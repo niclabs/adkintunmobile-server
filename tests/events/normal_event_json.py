@@ -4,18 +4,18 @@ events_json = '''{
         "brand": "samsung",
         "build_id": "JZO54K.I8190LUBAMH1",
         "device": "golden",
-        "device_id": "355258057810793",
         "hardware": "samsunggolden",
         "manufacturer": "samsung",
         "model": "GT-I8190L",
         "product": "goldenub",
         "release": "4.1.2",
         "release_type": "user",
-        "sdk": 16
+        "sdk": 16,
+        "device_id": "8000000000000000000"
     },
     "sim_records": {
         "carrier_id": "73008",
-        "serial_number": "8956080124002959472"
+        "serial_number": "8000000000000000000"
     },
     "cdma_records": [],
     "gsm_records": [
