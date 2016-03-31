@@ -40,3 +40,25 @@ class Device(base_model.BaseModel):
 
     def __repr__(self):
         return '<Device %r, device_id %r>' % (self.device, self.device_id)
+
+    @staticmethod
+    def store_if_no_exist(args):
+        from datetime import datetime
+
+        device = Device.query.filter(Device.build_id == args['build_id']).first()
+        if not device:
+            device = Device(
+                    brand=args['brand'],
+                    board=args['board'],
+                    build_id=args['build_id'],
+                    device=args['device'],
+                    hardware=args['hardware'],
+                    manufacturer=args['manufacturer'],
+                    model=args['model'],
+                    release=args['release'],
+                    release_type=args['release_type'],
+                    product=args['product'],
+                    sdk=args['sdk'],
+                    creation_date=datetime.now().date())
+            db.session.add(device)
+        return device
