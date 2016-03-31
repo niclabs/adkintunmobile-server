@@ -1,1 +1,2 @@
-from .save_events_tests import EventTestCase
+from .save_events_tests import SaveEventsTestCase
+from .save_events_with_device_and_sim_test import SaveEventsWithDeviceAndSimTestCase
