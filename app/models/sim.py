@@ -24,3 +24,21 @@ class Sim(base_model.BaseModel):
     def __repr__(self):
         return '<Sim, serial_number: %r, creation_date: %r, carrier: %r, carrier_id: %r>' % \
                (self.serial_number, self.creation_date, self.carrier, self.carrier_id)
+    @staticmethod
+    def store_if_not_exist(args):
+        from datetime import datetime
+
+        sim = Sim.query.filter(Sim.serial_number == args['serial_number']).first()
+
+        if not sim:
+            sim = Sim(serial_number=args['serial_number'], creation_date=datetime.now().date())
+            db.session.add(sim)
+        return sim
+
+
+    def add_device(self, device):
+        from app.models.device import Device
+
+        existent_device = self.devices.filter(Device.build_id == device.build_id).first()
+        if not existent_device:
+            self.devices.append(device)

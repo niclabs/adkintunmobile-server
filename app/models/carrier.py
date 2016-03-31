@@ -22,3 +22,9 @@ class Carrier(base_model.BaseModel):
 
     def __repr__(self):
         return '<Telco %r>' % (self.name)
+
+    def add_sim(self, sim):
+        from app.models.sim import Sim
+        existent_sim = self.sims.filter(Sim.serial_number == sim.serial_number).first()
+        if not existent_sim:
+            self.sims.append(sim)
