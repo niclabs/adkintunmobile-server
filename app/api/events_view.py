@@ -76,27 +76,18 @@ def save_traffics_events(events, device, sim):
 
 def save_application_traffic_event(event, device, sim):
     from app.models.application_traffic_event import ApplicationTrafficEvent
+    from app.models.application import Application
     eventModel = ApplicationTrafficEvent()
+    application = Application()
     for k, v in event.items():
-
         if k == "timestamp":
             eventModel.date = datetime.fromtimestamp(timestamp=v / 1000)
         elif k == "package_name":
-            addApplication(v, eventModel)
+            application = Application.store_if_not_exist(v)
         elif hasattr(eventModel, k):
             setattr(eventModel, k, v)
-            continue
-
+    application.application_traffic_event.append(eventModel)
     store_event_in_db(eventModel, device, sim)
-
-
-def addApplication(packageName, eventModel):
-    from app.models.application import Application
-    application = Application.query.filter(Application.package_name == packageName).first()
-    if not application:
-        application = Application(package_name=packageName)
-        db.session.add(application)
-    eventModel.application = application
 
 
 def save_wifi_traffic_event(event, device, sim):
