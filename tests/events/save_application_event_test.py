@@ -2,11 +2,12 @@ from datetime import datetime
 
 from app import app
 from app.models.application_traffic_event import ApplicationTrafficEvent
+from app.models.application import Application
 from tests import base_test_case
 from tests.events.one_event_in_type_json import events_json
 
 
-class EventTestCase(base_test_case.BaseTestCase):
+class SaveApplicationEventTestCase(base_test_case.BaseTestCase):
     '''
     Unit tests for the API
     '''
@@ -42,3 +43,9 @@ class EventTestCase(base_test_case.BaseTestCase):
             assert application_event.device.device_id == 8000000000000000000
 
             assert application_event.application.package_name == "cl.niclabs.adkintunmobile"
+
+            apps = Application.query.all()
+            assert len(apps)==1
+
+            application = apps[0]
+            assert application.package_name == "cl.niclabs.adkintunmobile"

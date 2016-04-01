@@ -16,3 +16,11 @@ class Application(base_model.BaseModel):
 
     def __repr__(self):
         return '<Application, package_name: %r, id: %r>' % (self.package_name, self.id)
+
+    @staticmethod
+    def store_if_not_exist(packageName):
+        application = Application.query.filter(Application.package_name == packageName).first()
+        if not application:
+            application = Application(package_name=packageName)
+            db.session.add(application)
+        return application
