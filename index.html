@@ -1,1 +1,488 @@
-"Hello word"
+<!DOCTYPE HTML>
+<html lang="en">
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" href="static/img/favicon.png">
+<title>Adkintun Mobile</title>
+
+<link href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en"
+      rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel="stylesheet" href="static/css/material.css">
+<link rel="stylesheet" href="static/css/styles.css">
+
+<link rel="stylesheet" href="static/css/timeline.css">
+<style>
+    #view-source {
+    position: fixed;
+    display: block;
+    right: 0;
+    bottom: 0;
+    margin-right: 40px;
+    margin-bottom: 40px;
+    z-index: 900;
+    }
+
+</style>
+
+
+<body>
+
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+
+    <div class="android-header mdl-layout__header mdl-layout__header--waterfall">
+        <div class="mdl-layout__header-row">
+                <span class="android-title mdl-layout-title">
+                    <img class="android-logo-image" src="static/img/logo.png"/>
+                </span>
+            <!-- Add spacer, to align navigation to the right in desktop -->
+            <div class="android-header-spacer mdl-layout-spacer"></div>
+            <!-- Navigation -->
+            <div class="android-navigation-container">
+                <nav class="android-navigation mdl-navigation">
+                    <a class="mdl-navigation__link mdl-typography--text-uppercase" href="#about">Acerca de</a>
+                    <a class="mdl-navigation__link mdl-typography--text-uppercase" href="#screens">Visualizaciones</a>
+                    <a class="mdl-navigation__link mdl-typography--text-uppercase" href="#roadmap">Línea de tiempo</a>
+                    <!--<a class="mdl-navigation__link mdl-typography&#45;&#45;text-uppercase" href="/map/">Mapa interactivo</a>-->
+                    <a class="mdl-navigation__link mdl-typography--text-uppercase" href="#research">Investigación</a>
+                    <a class="mdl-navigation__link mdl-typography--text-uppercase" href="#contact">Contacto</a>
+                    <!-- cambiar aca-->
+                </nav>
+            </div>
+            <button class="android-more-button mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect"
+                    id="more-button">
+                <i class="material-icons">more_vert</i>
+            </button>
+            <ul class="mdl-menu mdl-js-menu mdl-menu--bottom-right mdl-js-ripple-effect" for="more-button">
+                <li class="mdl-menu__item"><a href="/setlang/es/">Español</a></li>
+                <li class="mdl-menu__item"><a href="/setlang/en/">Inglés</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="android-drawer mdl-layout__drawer">
+            <span class="mdl-layout-title">
+                <img class="android-logo-image-menu" src="static/img/logo.png"/>
+            </span>
+        <nav class="mdl-navigation">
+            <span class="mdl-navigation__link" href="#about">Acerca de</span>
+            <a class="mdl-navigation__link" href="#what">¿Qué es?</a>
+            <a class="mdl-navigation__link" href="#how">¿Como funciona?</a>
+            <a class="mdl-navigation__link" href="#screens">Visualizaciones</a>
+            <div class="android-drawer-separator"></div>
+            <!--<span class="mdl-navigation__link" href="">Mapa interactivo</span>-->
+            <!--<a class="mdl-navigation__link" href="map/">Echale un vistazo!</a>-->
+            <!--<div class="android-drawer-separator"></div>-->
+            <span class="mdl-navigation__link" href="">Investigación</span>
+            <a class="mdl-navigation__link" href="#roadmap">Línea de tiempo</a>
+            <a class="mdl-navigation__link" href="#research">Investigación</a>
+            <div class="android-drawer-separator"></div>
+            <a class="mdl-navigation__link" href="#contact">Contacto</a>
+        </nav>
+    </div>
+
+
+    <div class="android-content mdl-layout__content">
+        <a name="top"></a>
+
+        <div class="android-be-together-section mdl-typography--text-left">
+            <div class="android-font android-slogan">Adkintun Mobile</div>
+            <div class="android-font android-sub-slogan">Midiendo la calidad del acceso a Internet móvil</div>
+            <div class="android-font android-sub-slogan">
+                <a href="https://play.google.com/store/apps/details?id=adk.monitor">
+                    <img src="static/img/andy.png">
+                </a>
+                <a href="https://play.google.com/store/apps/details?id=adk.monitor">Disponible para dispositivos con
+                    Android (2.2+)</a>
+                <br>
+                <a href="https://play.google.com/store/apps/details?id=adk.monitor">
+                    <h5>Ir a la Play Store</h5>
+                </a>
+            </div>
+        </div>
+
+        <div class="android-screen-section mdl-typography--text-center">
+            <a name="about"></a>
+            <h2>Acerca de Adkintun Mobile</h2>
+            <div id="border">
+            </div>
+            <a name="what"></a>
+            <h3>¿Qué es?</h3>
+            <p>
+                NIC Chile Research Labs, laboratorio de investigación de NIC Chile en el
+                Departamento de Ciencias de la Computación (DCC) de la Universidad de Chile,
+                estudia la calidad del acceso a Internet desde el año 2007, desarrollando indicadores y métricas
+                que permiten examinar el rendimiento de la red del usuario final.
+            </p>
+            <p>
+                Esta linea de investigación creo, en conjunto con SUBTEL, el proyecto
+                <em>Adkintun</em> (observador, en mapudungun). Una herramienta para la evaluación de la calidad de
+                servicio de ofertas de banda ancha.
+                Realizando mediciones periódicas y proveyendo análisis estadístico de los datos acumulados, con el fin
+                de dar a los usuarios información con respecto a la calidad del servicio que están recibiendo.
+            </p>
+
+            <p>
+                En el mismo contexto nace <em>Adkintun Mobile</em>, un <strong>proyecto de investigación</strong>
+                desarrollado
+                especificamente para dispositivos móviles, buscando evaluar la calidad de servicio entregado por los
+                operadores
+                de Internet móvil, a través de la utilización de indicadores de rendimiento usados mundialmente.
+            </p>
+            <a name="how"></a>
+            <h3>¿Como funciona?</h3>
+            <p>
+                <em>Adkintun Mobile</em> permite la medición de la calidad del acceso a internet
+                <strong>sin observar el trafico</strong>, midiendo la cantidad de datos enviada y recibida durante el
+                día,
+                la calidad de la señal en la antena, el tipo de conexión (2g, 3g, etc), y otros datos útiles.
+                Con estos datos se realizaran estudios para describir el estado del internet móvil por región,
+                al cual tendrás acceso a través de este sitio web.
+            </p>
+            <p>
+                <em>Adkintun Mobile</em> <strong>no genera trafico durante las mediciones</strong>, por lo que es
+                necesario
+                que conectes tu dispositivo a una red Wi-Fi, al menos una ves a la semana para obtener las mediciones.
+            </p>
+            <p>
+                Recuerda que la aplicación <strong>no</strong> inspecciona la información que contienen los paquetes
+                siendo
+                enviados/recibidos por tus dispositivos. Los resultados de las mediciones no incluyen ningún
+                tipo de información personal del usuario.
+            </p>
+        </div>
+
+
+        <div class="android-aboutadk-section">
+            <div class="image-space"></div>
+            <a name="screens"></a>
+            <div class="android-wear-band">
+                <div class="android-wear-band-text">
+                    <center><h2>Visualizaciones</h2></center>
+                    <div id="border">
+                    </div>
+                    <div class="mdl-grid">
+                        <div class="mdl-cell mdl-cell--3-col">
+                        </div>
+                        <div class="mdl-cell mdl-cell--2-col mdl-card mdl-shadow--2dp demo-card-image">
+                            <div class="mdl-card__title mdl-card--expand"></div>
+                            <div class="mdl-card__actions">
+                                <span class="demo-card-image__filename">Inicio de sesión</span>
+                            </div>
+                        </div>
+                        <div class="mdl-cell mdl-cell--2-col mdl-card mdl-shadow--2dp demo-card-image2">
+                            <div class="mdl-card__title mdl-card--expand"></div>
+                            <div class="mdl-card__actions">
+                                <span class="demo-card-image__filename">Tiempo conectado - día</span>
+                            </div>
+                        </div>
+                        <div class="mdl-cell mdl-cell--2-col mdl-card mdl-shadow--2dp demo-card-image3">
+                            <div class="mdl-card__title mdl-card--expand"></div>
+                            <div class="mdl-card__actions">
+                                <span class="demo-card-image__filename">Tiempo conectado - últimos 30 días</span>
+                            </div>
+                        </div>
+                        <div class="mdl-cell mdl-cell--3-col">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="android-screen-section-timeline mdl-typography--text-center">
+            <a name="roadmap"></a>
+            <h2>Línea de tiempo</h2>
+            <div id="border">
+            </div>
+            <h3>Una breve mirada a la historia de Adkintun Mobile</h3>
+            <div class="android-screens">
+                <a name="timeline"></a>
+
+                <div id="timeline">
+                    <div class="dot" id="one">
+                        <span></span>
+                        <date>Marzo 2012</date>
+                        <title>Nace la idea</title>
+                    </div>
+                    <div class="dot" id="two">
+                        <span></span>
+                        <date>Junio 2012</date>
+                        <title>Primer prototipo</title>
+                    </div>
+                    <div class="dot" id="three">
+                        <span></span>
+                        <date>Noviembre 2012</date>
+                        <title>NetGCooP</title>
+                    </div>
+                    <div class="dot" id="four">
+                        <span></span>
+                        <date>Enero 2013</date>
+                        <title>Financiamiento de CORFO</title>
+                    </div>
+                    <div class="dot" id="five">
+                        <span></span>
+                        <date>Marzo 2013</date>
+                        <title>Primera aparición en prensa escrita</title>
+                    </div>
+                    <div class="dot" id="six">
+                        <span></span>
+                        <date>Septiembre 2013</date>
+                        <title>Primera aparición en televisión</title>
+                    </div>
+                    <div class="dot" id="seven">
+                        <span></span>
+                        <date>Septiembre 2013</date>
+                        <title>UbiComp 2013</title>
+                    </div>
+                    <div class="dot" id="eight">
+                        <span></span>
+                        <date>Noviembre 2013</date>
+                        <title>Segunda aparición en televisión</title>
+                    </div>
+                    <div class="dot" id="nine">
+                        <span></span>
+                        <date>Noviembre 2013</date>
+                        <title>Primera aparición en radio</title>
+                    </div>
+                    <div class="dot" id="ten">
+                        <span></span>
+                        <date>Enero 2014</date>
+                        <title>Cambio del paradigma de medición</title>
+                    </div>
+                    <div class="dot" id="eleven">
+                        <span></span>
+                        <date>Febrero 2014</date>
+                        <title>Nueva versión de la aplicación</title>
+                    </div>
+                    <div class="dot" id="twelve">
+                        <span></span>
+                        <date>Marzo 2014</date>
+                        <title>Nueva versión de la pagina web</title>
+                    </div>
+                    <div class="dot" id="thirteen">
+                        <span></span>
+                        <date>Agosto 2015</date>
+                        <title>IWCMC 2015</title>
+                    </div>
+                    <div class="dot" id="fourteen">
+                        <span></span>
+                        <date>Septiembre 2015</date>
+                        <title>Rediseño de la pagina web</title>
+                    </div>
+                    <div class="inside"></div>
+                </div>
+
+                <!-- Modals -->
+
+                <article class='modal one'>
+                    <h3>Nace Adkintun Mobile</h3>
+                    <p>En marzo 2012 Javier Bustos-Jiménez, Gabriel Del Canto y Gabriel Hourton tienen la idea de crear
+                        una aplicación que pueda medir la calidad de servicio del internet móvil chileno</p>
+                </article>
+
+                <article class='modal two'>
+                    <h3>Primer prototipo</h3>
+                    <p>En Junio 2012 en NICLabs se inicia el desarrollo del primer prototipo de Adkintun Mobile</p>
+                </article>
+
+                <article class='modal three'>
+                    <h3>NetGCooP</h3>
+                    <p>En noviembre 2012 la primera publicación sobre Adkintun Mobile se presenta en Conference on
+                        Network Games, Control and Optimization (NetGCooP) .</p>
+                    <p>Puedes encontrar la publicación aquí:
+                        <br>
+                        <a href="http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=6486123" target="_blank">Crowd-measuring:
+                            Assessing the quality of mobile Internet from end-terminals</a></p>
+                </article>
+
+                <article class='modal four'>
+                    <h3>Financiamiento de CORFO</h3>
+                    <p>En enero 2013 CORFO otorga financiamiento para continuar el desarrollo del proyecto</p>
+                </article>
+
+                <article class='modal five'>
+                    <h3>Primera aparición en prensa escrita</h3>
+                    <p>Puedes leer el articulo aquí:
+                        <br>
+                        <a href="http://dccuchile.blog.terra.cl/" target="_blank">Reportaje de 24 Horas sobre Adkintun
+                            Mobile</a></p>
+                </article>
+
+                <article class='modal six'>
+                    <h3>Primera aparición en televisión</h3>
+                    <p>Puedes ver el vídeo aquí:
+                        <br>
+                        <a href="http://www.24horas.cl/programas/estonotienenombre/esto-no-tiene-nombre-que-tan-ancha-es-la-banda-302200"
+                           target="_blank">Reportaje 24 Horas sobre Adkintun Mobile</a></p>
+                </article>
+
+                <article class='modal seven'>
+                    <h3>UbiComp 2013</h3>
+                    <p>Nueva publicacion sobre Adkintun Mobile se presenta en UbiComp 2013</p>
+                    <p>Puedes encontrar la publicación aquí:
+                        <br>
+                        <a href="http://dl.acm.org/citation.cfm?id=2496042" target="_blank">How AdkintunMobile measured
+                            the world</a></p>
+                </article>
+
+                <article class='modal eight'>
+                    <h3>Segunda aparición en televisión</h3>
+                    <p>Puedes ver el vídeo aquí:
+                        <br>
+                        <a href="http://www.terra.cl/tecnologia/emporio-mobile/?tipo=videos&id=1778584" target="_blank">Reportaje
+                            de Terra sobre Adkintun Mobile</a></p>
+                </article>
+
+                <article class='modal nine'>
+                    <h3>Primera aparición en radio</h3>
+                    <p>En noviembre 2013 Gabriel Del Canto y Gabriel Hourton, son entrevistados en la radio Juan Gomez
+                        Millas</p>
+                    <p>Puedes escuchar el podcast aquí:
+                        <br>
+                        <a href="resources/Conexion Social 15-11-12.mp3" target="_blank">Conexión Social</a></p>
+                </article>
+
+                <article class='modal ten'>
+                    <h3>Cambio del paradigma de medición</h3>
+                    <p>Comienza el desarrollo de una nueva versión, con un nuevo enfoque para realizar las
+                        mediciones. </p>
+                </article>
+
+                <article class='modal eleven'>
+                    <h3>Versión 1.0b de la aplicación </h3>
+                    <p>Con una nueva interfaz gráfica, mejoras de seguridad y un nuevo método de captura de datos, se
+                        publica una nueva versión de la aplicación.</p>
+                </article>
+
+                <article class='modal twelve'>
+                    <h3>Nueva versión de la pagina web</h3>
+                    <p>Lanzamiento de nueva versión web que luego incluirá un mapa interactivo con los datos de potencia
+                        de señal</p>
+                </article>
+
+                <article class='modal thirteen'>
+                    <h3>IWCMC 2015</h3>
+                    <p>
+                        Trabajo describiendo la arquitectura de monitoreo y propuesta para medición de calidad de
+                        servicio basada en el contexto
+                        fue presentada en el workshop TRAC de IWCMC 2015
+                    </p>
+                    <p>Puedes encontrar la publicación aquí:
+                        <a href="http://ieeexplore.ieee.org/xpl/articleDetails.jsp?tp=&arnumber=7289056"
+                           target="_blank"> Adkintun Mobile: Towards using personal and device context in assessing
+                            mobile QoS</a></p>
+                </article>
+
+
+            </div>
+        </div>
+
+
+        <!--<div class="android-wear-section">-->
+        <!--<h2>How did Adkintun measured the world?</h2>-->
+        <!--</div>-->
+
+
+        <div class="android-customized-section-b mdl-typography--text-center">
+            <div class="android-customized-section-text-b">
+                <a name="research"></a>
+
+                <!--<div class="android-wear-band">-->
+                <!--<div class="android-wear-band-text">-->
+                <br>
+                <h2>Investigación</h2>
+                <div id="border">
+                </div>
+                <h3>Un vistazo a las publicaciones</h3>
+
+                <div class="android-customized-section-text-b">
+                    <h4>2015</h4>
+                    <a href="http://ieeexplore.ieee.org/xpl/articleDetails.jsp?tp=&arnumber=7289056">Adkintun
+                        Mobile: towards using personal and device context in assessing mobile QoS</a>
+                    <p>F Lalanne, N Aguilera, B Romero, A Graves, J Bustos-Jiménez</p>
+                    <p>Proceedings of International Wireless Communications and Mobile Computing Conference 2015,
+                        Dubrovnik, Croatia.</p>
+                    <h4>2014</h4>
+                    <a href="http://ieeexplore.ieee.org/xpl/articleDetails.jsp?arnumber=6997533">Location Privacy
+                        for a quality of access to mobile Internet monitoring system</a>
+                    <p>G Font, J Bustos-Jiménez, A Hevia and S Blasco</p>
+                    <p>Proceedings of IEEE Conference on Communications and Network Security</p>
+                    <br>
+                    <a href="http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=6716493">Towards a mHealth
+                        prototype to support integrated health care for elderly in Chilean Patagonia. A Design
+                        Case.</a>
+                    <p>C Sandoval, C Fuentes, C Montero, J Bustos, M Jordan</p>
+                    <p>Journal IEEE Latin America Transactions 12 (1), 54-61</p>
+                    <h4>2013</h4>
+                    <a href="http://dl.acm.org/citation.cfm?id=2496042" target="_blank">How AdkintunMobile measured
+                        the world</a>
+                    <p>J Bustos-Jiménez, G Del Canto, S Pereira, F Lalanne, J Piquer, G Hourton, V Ramiro, A
+                        Cádiz</p>
+                    <p>Proceedings of the ACM Conference on Pervasive and ubiquitous computing (UBICOMP) adjunct
+                        publication</p>
+                    <br>
+                    <a href="http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=6550599" target="_blank">Adkintun:
+                        SLA monitoring of ISP broadband offerings</a>
+                    <p>J Bustos-Jiménez, V Ramiro, F Lalanne, T Barros</p>
+                    <p>Proceedings of IEEE Advanced Information Networking and Applications Workshops (WAINA),
+                        1445-1449</p>
+                    <br>
+                    <a href="http://www.lbd.dcc.ufmg.br/colecoes/ladc/2013/0014.pdf" target="_blank">Towards
+                        enhancing mobile user experience with internet and perception metrics</a>
+                    <p>A Cádiz, G Hourton, G Del Canto</p>
+                    <p>Proceedings of Sixth Latin-American Symposium in Dependable Computing</p>
+                    <h4>2012</h4>
+                    <a href="http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=6486123" target="_blank">Crowd-measuring:
+                        Assessing the quality of mobile Internet from end-terminals</a>
+                    <p>G Hourton, G Del Canto, J Bustos-Jiménez, F Lalanne</p>
+                    <p>Proceedings of Sixth International Conference on Network Games, Control and Optimization
+                        (NetGCooP)</p>
+                </div>
+                <!--</div>-->
+                <!--</div>-->
+            </div>
+        </div>
+
+
+        <div class="android-customized-section">
+            <a name="contact"></a>
+            <h2>Contacto</h2>
+
+            <div id="border">
+            </div>
+            <h3>Puedes encontrarnos en</h3>
+            <img src="static/img/nic-casa.png" width="100px">
+            <p>Almirante Blanco Encalada 1975
+                <br> Santiago Centro</p>
+            <p>(+56 2) 2940 7780
+                <br> adkmobile@niclabs.cl</p>
+        </div>
+
+
+        <footer class="android-footer mdl-mega-footer">
+            <center>
+                <div class="mdl-mega-footer--middle-section">
+                    <p>Adkintun Mobile es traído a usted por</p>
+                    <img src="static/img/logo_nicblanco.png" width="120px"/>
+                    <img src="static/img/logo_inriablanco.png" width="120px"/>
+                    <img src="static/img/corfo_logo.png" width="120px"/>
+                </div>
+            </center>
+        </footer>
+    </div>
+
+
+</div>
+
+</body>
+
+
+<script src="static/js/material.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="static/js/timeline.js"></script>
+
+
+</html>
