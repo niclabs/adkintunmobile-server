@@ -17,7 +17,7 @@ class TestRegistration(base_test_case.BaseTestCase):
         with app.app_context():
             date = datetime.now().date()
             request = self.app.post('/api/registration', data=dict(
-                    serial_number=123,
+                    serial_number= "800000000000000000000",
                     carrier_id=456,
                     brand="brand test",
                     board="board test",
@@ -30,13 +30,13 @@ class TestRegistration(base_test_case.BaseTestCase):
                     release_type="release type test",
                     product="product test",
                     sdk=4,
-                    device_id=8000000000000000000
+                    device_id="8000000000000000000"
             ))
             assert request.status_code == 201
             # assert SIM
             sim = Sim.query.all()
             assert len(sim) == 1
-            assert sim[0].serial_number == 123
+            assert sim[0].serial_number == "800000000000000000000"
             assert sim[0].creation_date == date
 
             # assert Device
@@ -54,7 +54,7 @@ class TestRegistration(base_test_case.BaseTestCase):
             assert device.release_type == "release type test"
             assert device.product == "product test"
             assert device.sdk == 4
-            assert device.device_id == 8000000000000000000
+            assert device.device_id == "8000000000000000000"
 
             # assert relationship device-sim
             assert sim[0].devices.count() == 1
