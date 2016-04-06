@@ -3,7 +3,6 @@ from flask.ext.script import Manager
 from flask.ext.migrate import Migrate, MigrateCommand
 from app import app, db
 
-
 migrate = Migrate(app, db)
 manager = Manager(app)
 
@@ -29,6 +28,7 @@ def test():
             suite.addTest(unittest.defaultTestLoader.loadTestsFromName(t))
 
     unittest.TextTestRunner(verbosity=2).run(suite)
+
 
 if __name__ == '__main__':
     manager.run()

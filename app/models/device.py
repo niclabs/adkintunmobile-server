@@ -7,7 +7,7 @@ class Device(base_model.BaseModel):
     Clase Dispositivo.
     '''
     __tablename__ = 'devices'
-    device_id = db.Column(db.BigInteger, primary_key=True)
+    device_id = db.Column(db.String(50), primary_key=True)
     brand = db.Column(db.String(50))
     board = db.Column(db.String(50))
     build_id = db.Column(db.String(50))
