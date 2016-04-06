@@ -19,12 +19,10 @@ class CarrierView(ModelView):
 
 
 class DeviceView(ModelView):
-    # column_display_pk = True
+    column_display_pk = True
     create_modal = True
     # column_hide_backrefs = False
     # column_list = ('id', 'sdk', 'mobile_plan')
-    #TODO ver device_id
-
 
 class EventView(ModelView):
     column_display_pk = True
