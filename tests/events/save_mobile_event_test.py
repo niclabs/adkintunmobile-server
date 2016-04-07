@@ -40,5 +40,5 @@ class EventTestCase(base_test_case.BaseTestCase):
             assert mobile_event.tx_bytes == 489
             assert mobile_event.tx_packets == 35
 
-            assert mobile_event.sim.serial_number == 8000000000000000000
-            assert mobile_event.device.device_id == 8000000000000000000
+            assert mobile_event.sim.serial_number == "8000000000000000000"
+            assert mobile_event.device.device_id == "8000000000000000000"

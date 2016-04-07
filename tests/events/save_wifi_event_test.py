@@ -39,5 +39,5 @@ class EventTestCase(base_test_case.BaseTestCase):
             assert wifi_event.tx_bytes == 196
             assert wifi_event.tx_packets == 4
 
-            assert wifi_event.sim.serial_number == 8000000000000000000
-            assert wifi_event.device.device_id == 8000000000000000000
+            assert wifi_event.sim.serial_number == "8000000000000000000"
+            assert wifi_event.device.device_id == "8000000000000000000"

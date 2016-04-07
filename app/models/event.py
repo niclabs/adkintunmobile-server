@@ -11,8 +11,8 @@ class Event(BaseModel):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Date())
     app_version_code = db.Column(db.String(10))
-    sim_serial_number = db.Column(db.BigInteger, db.ForeignKey("sims.serial_number"))
-    device_id = db.Column(db.BigInteger, db.ForeignKey("devices.device_id"))
+    sim_serial_number = db.Column(db.String(50), db.ForeignKey("sims.serial_number"))
+    device_id = db.Column(db.String(50), db.ForeignKey("devices.device_id"))
 
     # Herencia
     type = db.Column(db.String(50))

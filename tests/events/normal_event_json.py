@@ -11,11 +11,11 @@ events_json = '''{
         "release": "4.1.2",
         "release_type": "user",
         "sdk": 16,
-        "device_id": "8000000000000000000"
+        "device_id": "800000000000000000000"
     },
     "sim_records": {
         "carrier_id": "73008",
-        "serial_number": "8000000000000000000"
+        "serial_number": "800000000000000000000"
     },
     "cdma_records": [],
     "gsm_records": [

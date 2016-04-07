@@ -36,5 +36,5 @@ class EventTestCase(base_test_case.BaseTestCase):
             assert connectivity_event.detailed_state == 4
             assert connectivity_event.date == datetime.fromtimestamp(1330641527540 / 1000).date()
 
-            assert connectivity_event.sim.serial_number == 8000000000000000000
-            assert connectivity_event.device.device_id == 8000000000000000000
+            assert connectivity_event.sim.serial_number == "8000000000000000000"
+            assert connectivity_event.device.device_id == "8000000000000000000"

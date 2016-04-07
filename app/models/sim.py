@@ -9,7 +9,7 @@ class Sim(base_model.BaseModel):
     '''
     __tablename__ = 'sims'
 
-    serial_number = db.Column(db.BigInteger, primary_key=True)
+    serial_number = db.Column(db.String(50), primary_key=True)
     creation_date = db.Column(db.Date())
     carrier_id = db.Column(db.Integer, db.ForeignKey("carriers.id"))
     devices = db.relationship('Device', secondary=devices_sims, backref=db.backref('sims', lazy='dynamic'),

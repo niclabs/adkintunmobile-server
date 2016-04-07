@@ -24,10 +24,12 @@ class ReadEvents(Resource):
         sim = Sim.store_if_not_exist(jsonvar["sim_records"])
         del jsonvar["sim_records"]
 
+        total_events = 0
         try:
             for events_name, events in jsonvar.items():
-                save(events_name, events, device, sim)
+                total_events += save(events_name, events, device, sim)
 
+            print("Eventos Almacenados: ", total_events)
         except Exception as e:
             db.session.rollback()
             return e, 400
@@ -37,12 +39,14 @@ class ReadEvents(Resource):
 @app.route("/send_file", methods=['POST'])
 def read_events():
     import json
-    f = request.files['events']
+    f = request.files['uploaded_file']
     lines = f.readlines()
 
     string = ''.join(x.decode("utf-8") for x in lines)
+
     string = string.replace('\n', '')
     jsonvar = json.loads(string)
+
     from app.models.device import Device
     device = Device.store_if_no_exist(jsonvar["device_records"])
     del jsonvar["device_records"]
@@ -50,11 +54,12 @@ def read_events():
     from app.models.sim import Sim
     sim = Sim.store_if_not_exist(jsonvar["sim_records"])
     del jsonvar["sim_records"]
-    try:
-        for events in jsonvar:
-            events_name = None
-            save(events_name, events, device, sim)
 
+    total_events = 0
+    try:
+        for events_name, events in jsonvar.items():
+            total_events += save(events_name, events, device, sim)
+        print("Eventos Almacenados: ", total_events)
     except Exception as e:
         db.session.rollback()
         return e, 400
@@ -65,13 +70,16 @@ api.add_resource(ReadEvents, '/api/send_file')
 
 
 def save_traffics_events(events, device, sim):
+    total_events = 0
     for event in events:
+        total_events += 1
         if event["event_type"] == 2:
             save_mobile_traffic_event(event, device, sim)
         elif event["event_type"] == 4:
             save_wifi_traffic_event(event, device, sim)
         elif event["event_type"] == 8:
             save_application_traffic_event(event, device, sim)
+    return total_events
 
 
 def save_application_traffic_event(event, device, sim):
@@ -84,6 +92,8 @@ def save_application_traffic_event(event, device, sim):
             eventModel.date = datetime.fromtimestamp(timestamp=v / 1000)
         elif k == "package_name":
             application = Application.store_if_not_exist(v)
+        elif k == "id":
+            continue
         elif hasattr(eventModel, k):
             setattr(eventModel, k, v)
     application.application_traffic_event.append(eventModel)
@@ -98,7 +108,9 @@ def save_wifi_traffic_event(event, device, sim):
     for k, v in event.items():
         if k == "timestamp":
             eventModel.date = datetime.fromtimestamp(timestamp=v / 1000)
-        if hasattr(eventModel, k):
+        elif k == "id":
+            continue
+        elif hasattr(eventModel, k):
             setattr(eventModel, k, v)
 
     store_event_in_db(eventModel, device, sim)
@@ -111,6 +123,8 @@ def save_mobile_traffic_event(event, device, sim):
 
         if k == "timestamp":
             eventModel.date = datetime.fromtimestamp(timestamp=v / 1000)
+        elif k == "id":
+            continue
         elif hasattr(eventModel, k):
             setattr(eventModel, k, v)
 
@@ -119,8 +133,9 @@ def save_mobile_traffic_event(event, device, sim):
 
 def save_cdma_events(events, device, sim):
     from app.models.cdma_event import CdmaEvent
-
+    total_events = 0
     for event in events:
+        total_events += 1
         eventModel = CdmaEvent()
 
         for k, v in event.items():
@@ -151,17 +166,21 @@ def save_cdma_events(events, device, sim):
                 setattr(eventModel, k + "_size", event[k]['size'])
                 setattr(eventModel, k + "_mean", event[k]['mean'])
                 setattr(eventModel, k + "_variance", event[k]['variance'])
-
-            if hasattr(eventModel, k):
+            elif k == "id":
+                continue
+            elif hasattr(eventModel, k):
                 setattr(eventModel, k, v)
 
         store_event_in_db(eventModel, device, sim)
 
+    return total_events
+
 
 def save_connectivity_events(events, device, sim):
     from app.models.connectivity_event import ConnectivityEvent
-
+    total_events = 0
     for event in events:
+        total_events += 1
         eventModel = ConnectivityEvent()
         for k, v in event.items():
 
@@ -173,16 +192,18 @@ def save_connectivity_events(events, device, sim):
                 setattr(eventModel, k, v)
 
         store_event_in_db(eventModel, device, sim)
+    return total_events
 
 
 def save_gsm_events(events, device, sim):
     from app.models.gsm_event import GsmEvent
-
+    total_events = 0
     for event in events:
+        total_events += 1
         eventModel = GsmEvent()
         for k, v in event.items():
             if k == "timestamp":
-                v = datetime.fromtimestamp(timestamp=v / 1000)
+                eventModel.date = datetime.fromtimestamp(timestamp=v / 1000)
             elif k == "signal_ber":
                 # agregar atributos de signal_ber
                 setattr(eventModel, k + "_size", event[k]['size'])
@@ -193,30 +214,38 @@ def save_gsm_events(events, device, sim):
                 setattr(eventModel, k + "_size", event[k]['size'])
                 setattr(eventModel, k + "_mean", event[k]['mean'])
                 setattr(eventModel, k + "_variance", event[k]['variance'])
+            elif k == "id":
+                continue
             elif hasattr(eventModel, k):
                 setattr(eventModel, k, v)
 
         # arreglar esta union
         # sim.carrier.telephony_observation_events.append(eventModel)
         store_event_in_db(eventModel, device, sim)
+    return total_events
 
 
 def save_telephony_events(events, device, sim):
-    pass
+    return 0
 
 
 def save_state_events(events, device, sim):
     from app.models.state_change_event import StateChangeEvent
+    total_events = 0
     for event in events:
+        total_events += 1
         eventModel = StateChangeEvent()
         for k, v in event.items():
 
             if k == "timestamp":
                 eventModel.date = datetime.fromtimestamp(timestamp=v / 1000)
+            elif k == "id":
+                continue
             elif hasattr(eventModel, k):
                 setattr(eventModel, k, v)
 
         store_event_in_db(eventModel, device, sim)
+    return total_events
 
 
 events_names = {
@@ -230,7 +259,7 @@ events_names = {
 
 
 def save(events_name, events, device, sim):
-    events_names[events_name](events, device, sim)
+    return events_names[events_name](events, device, sim)
 
 
 def store_event_in_db(event, device, sim):
