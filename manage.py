@@ -2,12 +2,20 @@ from flask import Flask
 from flask.ext.script import Manager, Server
 from flask.ext.migrate import Migrate, MigrateCommand
 from app import app, db
+from initial_data import initial_data
 
 Migrate(app, db)
 manager = Manager(app)
 
 manager.add_command('db', MigrateCommand)
 manager.add_command('runserver', Server(threaded=True))
+
+
+@migrate.configure
+def configure_alembic(config):
+    config.compare_type = True
+    return config
+
 
 @manager.command
 def test():
@@ -29,6 +37,28 @@ def test():
             suite.addTest(unittest.defaultTestLoader.loadTestsFromName(t))
 
     unittest.TextTestRunner(verbosity=2).run(suite)
+
+
+def crazy_call():
+    print("crazy_call")
+
+
+@manager.command
+def populate():
+    import json
+    from app.models.carrier import Carrier
+    jsonvar = json.loads(initial_data)
+    for k, v in jsonvar.items():
+        if k == "carriers":
+            save_models(v, Carrier)
+
+def save_models(carriers, model_class):
+    for json_carrier in carriers:
+        model = model_class()
+        for k, v in json_carrier.items():
+            setattr(model, k, v)
+        db.session.add(model)
+        db.session.commit()
 
 
 if __name__ == '__main__':
