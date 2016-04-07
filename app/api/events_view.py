@@ -18,6 +18,7 @@ class ReadEvents(Resource):
 
         from app.models.device import Device
         device = Device.store_if_no_exist(jsonvar["device_records"])
+        app_version_code = jsonvar["device_records"]["app_version_code"]
         del jsonvar["device_records"]
 
         from app.models.sim import Sim
@@ -27,7 +28,7 @@ class ReadEvents(Resource):
         total_events = 0
         try:
             for events_name, events in jsonvar.items():
-                total_events += save(events_name, events, device, sim)
+                total_events += save(events_name, events, device, sim, app_version_code)
 
             print("Eventos Almacenados: ", total_events)
         except Exception as e:
@@ -49,6 +50,7 @@ def read_events():
 
     from app.models.device import Device
     device = Device.store_if_no_exist(jsonvar["device_records"])
+    app_version_code = jsonvar["device_records"]["app_version_code"]
     del jsonvar["device_records"]
 
     from app.models.sim import Sim
@@ -58,7 +60,7 @@ def read_events():
     total_events = 0
     try:
         for events_name, events in jsonvar.items():
-            total_events += save(events_name, events, device, sim)
+            total_events += save(events_name, events, device, sim, app_version_code)
         print("Eventos Almacenados: ", total_events)
     except Exception as e:
         db.session.rollback()
@@ -69,10 +71,11 @@ def read_events():
 api.add_resource(ReadEvents, '/api/send_file')
 
 
-def save_traffics_events(events, device, sim):
+def save_traffics_events(events, device, sim, app_version_code):
     total_events = 0
     for event in events:
         total_events += 1
+        event["app_version_code"] = app_version_code
         if event["event_type"] == 2:
             save_mobile_traffic_event(event, device, sim)
         elif event["event_type"] == 4:
@@ -131,12 +134,13 @@ def save_mobile_traffic_event(event, device, sim):
     store_event_in_db(eventModel, device, sim)
 
 
-def save_cdma_events(events, device, sim):
+def save_cdma_events(events, device, sim, app_version_code):
     from app.models.cdma_event import CdmaEvent
     total_events = 0
     for event in events:
         total_events += 1
         eventModel = CdmaEvent()
+        event["app_version_code"] = app_version_code
 
         for k, v in event.items():
             if k == "timestamp":
@@ -176,11 +180,12 @@ def save_cdma_events(events, device, sim):
     return total_events
 
 
-def save_connectivity_events(events, device, sim):
+def save_connectivity_events(events, device, sim, app_version_code):
     from app.models.connectivity_event import ConnectivityEvent
     total_events = 0
     for event in events:
         total_events += 1
+        event["app_version_code"] = app_version_code
         eventModel = ConnectivityEvent()
         for k, v in event.items():
 
@@ -195,11 +200,12 @@ def save_connectivity_events(events, device, sim):
     return total_events
 
 
-def save_gsm_events(events, device, sim):
+def save_gsm_events(events, device, sim, app_version_code):
     from app.models.gsm_event import GsmEvent
     total_events = 0
     for event in events:
         total_events += 1
+        event["app_version_code"] = app_version_code
         eventModel = GsmEvent()
         for k, v in event.items():
             if k == "timestamp":
@@ -225,15 +231,16 @@ def save_gsm_events(events, device, sim):
     return total_events
 
 
-def save_telephony_events(events, device, sim):
+def save_telephony_events(events, device, sim, app_version_code):
     return 0
 
 
-def save_state_events(events, device, sim):
+def save_state_events(events, device, sim, app_version_code):
     from app.models.state_change_event import StateChangeEvent
     total_events = 0
     for event in events:
         total_events += 1
+        event["app_version_code"] = app_version_code
         eventModel = StateChangeEvent()
         for k, v in event.items():
 
@@ -258,8 +265,8 @@ events_names = {
 }
 
 
-def save(events_name, events, device, sim):
-    return events_names[events_name](events, device, sim)
+def save(events_name, events, device, sim, app_version_code):
+    return events_names[events_name](events, device, sim, app_version_code)
 
 
 def store_event_in_db(event, device, sim):
