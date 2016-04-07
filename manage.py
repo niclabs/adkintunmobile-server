@@ -15,6 +15,7 @@ def configure_alembic(config):
     config.compare_type = True
     return config
 
+
 @manager.command
 def test():
     import unittest
@@ -42,14 +43,22 @@ def crazy_call():
 
 
 @manager.command
-def runserver():
-    init_db()
-    app.run()
-
-
-def init_db():
+def populate():
     import json
+    from app.models.carrier import Carrier
     jsonvar = json.loads(initial_data)
+    for k, v in jsonvar.items():
+        if k == "carriers":
+            save_models(v, Carrier)
+
+def save_models(carriers, model_class):
+    for json_carrier in carriers:
+        model = model_class()
+        for k, v in json_carrier.items():
+            setattr(model, k, v)
+        db.session.add(model)
+        db.session.commit()
+
 
 if __name__ == '__main__':
     manager.run()
