@@ -1,10 +1,10 @@
-from flask import Flask
-from flask.ext.script import Manager, Server
 from flask.ext.migrate import Migrate, MigrateCommand
+from flask.ext.script import Manager, Server
+
 from app import app, db
 from initial_data import initial_data
 
-Migrate(app, db)
+migrate = Migrate(app, db)
 manager = Manager(app)
 
 manager.add_command('db', MigrateCommand)
@@ -51,6 +51,7 @@ def populate():
     for k, v in jsonvar.items():
         if k == "carriers":
             save_models(v, Carrier)
+
 
 def save_models(carriers, model_class):
     for json_carrier in carriers:
