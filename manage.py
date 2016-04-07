@@ -1,12 +1,13 @@
 from flask import Flask
-from flask.ext.script import Manager
+from flask.ext.script import Manager, Server
 from flask.ext.migrate import Migrate, MigrateCommand
 from app import app, db
 
-migrate = Migrate(app, db)
+Migrate(app, db)
 manager = Manager(app)
 
 manager.add_command('db', MigrateCommand)
+manager.add_command('runserver', Server(threaded=True))
 
 @manager.command
 def test():
