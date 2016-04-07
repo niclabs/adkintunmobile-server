@@ -28,8 +28,8 @@ class SaveEventsWithDeviceAndSimTestCase(base_test_case.BaseTestCase):
             request = self.app.post('/api/send_file', data=dict(
                     events=events_json
             ))
-            device = Device.query.filter(Device.device_id == 8000000000000000000).first()
-            sim = Sim.query.filter(Sim.serial_number == 8000000000000000000).first()
+            device = Device.query.filter(Device.device_id == "800000000000000000000").first()
+            sim = Sim.query.filter(Sim.serial_number == "800000000000000000000").first()
             assert device
             assert sim
             assert request.status_code == 201

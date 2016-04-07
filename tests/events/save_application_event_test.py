@@ -39,8 +39,8 @@ class SaveApplicationEventTestCase(base_test_case.BaseTestCase):
             assert application_event.tx_bytes == 5615
             assert application_event.tx_packets == 123
 
-            assert application_event.sim.serial_number == 8000000000000000000
-            assert application_event.device.device_id == 8000000000000000000
+            assert application_event.sim.serial_number == "8000000000000000000"
+            assert application_event.device.device_id == "8000000000000000000"
 
             assert application_event.application.package_name == "cl.niclabs.adkintunmobile"
 
