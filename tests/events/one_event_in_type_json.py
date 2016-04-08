@@ -11,7 +11,8 @@ events_json = '''{
         "product": "goldenub",
         "release": "4.1.2",
         "release_type": "user",
-        "sdk": 16
+        "sdk": 16,
+        "app_version_code": "0.0a"
     },
     "sim_records": {
         "carrier_id": "73008",

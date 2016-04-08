@@ -11,7 +11,8 @@ events_json = '''{
         "release": "4.1.2",
         "release_type": "user",
         "sdk": 16,
-        "device_id": "800000000000000000000"
+        "device_id": "800000000000000000000",
+        "app_version_code": "0.0a"
     },
     "sim_records": {
         "carrier_id": "73008",
