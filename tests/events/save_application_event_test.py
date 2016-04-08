@@ -1,8 +1,8 @@
 from datetime import datetime
 
 from app import app
-from app.models.application_traffic_event import ApplicationTrafficEvent
 from app.models.application import Application
+from app.models.application_traffic_event import ApplicationTrafficEvent
 from tests import base_test_case
 from tests.events.one_event_in_type_json import events_json
 
@@ -23,7 +23,7 @@ class SaveApplicationEventTestCase(base_test_case.BaseTestCase):
     def test_save_normal_events(self):
         with app.app_context():
             request = self.app.post('/api/send_file', data=dict(
-                    events=events_json
+                events=events_json
             ))
 
             assert request.status_code == 201
@@ -38,6 +38,7 @@ class SaveApplicationEventTestCase(base_test_case.BaseTestCase):
             assert application_event.date == datetime.fromtimestamp(1330641500267 / 1000).date()
             assert application_event.tx_bytes == 5615
             assert application_event.tx_packets == 123
+            assert application_event.app_version_code == "0.0a"
 
             assert application_event.sim.serial_number == "8000000000000000000"
             assert application_event.device.device_id == "8000000000000000000"
@@ -45,7 +46,7 @@ class SaveApplicationEventTestCase(base_test_case.BaseTestCase):
             assert application_event.application.package_name == "cl.niclabs.adkintunmobile"
 
             apps = Application.query.all()
-            assert len(apps)==1
+            assert len(apps) == 1
 
             application = apps[0]
             assert application.package_name == "cl.niclabs.adkintunmobile"

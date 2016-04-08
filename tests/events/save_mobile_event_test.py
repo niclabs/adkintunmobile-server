@@ -6,7 +6,7 @@ from tests import base_test_case
 from tests.events.one_event_in_type_json import events_json
 
 
-class EventTestCase(base_test_case.BaseTestCase):
+class SaveMobileEventTestCase(base_test_case.BaseTestCase):
     '''
     Unit tests for the API
     '''
@@ -39,6 +39,7 @@ class EventTestCase(base_test_case.BaseTestCase):
             assert mobile_event.date == datetime.fromtimestamp(1330641500183 / 1000).date()
             assert mobile_event.tx_bytes == 489
             assert mobile_event.tx_packets == 35
+            assert mobile_event.app_version_code == "0.0a"
 
             assert mobile_event.sim.serial_number == "8000000000000000000"
             assert mobile_event.device.device_id == "8000000000000000000"
