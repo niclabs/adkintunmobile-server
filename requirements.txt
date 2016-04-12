@@ -6,3 +6,5 @@ flask-migrate
 flask-restful
 psycopg2
 flask_admin
+flask-login
+flask-httpauth
