@@ -34,7 +34,7 @@ class Registration(Resource):
 
         carrier = Carrier.query.filter(Carrier.mnc == args.carrier_id).first()
         if carrier:
-            # TODO habrá que agregar alguna vez carriers nuevos (?)
+            # TODO habra que agregar alguna vez carriers nuevos (?)
 
             device = Device.store_if_no_exist(args)
 
