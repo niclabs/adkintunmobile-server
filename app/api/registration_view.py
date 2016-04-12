@@ -33,7 +33,6 @@ class Registration(Resource):
 
 api.add_resource(Registration, '/api/registration')
 
-
 def add_device_sim_carrier(args):
     from app.models.sim import Sim
     from app.models.carrier import Carrier

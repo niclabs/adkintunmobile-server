@@ -1,3 +1,4 @@
+
 class Config(object):
     DEBUG = False
     TESTING = False
@@ -7,14 +8,11 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = 'postgresql://' + USER + ':' + SECRET_KEY + '@localhost/adkintun'
     SQLALCHEMY_TRACK_MODIFICATIONS = True
 
-
 class ProductionConfig(Config):
     pass
 
-
 class DevelopmentConfig(Config):
     DEBUG = True
-
 
 class TestingConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'postgresql://user_test:password_test@localhost/adkintun_test'
@@ -22,9 +20,16 @@ class TestingConfig(Config):
     TESTING = True
     DEBUG = True
 
-
 class AppTokens():
     tokens = {
         # tokens generados aleatoriamente, de largo 50
         "token-for-app-mobile": "app_mobile",
     }
+
+
+class AdminUser():
+    first_name = "Cambiar Usuario"
+    last_name = "Cambiar Usuario"
+    login = "Cambiar login"
+    email = "Crear correo"
+    password = "Cambiar pass"
