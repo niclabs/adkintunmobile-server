@@ -4,6 +4,7 @@ from app import app
 from app.models.connectivity_event import ConnectivityEvent
 from tests import base_test_case
 from tests.events.one_event_in_type_json import events_json
+from config import AppTokens
 
 
 class SaveConnectivityEventTestCase(base_test_case.BaseTestCase):
@@ -21,8 +22,8 @@ class SaveConnectivityEventTestCase(base_test_case.BaseTestCase):
     def test_save_normal_events(self):
         with app.app_context():
             request = self.app.post('/api/send_file', data=dict(
-                events=events_json
-            ))
+                    events=events_json
+            ), headers={'Authorization': 'token ' + list(AppTokens.tokens.keys())[0]})
 
             assert request.status_code == 201
             connectivity_events = ConnectivityEvent.query.all()

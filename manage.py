@@ -2,19 +2,17 @@ from flask.ext.migrate import Migrate, MigrateCommand
 from flask.ext.script import Manager, Server
 
 from app import app, db
+from config import AppTokens
+from flask import g
+from flask_httpauth import HTTPTokenAuth
 from initial_data import initial_data
 
 migrate = Migrate(app, db)
 manager = Manager(app)
+auth = HTTPTokenAuth(scheme='Token')
 
 manager.add_command('db', MigrateCommand)
 manager.add_command('runserver', Server(threaded=True))
-
-
-@migrate.configure
-def configure_alembic(config):
-    config.compare_type = True
-    return config
 
 
 @manager.command
@@ -39,10 +37,6 @@ def test():
     unittest.TextTestRunner(verbosity=2).run(suite)
 
 
-def crazy_call():
-    print("crazy_call")
-
-
 @manager.command
 def populate():
     import json
@@ -64,3 +58,11 @@ def save_models(carriers, model_class):
 
 if __name__ == '__main__':
     manager.run()
+
+
+@auth.verify_token
+def verify_token(token):
+    if token in AppTokens.tokens:
+        g.current_user = AppTokens.tokens[token]
+        return True
+    return False

@@ -9,6 +9,7 @@ from app.models.traffic_event import TrafficEvent
 from app.models.wifi_traffic_event import WifiTrafficEvent
 from tests import base_test_case
 from tests.events.normal_event_json import events_json
+from config import AppTokens
 
 
 class SaveEventsWithDeviceAndSimTestCase(base_test_case.BaseTestCase):
@@ -27,7 +28,8 @@ class SaveEventsWithDeviceAndSimTestCase(base_test_case.BaseTestCase):
         with app.app_context():
             request = self.app.post('/api/send_file', data=dict(
                     events=events_json
-            ))
+            ), headers={'Authorization': 'token ' + list(AppTokens.tokens.keys())[0]})
+
             device = Device.query.filter(Device.device_id == "800000000000000000000").first()
             sim = Sim.query.filter(Sim.serial_number == "800000000000000000000").first()
             assert device

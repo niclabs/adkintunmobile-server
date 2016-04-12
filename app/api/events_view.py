@@ -5,9 +5,12 @@ from flask_restful import Resource, reqparse
 from . import api
 from . import app
 from .. import db
+from manage import auth
 
 
 class ReadEvents(Resource):
+    method_decorators = [auth.login_required]
+
     def post(self):
         import json
         post_parser = reqparse.RequestParser(bundle_errors=True)
@@ -37,7 +40,9 @@ class ReadEvents(Resource):
         return '', 201
 
 
+
 @app.route("/send_file", methods=['POST'])
+@auth.login_required
 def read_events():
     import json
     f = request.files['uploaded_file']
