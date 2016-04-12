@@ -5,7 +5,7 @@ from app.models.application import Application
 from app.models.application_traffic_event import ApplicationTrafficEvent
 from tests import base_test_case
 from tests.events.one_event_in_type_json import events_json
-
+from config import AppTokens
 
 class SaveApplicationEventTestCase(base_test_case.BaseTestCase):
     '''
@@ -24,7 +24,7 @@ class SaveApplicationEventTestCase(base_test_case.BaseTestCase):
         with app.app_context():
             request = self.app.post('/api/send_file', data=dict(
                 events=events_json
-            ))
+            ), headers={'Authorization': 'token ' + list(AppTokens.tokens.keys())[0]})
 
             assert request.status_code == 201
             application_events = ApplicationTrafficEvent.query.all()

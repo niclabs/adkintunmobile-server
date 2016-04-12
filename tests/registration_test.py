@@ -13,25 +13,29 @@ class TestRegistration(base_test_case.BaseTestCase):
     def test_registration(self):
         from app.models.sim import Sim
         from app.models.device import Device
+        from config import AppTokens
 
         with app.app_context():
             date = datetime.now().date()
-            request = self.app.post('/api/registration', data=dict(
-                    serial_number= "800000000000000000000",
-                    carrier_id=456,
-                    brand="brand test",
-                    board="board test",
-                    build_id="build id test",
-                    device="device test",
-                    hardware="hardware test",
-                    manufacturer="manufacturer test",
-                    model="model test",
-                    release="release test",
-                    release_type="release type test",
-                    product="product test",
-                    sdk=4,
-                    device_id="8000000000000000000"
-            ))
+            request = self.app.post('/api/registration',
+                                    data=dict(
+                                        serial_number="800000000000000000000",
+                                        carrier_id=456,
+                                        brand="brand test",
+                                        board="board test",
+                                        build_id="build id test",
+                                        device="device test",
+                                        hardware="hardware test",
+                                        manufacturer="manufacturer test",
+                                        model="model test",
+                                        release="release test",
+                                        release_type="release type test",
+                                        product="product test",
+                                        sdk=4,
+                                        device_id="8000000000000000000"
+                                    ),
+                                    headers={'Authorization': 'token '+list(AppTokens.tokens.keys())[0]})
+
             assert request.status_code == 201
             # assert SIM
             sim = Sim.query.all()

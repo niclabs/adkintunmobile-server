@@ -4,7 +4,7 @@ from app import app
 from app.models.mobile_traffic_event import MobileTrafficEvent
 from tests import base_test_case
 from tests.events.one_event_in_type_json import events_json
-
+from config import AppTokens
 
 class SaveMobileEventTestCase(base_test_case.BaseTestCase):
     '''
@@ -23,7 +23,7 @@ class SaveMobileEventTestCase(base_test_case.BaseTestCase):
         with app.app_context():
             request = self.app.post('/api/send_file', data=dict(
                     events=events_json
-            ))
+            ), headers={'Authorization': 'token ' + list(AppTokens.tokens.keys())[0]})
 
             assert request.status_code == 201
             mobile_events = MobileTrafficEvent.query.all()
