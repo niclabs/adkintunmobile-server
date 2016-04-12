@@ -1,7 +1,9 @@
+from app.admin.login import MyAdminIndexView, init_login
 from .. import app
 from flask_admin import Admin
 
-
-admin = Admin(app, name='Adkintun', template_mode='bootstrap3')
+admin = Admin(app, name='Adkintun', index_view=MyAdminIndexView(), base_template='my_master.html')
+# Initialize flask-login
+init_login()
 
 from . import views

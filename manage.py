@@ -47,10 +47,23 @@ def crazy_call():
 def populate():
     import json
     from app.models.carrier import Carrier
+    from config import AdminUser
+    from app.models.user import User
+    from werkzeug.security import generate_password_hash
+
+    user = User()
+    user.first_name = AdminUser.first_name
+    user.last_name = AdminUser.last_name
+    user.login = AdminUser.login
+    user.email = AdminUser.email
+    user.password = generate_password_hash(AdminUser.password)
+    db.session.add(User.user)
+    
     jsonvar = json.loads(initial_data)
     for k, v in jsonvar.items():
         if k == "carriers":
             save_models(v, Carrier)
+
 
 
 def save_models(carriers, model_class):
