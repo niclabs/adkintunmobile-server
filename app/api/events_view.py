@@ -2,9 +2,9 @@ from datetime import datetime
 
 from flask import request
 from flask_restful import Resource, reqparse
-from . import api
-from . import app
-from .. import db
+
+from app import db, app
+from app.api import api
 from manage import auth
 
 

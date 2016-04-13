@@ -2,13 +2,12 @@ import flask_login as login
 from flask import render_template
 from flask_admin.contrib.sqla import ModelView
 
-from app import db
+from app import db, app
 from app.admin import admin
 from app.models.carrier import Carrier
 from app.models.device import Device
 from app.models.event import Event
 from app.models.sim import Sim
-from .. import app
 
 
 # Flask views
