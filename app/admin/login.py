@@ -4,9 +4,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from wtforms import form, fields, validators
 
 from app.models.user import User
-from app import db
+from app import db, app
 import flask_login as login
-from .. import app
 from flask_admin import AdminIndexView
 
 class LoginForm(form.Form):
