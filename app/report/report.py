@@ -1,3 +1,2 @@
 def generate_report():
-
-    pass
+    print("Generar reporte")
