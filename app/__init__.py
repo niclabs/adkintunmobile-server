@@ -1,5 +1,4 @@
 from flask import Flask
-
 from app.automatization.scheduler_manager import start_scheduler
 
 app = Flask(__name__)
