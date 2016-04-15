@@ -25,7 +25,7 @@ class SaveEventsTestCase(base_test_case.BaseTestCase):
     # test de guardado de eventos: 1 wifi traffic event y 2 state change event
     def test_save_normal_events(self):
         with app.app_context():
-            request = self.app.post('/api/send_file', data=dict(
+            request = self.app.post('/api/events', data=dict(
                     events=events_json
             ), headers={'Authorization': 'token ' + list(AppTokens.tokens.keys())[0]})
 
