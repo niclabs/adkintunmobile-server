@@ -28,6 +28,9 @@ class ReadEvents(Resource):
         sim = Sim.store_if_not_exist(jsonvar["sim_records"])
         del jsonvar["sim_records"]
 
+        # Se vinculan sim con device en caso de no existir vínculo
+        sim.add_device(device)
+
         total_events = 0
         try:
             for events_name, events in jsonvar.items():
@@ -61,6 +64,9 @@ def read_events():
     from app.models.sim import Sim
     sim = Sim.store_if_not_exist(jsonvar["sim_records"])
     del jsonvar["sim_records"]
+
+    # Se vinculan sim con device en caso de no existir vínculo
+    sim.add_device(device)
 
     total_events = 0
     try:
