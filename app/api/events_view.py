@@ -44,7 +44,7 @@ class ReadEvents(Resource):
 
 
 
-@app.route("/send_file", methods=['POST'])
+@app.route("/events", methods=['POST'])
 @auth.login_required
 def read_events():
     import json
@@ -79,7 +79,7 @@ def read_events():
     return 'Eventos guardados', 201
 
 
-api.add_resource(ReadEvents, '/api/send_file')
+api.add_resource(ReadEvents, '/api/events')
 
 
 def save_traffics_events(events, device, sim, app_version_code):
