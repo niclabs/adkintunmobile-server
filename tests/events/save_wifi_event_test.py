@@ -1,10 +1,11 @@
 from datetime import datetime
+
 from app import app
 from app.models.wifi_traffic_event import WifiTrafficEvent
+from config import AppTokens
 from tests import base_test_case
 from tests.events.one_event_in_type_json import events_json
-from config import AppTokens
-from tests.events import send_json_for_test
+
 
 class SaveWifiEventTestCase(base_test_case.BaseTestCase):
     '''
@@ -20,7 +21,10 @@ class SaveWifiEventTestCase(base_test_case.BaseTestCase):
     # test de guardado de eventos: 1 wifi traffic event y 2 state change event
     def test_save_normal_events(self):
         with app.app_context():
-            request = send_json_for_test(self, events_json, list(AppTokens.tokens.keys())[0])
+            token = list(AppTokens.tokens.keys())[0]
+            request = self.app.post('/api/events', data=dict(
+                    events=events_json
+            ), headers={'Authorization': 'token ' + token})
 
             assert request.status_code == 201
             wifi_events = WifiTrafficEvent.query.all()
