@@ -7,10 +7,9 @@ from app.models.sim import Sim
 from app.models.state_change_event import StateChangeEvent
 from app.models.traffic_event import TrafficEvent
 from app.models.wifi_traffic_event import WifiTrafficEvent
+from config import AppTokens
 from tests import base_test_case
 from tests.events.normal_event_json import events_json
-from config import AppTokens
-from tests.events import send_json_for_test
 
 
 class SaveEventsWithDeviceAndSimTestCase(base_test_case.BaseTestCase):
@@ -27,7 +26,10 @@ class SaveEventsWithDeviceAndSimTestCase(base_test_case.BaseTestCase):
     # test de guardado de eventos: 1 wifi traffic event y 2 state change event
     def test_save_normal_events_with_device_and_sim(self):
         with app.app_context():
-            request = send_json_for_test(self, events_json, list(AppTokens.tokens.keys())[0])
+            token = list(AppTokens.tokens.keys())[0]
+            request = self.app.post('/api/events', data=dict(
+                    events=events_json
+            ), headers={'Authorization': 'token ' + token})
 
             device = Device.query.filter(Device.device_id == "800000000000000000000").first()
             sim = Sim.query.filter(Sim.serial_number == "800000000000000000000").first()
