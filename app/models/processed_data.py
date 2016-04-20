@@ -10,7 +10,9 @@ class ProcessedData(base_model.BaseModel):
 
     __tablename__ = 'processed_data'
     id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime)
     total_events = db.Column(db.Integer)
+    total_gsm_events = db.Column(db.Integer)
     total_devices = db.Column(db.Integer)
     total_sims = db.Column(db.Integer)
     #Totales de tipos de eventos
