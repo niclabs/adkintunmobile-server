@@ -51,7 +51,7 @@ def populate():
     user.login = AdminUser.login
     user.email = AdminUser.email
     user.password = generate_password_hash(AdminUser.password)
-    db.session.add(User.user)
+    db.session.add(user)
     
     jsonvar = json.loads(initial_data)
     for k, v in jsonvar.items():
