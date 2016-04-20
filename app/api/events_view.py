@@ -1,23 +1,51 @@
+import json
 from datetime import datetime
-
-from flask import request
-from flask_restful import Resource, reqparse
-
 from app import db, app
 from app.api import api
+from flask import request
+from flask_restful import Resource, reqparse
 from manage import auth
+from werkzeug.exceptions import BadRequestKeyError
 
 
 class ReadEvents(Resource):
     method_decorators = [auth.login_required]
 
     def post(self):
-        import json
         post_parser = reqparse.RequestParser(bundle_errors=True)
         post_parser.add_argument('events', required=True)
 
-        args = post_parser.parse_args()
-        jsonvar = json.loads(args.events)
+        try:
+            args = post_parser.parse_args()
+            return read_events(args.events)
+        #revisar exception post parser
+        except Exception as e:
+            db.session.rollback()
+            return e, 400
+
+
+api.add_resource(ReadEvents, '/api/events')
+
+
+@app.route("/events", methods=['POST'])
+@auth.login_required
+def read_events_from_file():
+    try:
+        f = request.files['uploaded_file']
+        lines = f.readlines()
+        string = ''.join(x.decode("utf-8") for x in lines)
+        string = string.replace('\n', '')
+        return read_events(string)
+
+    except BadRequestKeyError as e:
+        return e, 400
+    except UnicodeError as e:
+        return e, 400
+
+
+def read_events(events):
+    try:
+        jsonvar = json.loads(events)
 
         from app.models.device import Device
         device = Device.store_if_no_exist(jsonvar["device_records"])
@@ -32,54 +60,21 @@ class ReadEvents(Resource):
         sim.add_device(device)
 
         total_events = 0
-        try:
-            for events_name, events in jsonvar.items():
-                total_events += save(events_name, events, device, sim, app_version_code)
 
-            print("Eventos Almacenados: ", total_events)
-        except Exception as e:
-            db.session.rollback()
-            return e, 400
-        return '', 201
-
-
-
-@app.route("/events", methods=['POST'])
-@auth.login_required
-def read_events():
-    import json
-    f = request.files['uploaded_file']
-    lines = f.readlines()
-
-    string = ''.join(x.decode("utf-8") for x in lines)
-
-    string = string.replace('\n', '')
-    jsonvar = json.loads(string)
-
-    from app.models.device import Device
-    device = Device.store_if_no_exist(jsonvar["device_records"])
-    app_version_code = jsonvar["device_records"]["app_version_code"]
-    del jsonvar["device_records"]
-
-    from app.models.sim import Sim
-    sim = Sim.store_if_not_exist(jsonvar["sim_records"])
-    del jsonvar["sim_records"]
-
-    # Se vinculan sim con device en caso de no existir vínculo
-    sim.add_device(device)
-
-    total_events = 0
-    try:
         for events_name, events in jsonvar.items():
             total_events += save(events_name, events, device, sim, app_version_code)
         print("Eventos Almacenados: ", total_events)
+
+        return 'Eventos guardados', 201
+
+    except json.JSONDecodeError as e:
+        return e, 400
+    except KeyError as e:
+        db.session.rollback()
+        return e, 400
     except Exception as e:
         db.session.rollback()
         return e, 400
-    return 'Eventos guardados', 201
-
-
-api.add_resource(ReadEvents, '/api/events')
 
 
 def save_traffics_events(events, device, sim, app_version_code):
