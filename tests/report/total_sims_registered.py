@@ -1,6 +1,6 @@
 from app import app, db
 from app.models.sim import Sim
-from app.report.report import totalSimsRegistered
+from app.report.report import total_sims_registered
 from tests import base_test_case
 
 
@@ -23,5 +23,5 @@ class TotalSimsRegisteredTestCase(base_test_case.BaseTestCase):
     # test de guardado de eventos: 1 wifi traffic event y 2 state change event
     def test_two_devices(self):
         with app.app_context():
-            total_sims = totalSimsRegistered()
+            total_sims = total_sims_registered()
             assert total_sims == 3

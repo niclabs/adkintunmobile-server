@@ -1,7 +1,7 @@
 from app import app, db
 from app.models.device import Device
 from app.models.gsm_event import GsmEvent
-from app.report.report import totalGSMEvents
+from app.report.report import total_gsm_events
 from tests import base_test_case
 
 
@@ -35,5 +35,5 @@ class TotalSimsRegisteredTestCase(base_test_case.BaseTestCase):
     # test de guardado de eventos: 1 wifi traffic event y 2 state change event
     def test_two_devices(self):
         with app.app_context():
-            total_gsm_events = totalGSMEvents()
-            assert total_gsm_events == 3
+            gsm_events = total_gsm_events()
+            assert gsm_events == 3
