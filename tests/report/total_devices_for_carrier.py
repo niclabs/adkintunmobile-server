@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from app import app, db
 from app.models.carrier import Carrier
 from app.models.device import Device
@@ -13,10 +15,10 @@ class TotalDevicesForCarrierReportedTestCase(base_test_case.BaseTestCase):
 
     def populate(self):
         # devices
-        device1 = Device(device_id="1")
-        device2 = Device(device_id="2")
-        device3 = Device(device_id="3")
-        device4 = Device(device_id="4")
+        device1 = Device(device_id="1", creation_date=datetime.now() + timedelta(days=-2))
+        device2 = Device(device_id="2", creation_date=datetime.now())
+        device3 = Device(device_id="3", creation_date=datetime.now())
+        device4 = Device(device_id="4", creation_date=datetime.now())
 
         # sims
         sim1 = Sim(serial_number="123")
@@ -49,4 +51,15 @@ class TotalDevicesForCarrierReportedTestCase(base_test_case.BaseTestCase):
             assert total_devices_for_carrier[0].Carrier.name == "test_carrier_1"
             assert total_devices_for_carrier[1].Carrier.name == "test_carrier_2"
             assert total_devices_for_carrier[0].devices_count == 3
+            assert total_devices_for_carrier[1].devices_count == 1
+
+
+    def test_date_filter(self):
+        with app.app_context():
+            total_devices_for_carrier = total_device_for_carrier(min_date=(datetime.now() + timedelta(days=-1)))
+            assert len(total_devices_for_carrier) == 2
+
+            assert total_devices_for_carrier[0].Carrier.name == "test_carrier_1"
+            assert total_devices_for_carrier[1].Carrier.name == "test_carrier_2"
+            assert total_devices_for_carrier[0].devices_count == 2
             assert total_devices_for_carrier[1].devices_count == 1

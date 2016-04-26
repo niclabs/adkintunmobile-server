@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from app import app, db
 from app.models.carrier import Carrier
 from app.models.device import Device
@@ -13,7 +15,6 @@ class TotalDevicesForCarrierReportedTestCase(base_test_case.BaseTestCase):
     '''
 
     def populate(self):
-
         # devices
         device1 = Device(device_id="1")
         device2 = Device(device_id="2")
@@ -40,11 +41,11 @@ class TotalDevicesForCarrierReportedTestCase(base_test_case.BaseTestCase):
         carrier2.sims.append(sim3)
 
         # GSM events
-        event1 = GsmEvent()
-        event2 = GsmEvent()
-        event3 = GsmEvent()
-        event4 = GsmEvent()
-        event5 = GsmEvent()
+        event1 = GsmEvent(date=datetime.now() + timedelta(days=-2))
+        event2 = GsmEvent(date=datetime.now())
+        event3 = GsmEvent(date=datetime.now())
+        event4 = GsmEvent(date=datetime.now())
+        event5 = GsmEvent(date=datetime.now())
 
         sim1.events.append(event1)
         sim1.events.append(event2)
@@ -68,4 +69,14 @@ class TotalDevicesForCarrierReportedTestCase(base_test_case.BaseTestCase):
             assert events_for_carrier[0].Carrier.name == "test_carrier_1"
             assert events_for_carrier[1].Carrier.name == "test_carrier_2"
             assert events_for_carrier[0].events_count == 2
+            assert events_for_carrier[1].events_count == 3
+
+    def test_date_filter(self):
+        with app.app_context():
+            events_for_carrier = total_events_for_carrier(min_date=(datetime.now() + timedelta(days=-1)))
+            assert len(events_for_carrier) == 2
+
+            assert events_for_carrier[0].Carrier.name == "test_carrier_1"
+            assert events_for_carrier[1].Carrier.name == "test_carrier_2"
+            assert events_for_carrier[0].events_count == 1
             assert events_for_carrier[1].events_count == 3

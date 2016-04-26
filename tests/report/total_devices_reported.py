@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from app import app, db
 from app.models.device import Device
 from app.models.state_change_event import StateChangeEvent
@@ -12,10 +14,10 @@ class TotalDevicesReportedTestCase(base_test_case.BaseTestCase):
 
     def populate(self):
         # devices
-        device1 = Device(device_id="1")
-        device2 = Device(device_id="2")
-        device3 = Device(device_id="3")
-        device4 = Device(device_id="4")
+        device1 = Device(device_id="1", creation_date=datetime.now() + timedelta(days=-2))
+        device2 = Device(device_id="2", creation_date=datetime.now())
+        device3 = Device(device_id="3", creation_date=datetime.now())
+        device4 = Device(device_id="4", creation_date=datetime.now())
 
         # Eventos
         event1 = StateChangeEvent()
@@ -37,3 +39,9 @@ class TotalDevicesReportedTestCase(base_test_case.BaseTestCase):
         with app.app_context():
             total_devices = total_devices_reported()
             assert total_devices == 2
+
+
+    def test_date_filter(self):
+        with app.app_context():
+            total_devices = total_devices_reported(min_date=(datetime.now() + timedelta(days=-1)))
+            assert total_devices == 1
