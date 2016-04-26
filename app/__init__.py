@@ -1,9 +1,7 @@
 from flask import Flask
-from app.automatization.scheduler_manager import start_scheduler
 
 app = Flask(__name__)
 app.config.from_object('config.DevelopmentConfig')
-start_scheduler()
 
 from flask_sqlalchemy import SQLAlchemy
 
@@ -14,3 +12,8 @@ db = SQLAlchemy(app)
 from . import api
 from . import public
 from . import admin
+from . import report
+
+from app.automatization.scheduler_manager import start_scheduler
+
+start_scheduler()

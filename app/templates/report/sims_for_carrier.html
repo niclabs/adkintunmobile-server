@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<head>
+    <title>Adkintun</title>
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        table, th, td {
+        border: 1px solid black;
+        }
+
+        td.number{
+        text-align: right;
+        }
+
+    </style>
+</head>
+<body>
+<div>
+    <h1>Adkintun</h1>
+
+    <table>
+        <tr>
+            <th>Compañia</th>
+            <th>Sims</th>
+        </tr>
+        {% for c in carriers %}
+        <tr>
+            <td>
+                {{c.Carrier.name}}
+            </td>
+            <td class="number">
+                {{c.sims_count}}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+</body>
+
+
