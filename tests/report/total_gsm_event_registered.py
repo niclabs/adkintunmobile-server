@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from app import app, db
 from app.models.device import Device
 from app.models.gsm_event import GsmEvent
@@ -18,9 +20,9 @@ class TotalSimsRegisteredTestCase(base_test_case.BaseTestCase):
         device4 = Device(device_id="4")
 
         # GSM events
-        event1 = GsmEvent()
-        event2 = GsmEvent()
-        event3 = GsmEvent()
+        event1 = GsmEvent(date=datetime.now() + timedelta(days=-2))
+        event2 = GsmEvent(date=datetime.now())
+        event3 = GsmEvent(date=datetime.now())
 
         device1.events = [event1, event2]
         device2.events = [event3]
@@ -30,6 +32,9 @@ class TotalSimsRegisteredTestCase(base_test_case.BaseTestCase):
         db.session.add(device2)
         db.session.add(device3)
         db.session.add(device4)
+        db.session.add(event1)
+        db.session.add(event2)
+        db.session.add(event3)
         db.session.commit()
 
     # test de guardado de eventos: 1 wifi traffic event y 2 state change event
@@ -37,3 +42,8 @@ class TotalSimsRegisteredTestCase(base_test_case.BaseTestCase):
         with app.app_context():
             gsm_events = total_gsm_events()
             assert gsm_events == 3
+
+    def test_two_devices(self):
+        with app.app_context():
+            gsm_events = total_gsm_events(min_date=(datetime.now() + timedelta(days=-1)))
+            assert gsm_events == 2
