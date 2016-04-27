@@ -8,7 +8,7 @@ class Carrier(base_model.BaseModel):
     name: Nombre de la empresa (Claro, Entel, etc.)
     '''
     __tablename__ = 'carriers'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, unique=True)
     name = db.Column(db.String(50))
     mcc = db.Column(db.Integer)
     mnc = db.Column(db.Integer)

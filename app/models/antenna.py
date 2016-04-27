@@ -12,15 +12,15 @@ class Antenna(base_model.BaseModel):
     cid = db.Column(db.Integer)
     lac = db.Column(db.Integer)
     lat = db.Column(db.Float)
-    lng = db.Column(db.Float)
+    lon = db.Column(db.Float)
     carriers = db.relationship('Carrier', secondary=antennas_carriers,
                                backref=db.backref('antennas', lazy='dynamic'), lazy='dynamic')  # relationship
 
-    def __init__(self, cid=None, lac=None, lat=None, long=None):
+    def __init__(self, cid=None, lac=None, lat=None, lon=None):
         self.cid = cid
         self.lac = lac
         self.lat = lat
-        self.long = long
+        self.lon = lon
 
     def __repr__(self):
         return '<Antenna, id: %r,  cid: %r, lac: %r, carriers: %r,>' % (self.id, self.cid, self.lac, self.carriers)
