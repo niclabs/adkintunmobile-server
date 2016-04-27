@@ -8,6 +8,7 @@ from app.models.carrier import Carrier
 from app.models.device import Device
 from app.models.event import Event
 from app.models.sim import Sim
+from app.models.antenna import Antenna
 
 
 # Flask views
@@ -31,8 +32,6 @@ class CarrierView(ModelView):
 
     column_display_pk = True
     create_modal = True
-    column_exclude_list = ['id', ]
-
 
 class DeviceView(ModelView):
 
@@ -52,6 +51,13 @@ class EventView(ModelView):
     column_display_pk = True
     create_modal = True
 
+class AntennaView(ModelView):
+
+    def is_accessible(self):
+        return login.current_user.is_authenticated
+
+    column_display_pk = True
+    create_modal = True
 
 # class AntennaView(sqla.ModelView):
 #     pass
@@ -59,7 +65,7 @@ class EventView(ModelView):
 # Add views
 # admin.add_view(UserView(User, db.session))
 admin.add_view(DeviceView(Device, db.session))
-# admin.add_view(sqla.ModelView(Antenna, db.session))
+admin.add_view(AntennaView(Antenna, db.session))
 admin.add_view(SimView(Sim, db.session))
 # admin.add_view(sqla.ModelView(Mobile_Plan, db.session))
 admin.add_view(CarrierView(Carrier, db.session))
