@@ -10,6 +10,9 @@ def total_devices_reported(min_date=datetime(2015, 1, 1),
                            max_date=None):
     from app.models.device import Device
 
+    if not min_date:
+        min_date = datetime(2015, 1, 1)
+
     if not max_date:
         max_date = datetime.now()
 
@@ -21,6 +24,9 @@ def total_sims_registered(min_date=datetime(2015, 1, 1),
                           max_date=None):
     from app.models.sim import Sim
 
+    if not min_date:
+        min_date = datetime(2015, 1, 1)
+
     if not max_date:
         max_date = datetime.now()
 
@@ -31,6 +37,9 @@ def total_sims_registered(min_date=datetime(2015, 1, 1),
 def total_gsm_events(min_date=datetime(2015, 1, 1),
                      max_date=None):
     from app.models.gsm_event import GsmEvent
+
+    if not min_date:
+        min_date = datetime(2015, 1, 1)
 
     if not max_date:
         max_date = datetime.now()
@@ -44,6 +53,9 @@ def total_device_for_carrier(min_date=datetime(2015, 1, 1),
     from app.models.carrier import Carrier
     from app import db
     from sqlalchemy import text
+
+    if not min_date:
+        min_date = datetime(2015, 1, 1)
 
     if not max_date:
         max_date = datetime.now()
@@ -72,6 +84,9 @@ def total_sims_for_carrier(min_date=datetime(2015, 1, 1),
     from app import db
     from sqlalchemy import text
 
+    if not min_date:
+        min_date = datetime(2015, 1, 1)
+
     if not max_date:
         max_date = datetime.now()
 
@@ -94,6 +109,9 @@ def total_events_for_carrier(min_date=datetime(2015, 1, 1),
     from app.models.carrier import Carrier
     from app import db
     from sqlalchemy import text
+
+    if not min_date:
+        min_date = datetime(2015, 1, 1)
 
     if not max_date:
         max_date = datetime.now()
