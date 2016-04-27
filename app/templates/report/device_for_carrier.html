@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
     <title>Adkintun</title>
-    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/styles.css') }}">
     <style>
         table, th, td {
         border: 1px solid black;
@@ -15,6 +15,15 @@
 <body>
 <div>
     <h1>Adkintun</h1>
+
+    <form action="">
+
+        <label for="min_date">Desde</label>
+        <input id="min_date" name="min_date" type="date" value="{{min_date}}">
+        <label for="max_date">Hasta</label>
+        <input id="max_date" name="max_date" type="date" value="{{max_date}}">
+        <input type="submit" value="Filtrar">
+    </form>
 
     <table>
         <tr>
