@@ -5,7 +5,9 @@ from app import app, db
 from config import AppTokens
 from flask import g
 from flask_httpauth import HTTPTokenAuth
-from initial_data import initial_data
+from sqlalchemy.exc import IntegrityError
+from static.data.initial_data_antennas import initial_data_antennas
+from static.data.initial_data_carriers import initial_data_carriers
 
 migrate = Migrate(app, db)
 manager = Manager(app)
@@ -41,6 +43,7 @@ def test():
 def populate():
     import json
     from app.models.carrier import Carrier
+    from app.models.antenna import Antenna
     from config import AdminUser
     from app.models.user import User
     from werkzeug.security import generate_password_hash
@@ -52,21 +55,50 @@ def populate():
     user.email = AdminUser.email
     user.password = generate_password_hash(AdminUser.password)
     db.session.add(user)
-    
-    jsonvar = json.loads(initial_data)
+    try:
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+
+    # Agregar carriers
+    jsonvar = json.loads(initial_data_carriers)
     for k, v in jsonvar.items():
         if k == "carriers":
             save_models(v, Carrier)
 
+    # Agregar antennas
+    jsonvar = json.loads(initial_data_antennas)
+    for k, v in jsonvar.items():
+        if k == "antennas":
+            for json_element in v:
+                antenna = Antenna()
+                try:
+                    mnc = json_element['mnc']
+                    mcc = json_element['mcc']
+                    carrier = Carrier.query.filter(Carrier.mnc == mnc and Carrier.mcc == mcc).first()
+                    antenna.carriers.append(carrier)
+                except KeyError:
+                    continue
+                for k, v in json_element.items():
+                    if hasattr(antenna, k):
+                        setattr(antenna, k, v)
+                db.session.add(antenna)
+                try:
+                    db.session.commit()
+                except IntegrityError:
+                    db.session.rollback()
 
 
-def save_models(carriers, model_class):
-    for json_carrier in carriers:
+def save_models(elements, model_class):
+    for json_element in elements:
         model = model_class()
-        for k, v in json_carrier.items():
+        for k, v in json_element.items():
             setattr(model, k, v)
         db.session.add(model)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
 
 
 if __name__ == '__main__':
