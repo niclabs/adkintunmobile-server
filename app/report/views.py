@@ -21,7 +21,7 @@ def get_max_date(dateStr, format):
 
 @app.route('/report/')
 def report_index():
-    return render_template('report/index.html')
+    return render_template('report/login.html')
 
 
 @app.route('/report/totales')
