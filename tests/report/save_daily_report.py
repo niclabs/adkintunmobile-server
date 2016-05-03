@@ -3,12 +3,13 @@ from datetime import datetime, timedelta
 from app import app, db
 from app.models.carrier import Carrier
 from app.models.device import Device
+from app.models.report_daily import DailyReport
 from app.models.sim import Sim
 from app.report.report import total_device_for_carrier
 from tests import base_test_case
 
 
-class TotalDevicesForCarrierReportedTestCase(base_test_case.BaseTestCase):
+class SaveDailyTestCase(base_test_case.BaseTestCase):
     '''
     Unit tests for the API
     '''
@@ -38,28 +39,21 @@ class TotalDevicesForCarrierReportedTestCase(base_test_case.BaseTestCase):
         carrier1.sims.append(sim2)
         carrier2.sims.append(sim3)
 
+        report = DailyReport()
+        report.carrier = carrier1
+
+
         db.session.add(carrier1)
         db.session.add(carrier2)
+        db.session.add(report)
+
+
         db.session.commit()
 
     # test de guardado de eventos: 1 wifi traffic event y 2 state change event
     def test_two_carrier(self):
         with app.app_context():
-            total_devices_for_carrier = total_device_for_carrier()
-            assert len(total_devices_for_carrier) == 2
-
-            assert total_devices_for_carrier[0].Carrier.name == "test_carrier_1"
-            assert total_devices_for_carrier[1].Carrier.name == "test_carrier_2"
-            assert total_devices_for_carrier[0].devices_count == 3
-            assert total_devices_for_carrier[1].devices_count == 1
-
-
-    def test_date_filter(self):
-        with app.app_context():
-            total_devices_for_carrier = total_device_for_carrier(min_date=(datetime.now() + timedelta(days=-1)))
-            assert len(total_devices_for_carrier) == 2
-
-            assert total_devices_for_carrier[0].Carrier.name == "test_carrier_1"
-            assert total_devices_for_carrier[1].Carrier.name == "test_carrier_2"
-            assert total_devices_for_carrier[0].devices_count == 2
-            assert total_devices_for_carrier[1].devices_count == 1
+            reports = DailyReport.query.all()
+            carrier = reports[0].carrier
+            assert len(reports) == 1
+            assert carrier.name == "test_carrier_1"

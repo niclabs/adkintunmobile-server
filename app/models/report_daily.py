@@ -1,26 +1,14 @@
 from app import db
 
-class User(db.Model):
+class DailyReport(db.Model):
+
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(100))
-    last_name = db.Column(db.String(100))
-    login = db.Column(db.String(80), unique=True)
-    email = db.Column(db.String(120))
-    password = db.Column(db.String(120))
+    carrier_id = db.Column(db.Integer, db.ForeignKey("carriers.id"))
+    count_devices = db.Column(db.Integer)
+    count_sims = db.Column(db.Integer)
+    count_events = db.Column(db.Integer)
 
-    # Flask-Login integration
-    def is_authenticated(self):
-        return True
-
-    def is_active(self):
-        return True
-
-    def is_anonymous(self):
-        return False
-
-    def get_id(self):
-        return self.id
-
-    # Required for administrative interface
-    def __unicode__(self):
-        return self.username
+    def __init__(self, count_devices=0, count_sims=0, count_events=0):
+        self.count_devices = count_devices
+        self.count_sims = count_sims
+        self.count_events = count_events
