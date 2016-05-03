@@ -1,15 +1,15 @@
+import flask_login as login
+from app import db, app
+from app.models.user import User
 from flask import url_for, redirect, request
+from flask_admin import AdminIndexView
 from flask_admin import helpers, expose
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import check_password_hash
 from wtforms import form, fields, validators
 
-from app.models.user import User
-from app import db, app
-import flask_login as login
-from flask_admin import AdminIndexView
 
 class LoginForm(form.Form):
-    login = fields.TextField(validators=[validators.required()])
+    login = fields.StringField(validators=[validators.required()])
     password = fields.PasswordField(validators=[validators.required()])
 
     def validate_login(self, field):
@@ -20,8 +20,8 @@ class LoginForm(form.Form):
 
         # we're comparing the plaintext pw with the the hash from the db
         if not check_password_hash(user.password, self.password.data):
-        # to compare plain text passwords use
-        # if user.password != self.password.data:
+            # to compare plain text passwords use
+            # if user.password != self.password.data:
             raise validators.ValidationError('Invalid password')
 
     def get_user(self):
@@ -29,8 +29,8 @@ class LoginForm(form.Form):
 
 
 class RegistrationForm(form.Form):
-    login = fields.TextField(validators=[validators.required()])
-    email = fields.TextField()
+    login = fields.StringField(validators=[validators.required()])
+    email = fields.StringField()
     password = fields.PasswordField(validators=[validators.required()])
 
     def validate_login(self, field):
@@ -54,8 +54,9 @@ class MyAdminIndexView(AdminIndexView):
     @expose('/')
     def index(self):
         if not login.current_user.is_authenticated:
+            print("redirigido a login_view")
             return redirect(url_for('.login_view'))
-        return super(MyAdminIndexView, self).index()
+        return super(MyAdminIndexView, self).render('admin/my_master.html')
 
     @expose('/login/', methods=('GET', 'POST'))
     def login_view(self):
@@ -68,9 +69,12 @@ class MyAdminIndexView(AdminIndexView):
         if login.current_user.is_authenticated:
             return redirect(url_for('.index'))
         self._template_args['form'] = form
-        return super(MyAdminIndexView, self).index()
+        # return super(MyAdminIndexView, self).index()
+        print("intento cargar login")
+        return super(MyAdminIndexView, self).render('admin/login.html')
 
     @expose('/logout/')
     def logout_view(self):
         login.logout_user()
         return redirect(url_for('.index'))
+

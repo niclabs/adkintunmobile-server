@@ -11,11 +11,6 @@ from app.models.sim import Sim
 from app.models.antenna import Antenna
 
 
-# Flask views
-@app.route('/')
-def index():
-    return render_template('index.html')
-
 class SimView(ModelView):
 
     def is_accessible(self):
