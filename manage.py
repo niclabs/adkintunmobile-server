@@ -1,13 +1,13 @@
 from flask.ext.migrate import Migrate, MigrateCommand
 from flask.ext.script import Manager, Server
+from app.static.data.initial_data_carriers import initial_data_carriers
 
 from app import app, db
+from app.static.data.initial_data_antennas import initial_data_antennas
 from config import AppTokens
 from flask import g
 from flask_httpauth import HTTPTokenAuth
 from sqlalchemy.exc import IntegrityError
-from static.data.initial_data_antennas import initial_data_antennas
-from static.data.initial_data_carriers import initial_data_carriers
 
 migrate = Migrate(app, db)
 manager = Manager(app)

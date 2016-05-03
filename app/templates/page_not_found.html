@@ -1,7 +1,16 @@
-<!doctype html>
-<title>Adkintun</title>
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
-<div>
-  <h1>ERROR 404!</h1>
-  {% block body %}{% endblock %}
+{% extends "base.html" %}
+{% block title%}
+Error 404 - Página no encontrada.
+{% endblock %}
+
+{% block body %}
+
+<div class="android-screen-section mdl-typography--text-center">
+            <h2>Error 404</h2>
+            <div id="border">
+            </div>
+            <h3>Página no encontrada.</h3>
+
 </div>
+
+{% endblock %}
