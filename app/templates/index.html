@@ -7,7 +7,6 @@ Adkintun Mobile
                     <a class="mdl-navigation__link mdl-typography--text-uppercase" href="#about">Acerca de</a>
                     <a class="mdl-navigation__link mdl-typography--text-uppercase" href="#screens">Visualizaciones</a>
                     <a class="mdl-navigation__link mdl-typography--text-uppercase" href="#roadmap">Línea de tiempo</a>
-                    <!--<a class="mdl-navigation__link mdl-typography&#45;&#45;text-uppercase" href="/map/">Mapa interactivo</a>-->
                     <a class="mdl-navigation__link mdl-typography--text-uppercase" href="#research">Investigación</a>
                     <a class="mdl-navigation__link mdl-typography--text-uppercase" href="#contact">Contacto</a>
 {% endblock %}
@@ -16,7 +15,7 @@ Adkintun Mobile
 {% block navegationdrawer %}
     <div class="android-drawer mdl-layout__drawer">
             <span class="mdl-layout-title">
-                <img class="android-logo-image-menu" src="../static/img/logo.png"/>
+                <img class="android-logo-image-menu" src="{{ url_for('static', filename='img/logo.png') }}"/>
             </span>
         <nav class="mdl-navigation">
             <span class="mdl-navigation__link" href="#about">Acerca de</span>
@@ -24,9 +23,6 @@ Adkintun Mobile
             <a class="mdl-navigation__link" href="#how">¿Como funciona?</a>
             <a class="mdl-navigation__link" href="#screens">Visualizaciones</a>
             <div class="android-drawer-separator"></div>
-            <!--<span class="mdl-navigation__link" href="">Mapa interactivo</span>-->
-            <!--<a class="mdl-navigation__link" href="map/">Echale un vistazo!</a>-->
-            <!--<div class="android-drawer-separator"></div>-->
             <span class="mdl-navigation__link" href="">Investigación</span>
             <a class="mdl-navigation__link" href="#roadmap">Línea de tiempo</a>
             <a class="mdl-navigation__link" href="#research">Investigación</a>
@@ -49,7 +45,7 @@ Adkintun Mobile
             <div class="android-font android-sub-slogan">Midiendo la calidad del acceso a Internet móvil</div>
             <div class="android-font android-sub-slogan">
                 <a href="https://play.google.com/store/apps/details?id=adk.monitor">
-                    <img src="../static/img/andy.png">
+                    <img src="{{ url_for('static', filename='img/andy.png') }}">
                 </a>
                 <a href="https://play.google.com/store/apps/details?id=adk.monitor">Disponible para dispositivos con
                     Android (2.2+)</a>
@@ -411,7 +407,7 @@ Adkintun Mobile
             <div id="border">
             </div>
             <h3>Puedes encontrarnos en</h3>
-            <img src="../static/img/nic-casa.png" width="100px">
+            <img src="{{ url_for('static', filename='img/nic-casa.png') }}" width="100px">
             <p>Almirante Blanco Encalada 1975
                 <br> Santiago Centro</p>
             <p>(+56 2) 2940 7780
@@ -422,9 +418,9 @@ Adkintun Mobile
             <center>
                 <div class="mdl-mega-footer--middle-section">
                     <p>Adkintun Mobile es traído a usted por</p>
-                    <img src="../static/img/logo_nicblanco.png" width="120px"/>
-                    <img src="../static/img/logo_inriablanco.png" width="120px"/>
-                    <img src="../static/img/corfo_logo.png" width="120px"/>
+                    <img src="{{ url_for('static', filename='img/logo_nicblanco.png') }}" width="120px"/>
+                    <img src="{{ url_for('static', filename='img/logo_inriablanco.png') }}" width="120px"/>
+                    <img src="{{ url_for('static', filename='img/corfo_logo.png') }}" width="120px"/>
                 </div>
             </center>
         </footer>
@@ -433,7 +429,7 @@ Adkintun Mobile
 
 
 {% block scripts %}
-<script src="../static/js/material.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-<script src="../static/js/timeline.js"></script>
+<script src="{{ url_for('static', filename='js/material.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery-2.1.4.js') }}"  ></script>
+<script src="{{ url_for('static', filename='js/timeline.js') }}" ></script>
 {% endblock %}
