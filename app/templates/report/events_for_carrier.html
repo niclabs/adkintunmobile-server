@@ -1,47 +1,58 @@
-<!DOCTYPE html>
-<head>
-    <title>Adkintun</title>
-    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/styles.css') }}">
-    <style>
-        table, th, td {
-        border: 1px solid black;
-        }
+{% extends "base.html" %}
 
-        td.number{
-        text-align: right;
-        }
-    </style>
-</head>
-<body>
-<div>
-    <h1>Adkintun</h1>
+{% block title %}
+Adkintun Mobile - Mediciones efectuadas por compañia
+{% endblock %}
 
-    <form action="">
+{% block body %}
 
-        <label for="min_date">Desde</label>
-        <input id="min_date" name="min_date" type="date" value="{{min_date}}">
-        <label for="max_date">Hasta</label>
-        <input id="max_date" name="max_date" type="date" value="{{max_date}}">
-        <input type="submit" value="Filtrar">
-    </form>
+<div class="android-content mdl-layout__content">
+    <div class="android-customized-section-b mdl-typography--text-center">
+        <div class="android-customized-section-text-b">
+            <a name="research"></a>
 
-    <table>
-        <tr>
-            <th>Compañia</th>
-            <th>Registros</th>
-        </tr>
-        {% for c in carriers %}
-        <tr>
-            <td>
-                {{c.Carrier.name}}
-            </td>
-            <td class="number">
-                {{c.events_count}}
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+            <br>
+            <h2>Mediciones efectuadas por compañia</h2>
+            <div id="border"></div>
+            <br>
+
+            <form action="">
+
+                <label for="min_date"><p>Desde</p></label>
+                <input id="min_date" name="min_date" type="date" value="{{min_date}}">
+                <label for="max_date"><p>Hasta</p></label>
+                <input id="max_date" name="max_date" type="date" value="{{max_date}}">
+                <input type="submit" value="Filtrar">
+            </form>
+
+            <table>
+                <tr>
+                    <th><h6>Compañia</h6></th>
+                    <th><h6>Registros</h6></th>
+                </tr>
+                {% for c in carriers %}
+                <tr>
+                    <td>
+                        <h6>{{c.Carrier.name}}</h6>
+                    </td>
+                    <td class="number">
+                        <h6>{{c.events_count}}</h6>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+
+            <a href="{{ url_for('report_index')}}">Volver a reportes</a>
+
+        </div>
+
+
+    </div>
+
+    {{ super() }}
+
 </div>
-</body>
+
+{% endblock %}
 
 
