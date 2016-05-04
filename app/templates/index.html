@@ -4,11 +4,11 @@ Adkintun Mobile
 {% endblock %}
 
 {% block header %}
-                    <a class="mdl-navigation__link mdl-typography--text-uppercase" href="#about">Acerca de</a>
-                    <a class="mdl-navigation__link mdl-typography--text-uppercase" href="#screens">Visualizaciones</a>
-                    <a class="mdl-navigation__link mdl-typography--text-uppercase" href="#roadmap">Línea de tiempo</a>
-                    <a class="mdl-navigation__link mdl-typography--text-uppercase" href="#research">Investigación</a>
-                    <a class="mdl-navigation__link mdl-typography--text-uppercase" href="#contact">Contacto</a>
+                    <a class="mdl-navigation__link mdl-typography--text-uppercase" href="{{ url_for('report_index') }}">Reportes</a>
+                    <!--<a class="mdl-navigation__link mdl-typography&#45;&#45;text-uppercase" href="#screens">Visualizaciones</a>-->
+                    <!--<a class="mdl-navigation__link mdl-typography&#45;&#45;text-uppercase" href="#roadmap">Línea de tiempo</a>-->
+                    <!--<a class="mdl-navigation__link mdl-typography&#45;&#45;text-uppercase" href="#research">Investigación</a>-->
+                    <!--<a class="mdl-navigation__link mdl-typography&#45;&#45;text-uppercase" href="#contact">Contacto</a>-->
 {% endblock %}
 
 
@@ -414,22 +414,14 @@ Adkintun Mobile
                 <br> adkmobile@niclabs.cl</p>
         </div>
 
-        <footer class="android-footer mdl-mega-footer">
-            <center>
-                <div class="mdl-mega-footer--middle-section">
-                    <p>Adkintun Mobile es traído a usted por</p>
-                    <img src="{{ url_for('static', filename='img/logo_nicblanco.png') }}" width="120px"/>
-                    <img src="{{ url_for('static', filename='img/logo_inriablanco.png') }}" width="120px"/>
-                    <img src="{{ url_for('static', filename='img/corfo_logo.png') }}" width="120px"/>
-                </div>
-            </center>
-        </footer>
+
+        {{ super() }}
     </div>
 {% endblock %}
 
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/material.min.js') }}"></script>
-<script src="{{ url_for('static', filename='js/jquery-2.1.4.js') }}"  ></script>
-<script src="{{ url_for('static', filename='js/timeline.js') }}" ></script>
+<script src="{{ url_for('static', filename='js/material.min.js')}}"></script>
+<script src="{{ url_for('static', filename='js/jquery-2.1.4.js')}}"></script>
+<script src="{{ url_for('static', filename='js/timeline.js')}}"></script>
 {% endblock %}
