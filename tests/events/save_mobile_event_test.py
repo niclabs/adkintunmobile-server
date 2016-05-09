@@ -3,6 +3,7 @@ from datetime import datetime
 from app import app
 from app.models.mobile_traffic_event import MobileTrafficEvent
 from config import AppTokens
+from manage import populate
 from tests import base_test_case
 from tests.events.one_event_in_type_json import events_json
 
@@ -17,14 +18,14 @@ class SaveMobileEventTestCase(base_test_case.BaseTestCase):
         Populate the model with test data
         '''
         # Create the default sim
-        pass
+        populate()
 
     # test de guardado de eventos: 1 wifi traffic event y 2 state change event
     def test_save_normal_events(self):
         with app.app_context():
             token = list(AppTokens.tokens.keys())[0]
             request = self.app.post('/api/events', data=dict(
-                    events=events_json
+                events=events_json
             ), headers={'Authorization': 'token ' + token})
 
             assert request.status_code == 201
@@ -38,7 +39,7 @@ class SaveMobileEventTestCase(base_test_case.BaseTestCase):
             assert mobile_event.rx_packets == 45672
             assert mobile_event.tcp_rx_bytes == 4687
             assert mobile_event.tcp_tx_bytes == 1357
-            assert mobile_event.date == datetime.fromtimestamp(1330641500183 / 1000).date()
+            assert mobile_event.date.date() == datetime.fromtimestamp(1330641500183 / 1000).date()
             assert mobile_event.tx_bytes == 489
             assert mobile_event.tx_packets == 35
             assert mobile_event.app_version_code == "0.0a"

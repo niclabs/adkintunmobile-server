@@ -3,6 +3,7 @@ from datetime import datetime
 from app import app
 from app.models.wifi_traffic_event import WifiTrafficEvent
 from config import AppTokens
+from manage import populate
 from tests import base_test_case
 from tests.events.one_event_in_type_json import events_json
 
@@ -16,14 +17,14 @@ class SaveWifiEventTestCase(base_test_case.BaseTestCase):
         '''
         Populate the model with test data
         '''
-        pass
+        populate()
 
     # test de guardado de eventos: 1 wifi traffic event y 2 state change event
     def test_save_normal_events(self):
         with app.app_context():
             token = list(AppTokens.tokens.keys())[0]
             request = self.app.post('/api/events', data=dict(
-                    events=events_json
+                events=events_json
             ), headers={'Authorization': 'token ' + token})
 
             assert request.status_code == 201
@@ -37,7 +38,7 @@ class SaveWifiEventTestCase(base_test_case.BaseTestCase):
             assert wifi_event.rx_packets == 19
             assert wifi_event.tcp_rx_bytes == 4532
             assert wifi_event.tcp_tx_bytes == 1523
-            assert wifi_event.date == datetime.fromtimestamp(1330641510326 / 1000).date()
+            assert wifi_event.date.date() == datetime.fromtimestamp(1330641510326 / 1000).date()
             assert wifi_event.tx_bytes == 196
             assert wifi_event.tx_packets == 4
             assert wifi_event.app_version_code == "0.0a"
