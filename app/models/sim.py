@@ -34,11 +34,3 @@ class Sim(base_model.BaseModel):
             sim = Sim(serial_number=args['serial_number'], creation_date=datetime.now().date())
             db.session.add(sim)
         return sim
-
-
-    def add_device(self, device):
-        from app.models.device import Device
-
-        existent_device = self.devices.filter(Device.device_id == device.device_id).first()
-        if not existent_device:
-            self.devices.append(device)

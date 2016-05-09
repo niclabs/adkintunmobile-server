@@ -17,4 +17,4 @@ from app.models import gsm_event
 from app.models import mobile_traffic_event
 from app.models import traffic_event
 from app.models import wifi_traffic_event
-from app.models import report_daily
+from app.models import daily_report

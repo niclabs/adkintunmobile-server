@@ -13,7 +13,6 @@ class Carrier(base_model.BaseModel):
     mcc = db.Column(db.Integer)
     mnc = db.Column(db.Integer)
     sims = db.relationship('Sim', backref='carrier', lazy='dynamic')
-    daily_reports = db.relationship('DailyReport', backref='carrier', lazy='dynamic')
     telephony_observation_events = db.relationship('TelephonyObservationEvent', backref='carrier', lazy='dynamic')
 
     def __init__(self, name=None, mcc=None, mnc=None):
@@ -22,10 +21,4 @@ class Carrier(base_model.BaseModel):
         self.mnc = mnc
 
     def __repr__(self):
-        return '<Telco %r>' % (self.name)
-
-    def add_sim(self, sim):
-        from app.models.sim import Sim
-        existent_sim = self.sims.filter(Sim.serial_number == sim.serial_number).first()
-        if not existent_sim:
-            self.sims.append(sim)
+        return '<Carrier %r>' % (self.name)
