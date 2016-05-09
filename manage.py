@@ -1,9 +1,9 @@
 from flask.ext.migrate import Migrate, MigrateCommand
 from flask.ext.script import Manager, Server
-from app.static.data.initial_data_carriers import initial_data_carriers
 
 from app import app, db
 from app.static.data.initial_data_antennas import initial_data_antennas
+from app.static.data.initial_data_carriers import initial_data_carriers
 from config import AppTokens
 from flask import g
 from flask_httpauth import HTTPTokenAuth
@@ -43,7 +43,6 @@ def test():
 def populate():
     import json
     from app.models.carrier import Carrier
-    from app.models.antenna import Antenna
     from config import AdminUser
     from app.models.user import User
     from werkzeug.security import generate_password_hash
@@ -66,7 +65,13 @@ def populate():
         if k == "carriers":
             save_models(v, Carrier)
 
-    # Agregar antennas
+
+@manager.command
+def populate_antennas():
+    import json
+    from app.models.carrier import Carrier
+    from app.models.antenna import Antenna
+
     jsonvar = json.loads(initial_data_antennas)
     for k, v in jsonvar.items():
         if k == "antennas":
