@@ -2,7 +2,7 @@ from datetime import datetime
 
 
 def generate_report():
-    print("Generar reporte")
+    print("Generar reportes")
 
 
 # Total de equipos que han entregado datos

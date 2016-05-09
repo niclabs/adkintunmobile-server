@@ -12,7 +12,6 @@ def start_scheduler():
 
     scheduler.start()
 
-
 def today_init_time():
     return datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
 

@@ -16,8 +16,9 @@ class SimView(ModelView):
     def is_accessible(self):
         return login.current_user.is_authenticated
 
+    column_list = ('serial_number', 'creation_date', 'carrier')
+    column_editable_list = ('serial_number', 'creation_date', 'carrier')
     column_display_pk = True
-    create_modal = True
 
 
 class CarrierView(ModelView):
@@ -26,7 +27,6 @@ class CarrierView(ModelView):
         return login.current_user.is_authenticated
 
     column_display_pk = True
-    create_modal = True
 
 class DeviceView(ModelView):
 
@@ -34,7 +34,6 @@ class DeviceView(ModelView):
         return login.current_user.is_authenticated
 
     column_display_pk = True
-    create_modal = True
     # column_hide_backrefs = False
     # column_list = ('id', 'sdk', 'mobile_plan')
 
@@ -44,7 +43,6 @@ class EventView(ModelView):
         return login.current_user.is_authenticated
 
     column_display_pk = True
-    create_modal = True
 
 class AntennaView(ModelView):
 
@@ -52,7 +50,6 @@ class AntennaView(ModelView):
         return login.current_user.is_authenticated
 
     column_display_pk = True
-    create_modal = True
 
 # class AntennaView(sqla.ModelView):
 #     pass
