@@ -48,10 +48,10 @@ def add_device_sim_carrier(args):
         sim = Sim().store_if_not_exist(args)
 
         # Se vinculan sim con device
-        sim.add_device(device)
+        sim.devices.append(device)
 
         # Se vincula sim con carrier
-        carrier.add_sim(sim)
+        carrier.sims.append(sim)
 
         db.session.commit()
         return 'registration complete', 201

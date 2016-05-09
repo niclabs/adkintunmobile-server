@@ -16,7 +16,9 @@ events_json = '''{
     },
     "sim_records": {
         "carrier_id": "73008",
-        "serial_number": "8000000000000000000"
+        "serial_number": "8000000000000000000",
+        "mcc": 730,
+        "mnc": 2
     },
     "cdma_records": [],
     "gsm_records": [

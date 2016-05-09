@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+
 from app import db, app
 from app.api import api
 from flask import request
@@ -8,7 +9,7 @@ from manage import auth
 from werkzeug.exceptions import BadRequestKeyError
 
 
-class ReadEvents(Resource):
+class ReadEventsFromArgument(Resource):
     method_decorators = [auth.login_required]
 
     def post(self):
@@ -17,14 +18,17 @@ class ReadEvents(Resource):
 
         try:
             args = post_parser.parse_args()
-            return read_events(args.events)
-        #revisar exception post parser
-        except Exception as e:
+            jsonvar = json.loads(args.events)
+            jsonvar, device, sim, app_version_code = set_events_context(jsonvar)
+            return read_events(jsonvar, device, sim, app_version_code)
+
+        except (json.JSONDecodeError, BadRequestKeyError, UnicodeError) as e:
+            return e, 400
+        except (KeyError, Exception) as e:
             db.session.rollback()
             return e, 400
 
-
-api.add_resource(ReadEvents, '/api/events')
+api.add_resource(ReadEventsFromArgument, '/api/events')
 
 
 @app.route("/events", methods=['POST'])
@@ -35,46 +39,53 @@ def read_events_from_file():
         lines = f.readlines()
         string = ''.join(x.decode("utf-8") for x in lines)
         string = string.replace('\n', '')
-        return read_events(string)
+        jsonvar = json.loads(string)
+        jsonvar, device, sim, app_version_code = set_events_context(jsonvar)
+        return read_events(jsonvar, device, sim, app_version_code)
 
-    except BadRequestKeyError as e:
+    except (json.JSONDecodeError, BadRequestKeyError, UnicodeError) as e:
         return e, 400
-    except UnicodeError as e:
-        return e, 400
-
-
-def read_events(events):
-    try:
-        jsonvar = json.loads(events)
-
-        from app.models.device import Device
-        device = Device.store_if_no_exist(jsonvar["device_records"])
-        app_version_code = jsonvar["device_records"]["app_version_code"]
-        del jsonvar["device_records"]
-
-        from app.models.sim import Sim
-        sim = Sim.store_if_not_exist(jsonvar["sim_records"])
-        del jsonvar["sim_records"]
-
-        # Se vinculan sim con device en caso de no existir vínculo
-        sim.add_device(device)
-
-        total_events = 0
-
-        for events_name, events in jsonvar.items():
-            total_events += save(events_name, events, device, sim, app_version_code)
-        print("Eventos Almacenados: ", total_events)
-
-        return 'Eventos guardados', 201
-
-    except json.JSONDecodeError as e:
-        return e, 400
-    except KeyError as e:
+    except (KeyError, Exception) as e:
         db.session.rollback()
         return e, 400
-    except Exception as e:
-        db.session.rollback()
-        return e, 400
+
+
+def read_events(jsonvar, device, sim, app_version_code):
+    total_events = 0
+
+    for events_name, events in jsonvar.items():
+        total_events += save(events_name, events, device, sim, app_version_code)
+    print("Eventos Almacenados: ", total_events)
+
+    return 'Eventos guardados', 201
+
+
+def set_events_context(jsonvar):
+    from app.models.device import Device
+    device = Device.store_if_no_exist(jsonvar["device_records"])
+    app_version_code = jsonvar["device_records"]["app_version_code"]
+    del jsonvar["device_records"]
+
+    from app.models.sim import Sim
+    sim = Sim.store_if_not_exist(jsonvar["sim_records"])
+
+    from app.models.carrier import Carrier
+    carrier = Carrier.query.filter(Carrier.mnc == jsonvar["sim_records"]["mnc"] and Carrier.mcc == jsonvar["sim_records"]["mcc"]).first()
+
+    del jsonvar["sim_records"]
+
+    # Se vinculan sim con device en caso de no existir vínculo
+    sim.devices.append(device)
+
+    # Se vincula carrier con sim
+    carrier.sims.append(sim)
+
+    db.session.add(sim)
+    db.session.add(carrier)
+
+    db.session.commit()
+
+    return jsonvar, device, sim, app_version_code
 
 
 def save_traffics_events(events, device, sim, app_version_code):

@@ -9,6 +9,7 @@ from app.models.wifi_traffic_event import WifiTrafficEvent
 from config import AppTokens
 from tests import base_test_case
 from tests.events.normal_event_json import events_json
+from manage import populate
 
 
 class SaveEventsTestCase(base_test_case.BaseTestCase):
@@ -20,7 +21,7 @@ class SaveEventsTestCase(base_test_case.BaseTestCase):
         '''
         Populate the model with test data
         '''
-        pass
+        populate()
 
     # test de guardado de eventos: 1 wifi traffic event y 2 state change event
     def test_save_normal_events(self):
