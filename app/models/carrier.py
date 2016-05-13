@@ -22,3 +22,19 @@ class Carrier(base_model.BaseModel):
 
     def __repr__(self):
         return '<Carrier %r>' % (self.name)
+
+
+carriers = {
+    '': 'none',
+    'entel': 'entel',
+    'movistar': 'movistar',
+    'claro': 'claro',
+    'WOM': 'wom',
+    'Telefónica del Sur': 'tds',
+    'VTR Móvil': 'vtrm',
+    'Virgin Mobile': 'virginm',
+    'Will': 'will',
+    'Nextel': 'nextel',
+    'Celupago': 'celupago',
+    'Colo-Colo Móvil Wanderers Móvi': 'ccwm',
+    'Netline': 'netline'}
