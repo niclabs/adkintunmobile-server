@@ -61,6 +61,6 @@ class Device(base_model.BaseModel):
                     release_type=args['release_type'],
                     product=args['product'],
                     sdk=args['sdk'],
-                    creation_date=datetime.now().date())
+                    creation_date=datetime.now())
             db.session.add(device)
         return device
