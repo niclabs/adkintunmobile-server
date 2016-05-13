@@ -29,13 +29,13 @@ def generate_report():
     total_gsm_carrier = total_gsm_events_for_carrier(init_date, actual_date)
 
     from app.models.total_report import TotalReport
-    from app.models.carrier import carriers
+    from app.models.carrier import Carrier
 
     daily_report = DailyReport( date=actual_date, total_devices=total_devices, total_sims=total_sims, total_events=total_gsm )
     total_report = TotalReport( date=actual_date, total_devices=total_devices, total_sims=total_sims, total_events=total_gsm)
 
     for element in total_device_carrier:
-        carrier = carriers.get(element.Carrier.name, 'none')
+        carrier = Carrier.carriers.get(element.Carrier.name, 'none')
         setattr(daily_report, 'devices_'+carrier, element.devices_count)
         if last_element:
             setattr(total_report, 'devices_'+carrier, element.devices_count + getattr(last_element,'devices_'+carrier))
@@ -43,7 +43,7 @@ def generate_report():
             setattr(total_report, 'devices_'+carrier, element.devices_count)
 
     for element in total_sims_carrier:
-        carrier = carriers.get(element.Carrier.name, 'none')
+        carrier = Carrier.carriers.get(element.Carrier.name, 'none')
         setattr(daily_report, 'sims_'+carrier, element.sims_count)
         if last_element:
             setattr(total_report, 'sims_'+carrier, element.sims_count + getattr(last_element,'sims_'+carrier))
@@ -51,7 +51,7 @@ def generate_report():
             setattr(total_report, 'sims_'+carrier, element.sims_count)
 
     for element in total_gsm_carrier:
-        carrier = carriers.get(element.Carrier.name, 'none')
+        carrier = Carrier.carriers.get(element.Carrier.name, 'none')
         setattr(daily_report, 'events_'+carrier, element.events_count)
         if last_element:
             setattr(total_report, 'events_'+carrier, element.events_count + getattr(last_element,'events_'+carrier))

@@ -24,17 +24,24 @@ class Carrier(base_model.BaseModel):
         return '<Carrier %r>' % (self.name)
 
 
-carriers = {
-    '': 'none',
-    'entel': 'entel',
-    'movistar': 'movistar',
-    'claro': 'claro',
-    'WOM': 'wom',
-    'Telefónica del Sur': 'tds',
-    'VTR Móvil': 'vtrm',
-    'Virgin Mobile': 'virginm',
-    'Will': 'will',
-    'Nextel': 'nextel',
-    'Celupago': 'celupago',
-    'Colo-Colo Móvil Wanderers Móvi': 'ccwm',
-    'Netline': 'netline'}
+    carriers = {
+        '': 'none',
+        'entel': 'entel',
+        'movistar': 'movistar',
+        'claro': 'claro',
+        'WOM': 'wom',
+        'Telefónica del Sur': 'tds',
+        'VTR Móvil': 'vtrm',
+        'Virgin Mobile': 'virginm',
+        'Will': 'will',
+        'Nextel': 'nextel',
+        'Celupago': 'celupago',
+        'Colo-Colo Móvil Wanderers Móvi': 'ccwm',
+        'Netline': 'netline'}
+
+
+    def add_sim(self, sim):
+        from app.models.sim import Sim
+        existent_sim = self.sims.filter(Sim.serial_number == sim.serial_number).first()
+        if not existent_sim:
+            self.sims.append(sim)

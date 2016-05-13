@@ -19,7 +19,7 @@ class ReadEventsFromArgument(Resource):
         try:
             args = post_parser.parse_args()
             jsonvar = json.loads(args.events)
-            jsonvar, device, sim, app_version_code = set_events_context(jsonvar)
+            device, sim, app_version_code = set_events_context(jsonvar)
             return read_events(jsonvar, device, sim, app_version_code)
 
         except (json.JSONDecodeError, BadRequestKeyError, UnicodeError) as e:
@@ -40,7 +40,7 @@ def read_events_from_file():
         string = ''.join(x.decode("utf-8") for x in lines)
         string = string.replace('\n', '')
         jsonvar = json.loads(string)
-        jsonvar, device, sim, app_version_code = set_events_context(jsonvar)
+        device, sim, app_version_code = set_events_context(jsonvar)
         return read_events(jsonvar, device, sim, app_version_code)
 
     except (json.JSONDecodeError, BadRequestKeyError, UnicodeError) as e:
@@ -52,6 +52,8 @@ def read_events_from_file():
 
 def read_events(jsonvar, device, sim, app_version_code):
     total_events = 0
+    del jsonvar["device_records"]
+    del jsonvar["sim_records"]
 
     for events_name, events in jsonvar.items():
         total_events += save(events_name, events, device, sim, app_version_code)
@@ -64,7 +66,7 @@ def set_events_context(jsonvar):
     from app.models.device import Device
     device = Device.store_if_no_exist(jsonvar["device_records"])
     app_version_code = jsonvar["device_records"]["app_version_code"]
-    del jsonvar["device_records"]
+
 
     from app.models.sim import Sim
     sim = Sim.store_if_not_exist(jsonvar["sim_records"])
@@ -72,20 +74,18 @@ def set_events_context(jsonvar):
     from app.models.carrier import Carrier
     carrier = Carrier.query.filter(Carrier.mnc == jsonvar["sim_records"]["mnc"] and Carrier.mcc == jsonvar["sim_records"]["mcc"]).first()
 
-    del jsonvar["sim_records"]
-
     # Se vinculan sim con device en caso de no existir vínculo
-    sim.devices.append(device)
+    sim.add_device(device)
 
     # Se vincula carrier con sim
-    carrier.sims.append(sim)
+    carrier.add_sim(sim)
 
     db.session.add(sim)
     db.session.add(carrier)
 
     db.session.commit()
 
-    return jsonvar, device, sim, app_version_code
+    return device, sim, app_version_code
 
 
 def save_traffics_events(events, device, sim, app_version_code):
