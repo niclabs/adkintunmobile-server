@@ -16,8 +16,8 @@ class SimView(ModelView):
     def is_accessible(self):
         return login.current_user.is_authenticated
 
-    column_list = ('serial_number', 'creation_date', 'carrier')
-    column_editable_list = ('serial_number', 'creation_date', 'carrier')
+    #column_list = ('serial_number', 'creation_date', 'carrier')
+    #column_editable_list = ('serial_number', 'creation_date', 'carrier')
     column_display_pk = True
 
 
