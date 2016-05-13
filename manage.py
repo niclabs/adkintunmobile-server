@@ -87,11 +87,12 @@ def populate_antennas():
                 for k, v in json_element.items():
                     if hasattr(antenna, k):
                         setattr(antenna, k, v)
-                db.session.add(antenna)
                 try:
+                    db.session.add(antenna)
                     db.session.commit()
-                except IntegrityError:
+                except (IntegrityError, Exception):
                     db.session.rollback()
+                    continue
 
 
 def save_models(elements, model_class):
