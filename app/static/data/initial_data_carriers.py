@@ -20,7 +20,7 @@ initial_data_carriers = '''
             "id": 7303
         },
         {
-            "name": "WOM",
+            "name": "Nextel",
             "mcc": 730,
             "mnc": 4,
             "id": 7304
@@ -32,7 +32,7 @@ initial_data_carriers = '''
             "id": 7306
         },
         {
-            "name": "movistar",
+            "name": "Virgin Mobile",
             "mcc": 730,
             "mnc": 7,
             "id": 7307
@@ -56,6 +56,12 @@ initial_data_carriers = '''
             "id": 73010
         },
         {
+            "name": "Celupago",
+            "mcc": 730,
+            "mnc": 11,
+            "id": 73011
+        },
+        {
             "name": "Colo-Colo Móvil Wanderers Móvil",
             "mcc": 730,
             "mnc": 12,
@@ -66,6 +72,12 @@ initial_data_carriers = '''
             "mcc": 730,
             "mnc": 13,
             "id": 73013
+        },
+        {
+            "name": "Netline",
+            "mcc": 730,
+            "mnc": 14,
+            "id": 73014
         },
         {
             "name": "Will",
