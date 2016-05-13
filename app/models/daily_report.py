@@ -4,6 +4,7 @@ from app import db
 class DailyReport(db.Model):
     __tablename__ = 'daily_reports'
     id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime)
     total_devices = db.Column(db.Integer)
     total_sims = db.Column(db.Integer)
     total_events = db.Column(db.Integer)
@@ -11,40 +12,51 @@ class DailyReport(db.Model):
     devices_entel = db.Column(db.Integer)
     devices_movistar = db.Column(db.Integer)
     devices_claro = db.Column(db.Integer)
+    devices_nextel = db.Column(db.Integer)
     devices_wom = db.Column(db.Integer)
     devices_tds = db.Column(db.Integer)
     devices_vtrm = db.Column(db.Integer)
     devices_ccwm = db.Column(db.Integer)
     devices_virginm = db.Column(db.Integer)
     devices_will = db.Column(db.Integer)
+    devices_celupago = db.Column(db.Integer)
+    devices_netline = db.Column(db.Integer)
     sims_none = db.Column(db.Integer)
     sims_entel = db.Column(db.Integer)
     sims_movistar = db.Column(db.Integer)
     sims_claro = db.Column(db.Integer)
+    sims_nextel = db.Column(db.Integer)
     sims_wom = db.Column(db.Integer)
     sims_tds = db.Column(db.Integer)
     sims_vtrm = db.Column(db.Integer)
     sims_ccwm = db.Column(db.Integer)
     sims_virginm = db.Column(db.Integer)
     sims_will = db.Column(db.Integer)
+    sims_celupago = db.Column(db.Integer)
+    sims_netline = db.Column(db.Integer)
     events_none = db.Column(db.Integer)
     events_entel = db.Column(db.Integer)
     events_movistar = db.Column(db.Integer)
     events_claro = db.Column(db.Integer)
+    events_nextel = db.Column(db.Integer)
     events_wom = db.Column(db.Integer)
     events_tds = db.Column(db.Integer)
     events_vtrm = db.Column(db.Integer)
     events_ccwm = db.Column(db.Integer)
     events_virginm = db.Column(db.Integer)
     events_will = db.Column(db.Integer)
+    events_celupago = db.Column(db.Integer)
+    events_netline = db.Column(db.Integer)
 
-    def __init__(self, total_devices=0, total_sims=0, total_events=0, devices_none=0, devices_entel=0,
+    def __init__(self, date=None, total_devices=0, total_sims=0, total_events=0, devices_none=0, devices_entel=0,
                  devices_movistar=0, devices_claro=0, devices_wom=0, devices_tds=0, devices_vtrm=0, devices_ccwm=0,
                  devices_virginm=0, devices_will=0, sims_none=0, sims_entel=0, sims_movistar=0, sims_claro=0,
                  sims_wom=0, sims_tds=0, sims_vtrm=0, sims_ccwm=0, sims_virginm=0, sims_will=0, events_none=0,
                  events_entel=0, events_movistar=0, events_claro=0, events_wom=0, events_tds=0, events_vtrm=0,
-                 events_ccwm=0, events_virginm=0, events_will=0):
-
+                 events_ccwm=0, events_virginm=0, events_will=0, devices_nextel=0, sims_nextel=0, events_nextel=0,
+                 devices_celupago=0, sims_celupago=0, events_celupago=0, devices_netline=0, sims_netline=0,
+                 events_netline=0):
+        self.date = date
         self.total_devices = total_devices
         self.total_sims = total_sims
         self.total_events = total_events
@@ -78,3 +90,12 @@ class DailyReport(db.Model):
         self.events_ccwm = events_ccwm
         self.events_virginm = events_virginm
         self.events_will = events_will
+        self.devices_nextel=devices_nextel
+        self.sims_nextel=sims_nextel
+        self.events_nextel=events_nextel
+        self.devices_celupago=devices_celupago
+        self.sims_celupago=sims_celupago
+        self.events_celupago=events_celupago
+        self.devices_netline=devices_netline
+        self.sims_netline=sims_netline
+        self.events_netline =events_netline

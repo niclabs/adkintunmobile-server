@@ -78,7 +78,7 @@ def sims_for_carrier():
 
 @app.route('/report/total_events_for_carrier')
 def events_for_carrier():
-    from app.report.report import total_events_for_carrier
+    from app.report.report import total_gsm_events_for_carrier
 
     min_date = None
     max_date = None
@@ -87,6 +87,6 @@ def events_for_carrier():
         min_date = get_min_date(request.args["min_date"], "%Y-%m-%d")
         max_date = get_max_date(request.args["max_date"], "%Y-%m-%d")
 
-    carriers = total_events_for_carrier(min_date, max_date)
+    carriers = total_gsm_events_for_carrier(min_date, max_date)
     return render_template('report/events_for_carrier.html', carriers=carriers,
                            min_date=min_date, max_date=max_date)

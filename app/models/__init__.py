@@ -18,3 +18,4 @@ from app.models import mobile_traffic_event
 from app.models import traffic_event
 from app.models import wifi_traffic_event
 from app.models import daily_report
+from app.models import total_report
