@@ -2,7 +2,68 @@ from datetime import datetime
 
 
 def generate_report():
-    print("Generar reportes")
+    '''
+    Función que calcula los valores del reporte y los guarda en las tablas correspondientes.
+    Además, setea las fechas entre las cuales se hizo el reporte (muy importante) las cuales son als asignadas en la tabla de reportes
+    :return: Nada
+    '''
+
+    # Seteamos fecha de cuando comienza el reporte
+    actual_date = datetime.now()
+
+    # Obtenemos fecha del último reporte
+    from app.models.daily_report import DailyReport
+
+    last_element = DailyReport.query.order_by(DailyReport.id.desc()).first()
+    init_date = None
+
+    if last_element:
+        init_date = last_element.date
+
+    # calcular todos los valores pertinentes
+    total_devices = total_devices_reported(init_date, actual_date)
+    total_sims = total_sims_registered(init_date, actual_date)
+    total_gsm = total_gsm_events(init_date, actual_date)
+    total_device_carrier = total_device_for_carrier(init_date, actual_date)
+    total_sims_carrier =  total_sims_for_carrier(init_date, actual_date)
+    total_gsm_carrier = total_gsm_events_for_carrier(init_date, actual_date)
+
+    from app.models.total_report import TotalReport
+    from app.models.carrier import carriers
+
+    daily_report = DailyReport( date=actual_date, total_devices=total_devices, total_sims=total_sims, total_events=total_gsm )
+    total_report = TotalReport( date=actual_date, total_devices=total_devices, total_sims=total_sims, total_events=total_gsm)
+
+    for element in total_device_carrier:
+        carrier = carriers.get(element.Carrier.name, 'none')
+        setattr(daily_report, 'devices_'+carrier, element.devices_count)
+        if last_element:
+            setattr(total_report, 'devices_'+carrier, element.devices_count + getattr(last_element,'devices_'+carrier))
+        else:
+            setattr(total_report, 'devices_'+carrier, element.devices_count)
+
+    for element in total_sims_carrier:
+        carrier = carriers.get(element.Carrier.name, 'none')
+        setattr(daily_report, 'sims_'+carrier, element.sims_count)
+        if last_element:
+            setattr(total_report, 'sims_'+carrier, element.sims_count + getattr(last_element,'sims_'+carrier))
+        else:
+            setattr(total_report, 'sims_'+carrier, element.sims_count)
+
+    for element in total_gsm_carrier:
+        carrier = carriers.get(element.Carrier.name, 'none')
+        setattr(daily_report, 'events_'+carrier, element.events_count)
+        if last_element:
+            setattr(total_report, 'events_'+carrier, element.events_count + getattr(last_element,'events_'+carrier))
+        else:
+            setattr(total_report, 'events_'+carrier, element.events_count)
+
+    from app import db
+    db.session.add(daily_report)
+    db.session.add(total_report)
+    db.session.commit()
+
+    #falta testeo
 
 
 # Total de equipos que han entregado datos
@@ -104,8 +165,8 @@ def total_sims_for_carrier(min_date=datetime(2015, 1, 1),
 
 
 # Mediciones efectuadas por compania
-def total_events_for_carrier(min_date=datetime(2015, 1, 1),
-                             max_date=None):
+def total_gsm_events_for_carrier(min_date=datetime(2015, 1, 1),
+                                 max_date=None):
     from app.models.carrier import Carrier
     from app import db
     from sqlalchemy import text
@@ -121,7 +182,8 @@ def total_events_for_carrier(min_date=datetime(2015, 1, 1),
     FROM carriers
     JOIN
     (SELECT carrier_id, count(*) AS events_count
-    FROM events
+    FROM gsm_events
+    JOIN events ON gsm_events.id = events.id
     JOIN sims ON events.sim_serial_number = sims.serial_number
     WHERE events.date BETWEEN :min_date AND :max_date
     GROUP BY carrier_id) as consulta_1

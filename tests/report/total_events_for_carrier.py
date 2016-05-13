@@ -5,7 +5,7 @@ from app.models.carrier import Carrier
 from app.models.device import Device
 from app.models.gsm_event import GsmEvent
 from app.models.sim import Sim
-from app.report.report import total_gsm_events, total_events_for_carrier
+from app.report.report import total_gsm_events, total_gsm_events_for_carrier
 from tests import base_test_case
 
 
@@ -63,7 +63,7 @@ class TotalDevicesForCarrierReportedTestCase(base_test_case.BaseTestCase):
 
     def test_two_carrier(self):
         with app.app_context():
-            events_for_carrier = total_events_for_carrier()
+            events_for_carrier = total_gsm_events_for_carrier()
             assert len(events_for_carrier) == 2
 
             assert events_for_carrier[0].Carrier.name == "test_carrier_1"
@@ -73,7 +73,7 @@ class TotalDevicesForCarrierReportedTestCase(base_test_case.BaseTestCase):
 
     def test_date_filter(self):
         with app.app_context():
-            events_for_carrier = total_events_for_carrier(min_date=(datetime.now() + timedelta(days=-1)))
+            events_for_carrier = total_gsm_events_for_carrier(min_date=(datetime.now() + timedelta(days=-1)))
             assert len(events_for_carrier) == 2
 
             assert events_for_carrier[0].Carrier.name == "test_carrier_1"
