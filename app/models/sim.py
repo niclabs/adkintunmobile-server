@@ -24,6 +24,7 @@ class Sim(base_model.BaseModel):
     def __repr__(self):
         return '<Sim, serial_number: %r, creation_date: %r, carrier: %r, carrier_id: %r>' % \
                (self.serial_number, self.creation_date, self.carrier, self.carrier_id)
+
     @staticmethod
     def store_if_not_exist(args):
         from datetime import datetime
