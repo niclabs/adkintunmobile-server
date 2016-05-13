@@ -32,7 +32,7 @@ class Sim(base_model.BaseModel):
         sim = Sim.query.filter(Sim.serial_number == args['serial_number']).first()
 
         if not sim:
-            sim = Sim(serial_number=args['serial_number'], creation_date=datetime.now().date())
+            sim = Sim(serial_number=args['serial_number'], creation_date=datetime.now())
             db.session.add(sim)
         return sim
 
