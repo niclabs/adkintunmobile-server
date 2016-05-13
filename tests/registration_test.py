@@ -16,7 +16,7 @@ class TestRegistration(base_test_case.BaseTestCase):
         from config import AppTokens
 
         with app.app_context():
-            date = datetime.now().date()
+            date = datetime.now()
             request = self.app.post('/api/registration',
                                     data=dict(
                                         serial_number="800000000000000000000",
