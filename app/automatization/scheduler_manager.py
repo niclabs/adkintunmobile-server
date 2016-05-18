@@ -6,10 +6,10 @@ from app.report.report import generate_report
 
 def start_scheduler():
     scheduler = BackgroundScheduler()
-
+    start_date=today_init_time()
     scheduler.add_job(generate_report, 'interval', id="procesamiento diario", replace_existing=True, days=1,
                       start_date=today_init_time())
-
+    print("Reportes seteados a las "+str(start_date))
     scheduler.start()
 
 def today_init_time():

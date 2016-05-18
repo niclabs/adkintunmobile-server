@@ -4,7 +4,8 @@ from app import db
 class TotalReport(db.Model):
     __tablename__ = 'total_reports'
     id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.DateTime)
+    init_date = db.Column(db.DateTime)
+    final_date = db.Column(db.DateTime)
     total_devices = db.Column(db.Integer)
     total_sims = db.Column(db.Integer)
     total_events = db.Column(db.Integer)
@@ -48,7 +49,7 @@ class TotalReport(db.Model):
     events_celupago = db.Column(db.Integer)
     events_netline = db.Column(db.Integer)
 
-    def __init__(self, date=None, total_devices=0, total_sims=0, total_events=0, devices_none=0, devices_entel=0,
+    def __init__(self, init_date=None,final_date=None, total_devices=0, total_sims=0, total_events=0, devices_none=0, devices_entel=0,
                  devices_movistar=0, devices_claro=0, devices_wom=0, devices_tds=0, devices_vtrm=0, devices_ccwm=0,
                  devices_virginm=0, devices_will=0, sims_none=0, sims_entel=0, sims_movistar=0, sims_claro=0,
                  sims_wom=0, sims_tds=0, sims_vtrm=0, sims_ccwm=0, sims_virginm=0, sims_will=0, events_none=0,
@@ -56,7 +57,8 @@ class TotalReport(db.Model):
                  events_ccwm=0, events_virginm=0, events_will=0, devices_nextel=0, sims_nextel=0, events_nextel=0,
                  devices_celupago=0, sims_celupago=0, events_celupago=0, devices_netline=0, sims_netline=0,
                  events_netline=0):
-        self.date = date
+        self.init_date = init_date
+        self.final_date = final_date
         self.total_devices = total_devices
         self.total_sims = total_sims
         self.total_events = total_events
