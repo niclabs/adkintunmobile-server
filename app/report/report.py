@@ -18,52 +18,58 @@ def generate_report():
     init_date = None
 
     if last_element:
-        init_date = last_element.date
+        init_date = last_element.final_date
 
     # calcular todos los valores pertinentes
     total_devices = total_devices_reported(init_date, actual_date)
     total_sims = total_sims_registered(init_date, actual_date)
     total_gsm = total_gsm_events(init_date, actual_date)
     total_device_carrier = total_device_for_carrier(init_date, actual_date)
-    total_sims_carrier =  total_sims_for_carrier(init_date, actual_date)
+    total_sims_carrier = total_sims_for_carrier(init_date, actual_date)
     total_gsm_carrier = total_gsm_events_for_carrier(init_date, actual_date)
 
     from app.models.total_report import TotalReport
     from app.models.carrier import Carrier
 
-    daily_report = DailyReport( date=actual_date, total_devices=total_devices, total_sims=total_sims, total_events=total_gsm )
-    total_report = TotalReport( date=actual_date, total_devices=total_devices, total_sims=total_sims, total_events=total_gsm)
+    daily_report = DailyReport(init_date=init_date, final_date=actual_date, total_devices=total_devices,
+                               total_sims=total_sims, total_events=total_gsm)
+    total_report = TotalReport(init_date=init_date, final_date=actual_date, total_devices=total_devices,
+                               total_sims=total_sims, total_events=total_gsm)
 
     for element in total_device_carrier:
         carrier = Carrier.carriers.get(element.Carrier.name, 'none')
-        setattr(daily_report, 'devices_'+carrier, element.devices_count)
+        setattr(daily_report, 'devices_' + carrier, element.devices_count)
         if last_element:
-            setattr(total_report, 'devices_'+carrier, element.devices_count + getattr(last_element,'devices_'+carrier))
+            setattr(total_report, 'devices_' + carrier,
+                    element.devices_count + getattr(last_element, 'devices_' + carrier))
         else:
-            setattr(total_report, 'devices_'+carrier, element.devices_count)
+            setattr(total_report, 'devices_' + carrier, element.devices_count)
 
     for element in total_sims_carrier:
         carrier = Carrier.carriers.get(element.Carrier.name, 'none')
-        setattr(daily_report, 'sims_'+carrier, element.sims_count)
+        setattr(daily_report, 'sims_' + carrier, element.sims_count)
         if last_element:
-            setattr(total_report, 'sims_'+carrier, element.sims_count + getattr(last_element,'sims_'+carrier))
+            setattr(total_report, 'sims_' + carrier, element.sims_count + getattr(last_element, 'sims_' + carrier))
         else:
-            setattr(total_report, 'sims_'+carrier, element.sims_count)
+            setattr(total_report, 'sims_' + carrier, element.sims_count)
 
     for element in total_gsm_carrier:
         carrier = Carrier.carriers.get(element.Carrier.name, 'none')
-        setattr(daily_report, 'events_'+carrier, element.events_count)
+        setattr(daily_report, 'events_' + carrier, element.events_count)
         if last_element:
-            setattr(total_report, 'events_'+carrier, element.events_count + getattr(last_element,'events_'+carrier))
+            setattr(total_report, 'events_' + carrier,
+                    element.events_count + getattr(last_element, 'events_' + carrier))
         else:
-            setattr(total_report, 'events_'+carrier, element.events_count)
+            setattr(total_report, 'events_' + carrier, element.events_count)
 
     from app import db
     db.session.add(daily_report)
     db.session.add(total_report)
     db.session.commit()
 
-    #falta testeo
+    print("Almacenados reportes de fecha " + str(actual_date))
+
+    # falta testeo
 
 
 # Total de equipos que han entregado datos

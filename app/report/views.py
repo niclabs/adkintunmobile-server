@@ -1,8 +1,10 @@
 from datetime import datetime
 
+from app import app
+from config import Visualization
 from flask import render_template, request
 
-from app import app
+real_time_visualization = Visualization.real_time_info
 
 
 def get_min_date(dateStr, format):
