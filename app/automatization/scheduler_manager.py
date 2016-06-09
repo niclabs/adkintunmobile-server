@@ -1,7 +1,7 @@
 from datetime import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
 
-from app.report.report import generate_report
+from app.report.report_generation import generate_report
 
 
 def start_scheduler():

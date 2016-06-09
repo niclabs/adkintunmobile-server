@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from app import app, db
 from app.models.device import Device
 from app.models.state_change_event import StateChangeEvent
-from app.report.report import total_devices_reported
+from app.report.report_generation import total_devices_reported
 from tests import base_test_case
 
 
