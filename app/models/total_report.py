@@ -49,7 +49,8 @@ class TotalReport(db.Model):
     events_celupago = db.Column(db.Integer)
     events_netline = db.Column(db.Integer)
 
-    def __init__(self, init_date=None,final_date=None, total_devices=0, total_sims=0, total_events=0, devices_none=0, devices_entel=0,
+    def __init__(self, init_date=None, final_date=None, total_devices=0, total_sims=0, total_events=0, devices_none=0,
+                 devices_entel=0,
                  devices_movistar=0, devices_claro=0, devices_wom=0, devices_tds=0, devices_vtrm=0, devices_ccwm=0,
                  devices_virginm=0, devices_will=0, sims_none=0, sims_entel=0, sims_movistar=0, sims_claro=0,
                  sims_wom=0, sims_tds=0, sims_vtrm=0, sims_ccwm=0, sims_virginm=0, sims_will=0, events_none=0,
@@ -92,12 +93,22 @@ class TotalReport(db.Model):
         self.events_ccwm = events_ccwm
         self.events_virginm = events_virginm
         self.events_will = events_will
-        self.devices_nextel=devices_nextel
-        self.sims_nextel=sims_nextel
-        self.events_nextel=events_nextel
-        self.devices_celupago=devices_celupago
-        self.sims_celupago=sims_celupago
-        self.events_celupago=events_celupago
-        self.devices_netline=devices_netline
-        self.sims_netline=sims_netline
-        self.events_netline =events_netline
+        self.devices_nextel = devices_nextel
+        self.sims_nextel = sims_nextel
+        self.events_nextel = events_nextel
+        self.devices_celupago = devices_celupago
+        self.sims_celupago = sims_celupago
+        self.events_celupago = events_celupago
+        self.devices_netline = devices_netline
+        self.sims_netline = sims_netline
+        self.events_netline = events_netline
+
+    def __dir__(self):
+        return ['id', 'init_date', 'final_date', 'total_devices', 'total_sims', 'total_events', 'devices_none',
+                'devices_entel', 'devices_movistar', 'devices_claro', 'devices_nextel', 'devices_wom', 'devices_tds',
+                'devices_vtrm', 'devices_ccwm', 'devices_virginm', 'devices_will', 'devices_celupago',
+                'devices_netline', 'sims_none', 'sims_entel', 'sims_movistar', 'sims_claro', 'sims_nextel', 'sims_wom',
+                'sims_tds', 'sims_vtrm', 'sims_ccwm', 'sims_virginm', 'sims_will', 'sims_celupago', 'sims_netline',
+                'events_none', 'events_entel', 'events_movistar', 'events_claro', 'events_nextel', 'events_wom',
+                'events_tds', 'events_vtrm', 'events_ccwm', 'events_virginm', 'events_will', 'events_celupago',
+                'events_netline']
