@@ -1,4 +1,3 @@
-
 class Config(object):
     DEBUG = False
     TESTING = False
@@ -33,3 +32,7 @@ class AdminUser():
     login = "Cambiar login"
     email = "Crear correo"
     password = "Cambiar pass"
+
+
+class Visualization():
+    real_time_info= False
