@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from app import app, db
 from app.models.sim import Sim
-from app.report.report import total_sims_registered
+from app.report.report_generation import total_sims_registered
 from tests import base_test_case
 
 

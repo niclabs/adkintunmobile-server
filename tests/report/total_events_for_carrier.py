@@ -5,7 +5,7 @@ from app.models.carrier import Carrier
 from app.models.device import Device
 from app.models.gsm_event import GsmEvent
 from app.models.sim import Sim
-from app.report.report import total_gsm_events, total_gsm_events_for_carrier
+from app.report.report_generation import total_gsm_events, total_gsm_events_for_carrier
 from tests import base_test_case
 
 
