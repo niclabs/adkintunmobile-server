@@ -36,7 +36,7 @@ class Carrier(base_model.BaseModel):
         'Will': 'will',
         'Nextel': 'nextel',
         'Celupago': 'celupago',
-        'Colo-Colo Móvil Wanderers Móvi': 'ccwm',
+        'Colo-Colo Móvil Wanderers Móvil': 'ccwm',
         'Netline': 'netline'}
 
 
