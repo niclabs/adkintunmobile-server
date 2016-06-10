@@ -8,7 +8,7 @@ from app.models.state_change_event import StateChangeEvent
 from app.models.traffic_event import TrafficEvent
 from app.models.wifi_traffic_event import WifiTrafficEvent
 from config import AppTokens
-from manage import populate
+from manage_commands import populate
 from tests import base_test_case
 from tests.events.normal_event_json import events_json
 

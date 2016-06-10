@@ -9,7 +9,7 @@ from app.models.wifi_traffic_event import WifiTrafficEvent
 from config import AppTokens
 from tests import base_test_case
 from tests.events.normal_event_json import events_json
-from manage import populate
+from manage_commands import populate
 
 
 class SaveEventsTestCase(base_test_case.BaseTestCase):
