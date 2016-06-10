@@ -3,7 +3,7 @@ from datetime import datetime
 from app import app
 from app.models.connectivity_event import ConnectivityEvent
 from config import AppTokens
-from manage import populate
+from manage_commands import populate
 from tests import base_test_case
 from tests.events.one_event_in_type_json import events_json
 

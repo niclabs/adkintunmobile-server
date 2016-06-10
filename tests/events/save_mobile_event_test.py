@@ -3,7 +3,7 @@ from datetime import datetime
 from app import app
 from app.models.mobile_traffic_event import MobileTrafficEvent
 from config import AppTokens
-from manage import populate
+from manage_commands import populate
 from tests import base_test_case
 from tests.events.one_event_in_type_json import events_json
 
