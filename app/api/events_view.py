@@ -71,17 +71,18 @@ def set_events_context(jsonvar):
     from app.models.sim import Sim
     sim = Sim.store_if_not_exist(jsonvar["sim_records"])
 
-    from app.models.carrier import Carrier
-    carrier = Carrier.query.filter(Carrier.mnc == jsonvar["sim_records"]["mnc"] and Carrier.mcc == jsonvar["sim_records"]["mcc"]).first()
+    if sim:
+        from app.models.carrier import Carrier
+        carrier = Carrier.query.filter(Carrier.mnc == jsonvar["sim_records"]["mnc"] and Carrier.mcc == jsonvar["sim_records"]["mcc"]).first()
 
-    # Se vinculan sim con device en caso de no existir vínculo
-    sim.add_device(device)
+        # Se vinculan sim con device en caso de no existir vínculo
+        sim.add_device(device)
 
-    # Se vincula carrier con sim
-    carrier.add_sim(sim)
+        # Se vincula carrier con sim
+        carrier.add_sim(sim)
 
-    db.session.add(sim)
-    db.session.add(carrier)
+        db.session.add(sim)
+        db.session.add(carrier)
 
     db.session.commit()
 
@@ -288,8 +289,9 @@ def save(events_name, events, device, sim, app_version_code):
 
 def store_event_in_db(event, device, sim):
     device.events.append(event)
-    sim.events.append(event)
-    db.session.add(sim)
+    if sim:
+        sim.events.append(event)
+        db.session.add(sim)
     db.session.add(event)
     db.session.add(device)
     db.session.commit()

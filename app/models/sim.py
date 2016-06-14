@@ -28,13 +28,15 @@ class Sim(base_model.BaseModel):
     @staticmethod
     def store_if_not_exist(args):
         from datetime import datetime
+        if 'serial_number' in args:
+            sim = Sim.query.filter(Sim.serial_number == args['serial_number']).first()
 
-        sim = Sim.query.filter(Sim.serial_number == args['serial_number']).first()
-
-        if not sim:
-            sim = Sim(serial_number=args['serial_number'], creation_date=datetime.now())
-            db.session.add(sim)
-        return sim
+            if not sim:
+                sim = Sim(serial_number=args['serial_number'], creation_date=datetime.now())
+                db.session.add(sim)
+            return sim
+        else:
+            return None #NOOO, buscar y usar la sim vacia?
 
     def add_device(self, device):
         from app.models.device import Device
