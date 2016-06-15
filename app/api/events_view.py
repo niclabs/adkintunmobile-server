@@ -37,6 +37,8 @@ def read_events_from_file():
     try:
         f = request.files['uploaded_file']
         lines = f.readlines()
+        if not lines:
+            return "Bad Request", 400
         string = ''.join(x.decode("utf-8") for x in lines)
         string = string.replace('\n', '')
         jsonvar = json.loads(string)
