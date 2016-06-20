@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+import os
 from app import db
 from flask import json
 
@@ -38,21 +39,27 @@ def generate_json_general_reports():
                   "total_sims_carrier": serialize_pairs(total_sims_carrier),
                   "total_device_carrier": serialize_pairs(total_device_carrier)}
 
-    save_json_report_to_file(final_json, year_new_report, month_new_report)
+    save_json_report_to_file(final_json, year_new_report, month_new_report, GENERAL_REPORT_DIRECTORY, "general_report_")
 
     return 'ok'
 
 
-def save_json_report_to_file(json_data: str, year: int, month: int):
+def save_json_report_to_file(json_data: str, year: int, month: int, folder: str, name: str):
     '''
+
     Save data from a json to a file in the reports folder
     :param json_data: Json data        
     :param year: year of the report
     :param month: month of the report
     :return: None
     '''
-    file_folder = GENERAL_REPORT_DIRECTORY + '/' + str(year) + '_' + str(month) + '.json'
-    with open(file_folder, 'w') as outfile:
+    file_folder = folder + '/' + str(year) + '/'
+    file_name = name + str(month) + '_' + str(year) + '.json'
+
+    if not os.path.exists(file_folder):
+        os.makedirs(file_folder)
+
+    with open(file_folder + file_name, 'w') as outfile:
         json.dump(json_data, outfile, indent=4)
 
 
