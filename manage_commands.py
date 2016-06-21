@@ -50,7 +50,7 @@ class PopulateAntennas(Command):
         from app.models.carrier import Carrier
         from app.models.antenna import Antenna
 
-        jsonvar = json.loads(initial_data_antennas)
+        jsonvar = json.loads(initial_data_antennas.initial_data_antennas)
         for k, v in jsonvar.items():
             if k == "antennas":
                 for json_element in v:
@@ -93,7 +93,7 @@ def populate():
         db.session.rollback()
 
     # Agregar carriers
-    jsonvar = json.loads(initial_data_carriers)
+    jsonvar = json.loads(initial_data_carriers.initial_data_carriers)
     for k, v in jsonvar.items():
         if k == "carriers":
             save_models(v, Carrier)
