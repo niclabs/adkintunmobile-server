@@ -8,9 +8,8 @@ def start_scheduler():
     pass
     scheduler = BackgroundScheduler()
     start_date = get_first_day()
-    scheduler.add_job(generate_json_general_reports(), 'interval', id="procesamiento mensual", replace_existing=True,
-                      months=1,
-                      start_date=get_first_day())
+    scheduler.add_job(generate_json_general_reports, 'cron', id="procesamiento mensual", replace_existing=True,
+                      day='1', hour='0', minute='0', start_date=start_date)
     scheduler.start()
 
 
