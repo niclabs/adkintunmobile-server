@@ -1,6 +1,6 @@
 from app import db
-from app.static.data.initial_data_antennas import initial_data_antennas
-from app.static.data.initial_data_carriers import initial_data_carriers
+from app.data import initial_data_antennas
+from app.data import initial_data_carriers
 from flask_script import Command
 from sqlalchemy.exc import IntegrityError
 
