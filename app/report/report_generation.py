@@ -41,8 +41,6 @@ def generate_json_general_reports():
 
     save_json_report_to_file(final_json, year_new_report, month_new_report, GENERAL_REPORT_DIRECTORY, "general_report_")
 
-    return 'ok'
-
 
 def save_json_report_to_file(json_data: dict, year: int, month: int, folder: str, name: str):
     '''
@@ -51,6 +49,8 @@ def save_json_report_to_file(json_data: dict, year: int, month: int, folder: str
     :param json_data: Json data        
     :param year: year of the report
     :param month: month of the report
+    :param folder: folder to store the json file
+    :param name: name of the json file
     :return: None
     '''
     file_folder = folder + '/' + str(year) + '/'
