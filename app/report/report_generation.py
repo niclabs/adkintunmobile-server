@@ -4,7 +4,8 @@ import os
 from app import db
 from flask import json
 
-GENERAL_REPORT_DIRECTORY = 'reports/general_reports'
+BASE_DIRECTORY_REPORTS = 'app/static/reports/'
+GENERAL_REPORT_DIRECTORY = BASE_DIRECTORY_REPORTS + 'general_reports'
 
 
 def generate_json_general_reports():

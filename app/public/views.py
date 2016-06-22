@@ -11,7 +11,8 @@ def index():
 def general_reports(year, month):
     try:
         data = json.load(
-            open('reports/general_reports/' + year + '/general_report_' + month + '_' + year + '.json', 'r'))
+                open('app/static/reports/general_reports/' + year + '/general_report_' + month + '_' + year + '.json',
+                     'r'))
         return jsonify(data)
     except Exception as e:
         return page_not_found(e)
