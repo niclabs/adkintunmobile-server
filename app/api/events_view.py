@@ -5,7 +5,7 @@ from app import db, app
 from app.api import api
 from flask import request
 from flask_restful import Resource, reqparse
-from manage import auth
+from app import auth
 from werkzeug.exceptions import BadRequestKeyError
 
 
