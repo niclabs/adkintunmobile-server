@@ -3,3 +3,6 @@
 .idea/
 /migrations
 __pycache__/
+/app/static/reports/
+/reports/
+/config.py
