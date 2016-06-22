@@ -1,7 +1,7 @@
 from app import db
 from flask_restful import Resource, reqparse
 from . import api
-from manage import auth
+from app import auth
 
 
 class Registration(Resource):
