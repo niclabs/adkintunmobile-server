@@ -1,15 +1,19 @@
+import gzip
 import json
 from datetime import datetime
 
+from app import auth
 from app import db, app
 from app.api import api
 from flask import request
 from flask_restful import Resource, reqparse
-from app import auth
 from werkzeug.exceptions import BadRequestKeyError
 
 
 class ReadEventsFromArgument(Resource):
+    """
+    Used for tests
+    """
     method_decorators = [auth.login_required]
 
     def post(self):
@@ -28,6 +32,7 @@ class ReadEventsFromArgument(Resource):
             db.session.rollback()
             return e, 400
 
+
 api.add_resource(ReadEventsFromArgument, '/api/events')
 
 
@@ -36,20 +41,24 @@ api.add_resource(ReadEventsFromArgument, '/api/events')
 def read_events_from_file():
     try:
         f = request.files['uploaded_file']
-        lines = f.readlines()
+
+        # Uncompress Gzip file
+        u = gzip.open(f, 'rb')
+
+        lines = u.readlines()
         if not lines:
-            return 'Bad Request', 400
+            return 'Bad Request: Empty File', 400
         string = ''.join(x.decode('utf-8') for x in lines)
         string = string.replace('\n', '')
         jsonvar = json.loads(string)
         device, sim, app_version_code = set_events_context(jsonvar)
         return read_events(jsonvar, device, sim, app_version_code)
 
-    except (json.JSONDecodeError, BadRequestKeyError, UnicodeError) as e:
-        return e, 400
-    except (KeyError, Exception) as e:
+    except (json.JSONDecodeError, BadRequestKeyError, UnicodeError, TypeError):
+        return 'Bad Request', 400
+    except (KeyError, Exception):
         db.session.rollback()
-        return e, 400
+        return 'Bad Request', 400
 
 
 def read_events(jsonvar, device, sim, app_version_code):
@@ -69,13 +78,13 @@ def set_events_context(jsonvar):
     device = Device.store_if_no_exist(jsonvar['device_records'])
     app_version_code = jsonvar['device_records']['app_version_code']
 
-
     from app.models.sim import Sim
     sim = Sim.store_if_not_exist(jsonvar['sim_records'])
 
     if sim:
         from app.models.carrier import Carrier
-        carrier = Carrier.query.filter(Carrier.mnc == jsonvar['sim_records']['mnc'] and Carrier.mcc == jsonvar['sim_records']['mcc']).first()
+        carrier = Carrier.query.filter(
+                Carrier.mnc == jsonvar['sim_records']['mnc'] and Carrier.mcc == jsonvar['sim_records']['mcc']).first()
 
         # Se vinculan sim con device en caso de no existir vínculo
         sim.add_device(device)
