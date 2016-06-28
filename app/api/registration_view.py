@@ -40,7 +40,7 @@ def add_device_sim_carrier(args):
 
     carrier = Carrier.query.filter(Carrier.mnc == args.carrier_id).first()
     if carrier:
-        # TODO habrá que agregar alguna vez carriers nuevos (?)
+        # TODO add new carriers
 
         device = Device.store_if_no_exist(args)
 
