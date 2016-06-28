@@ -80,7 +80,7 @@ def read_events(jsonvar, device, sim, app_version_code):
         total_events += save(events_name, events, device, sim, app_version_code)
     app.logger.info('Eventos Almacenados: ' + str(total_events))
 
-    return 'Saved Events', 201
+    return 'Events saved successfully', 201
 
 
 def set_events_context(jsonvar):
