@@ -54,11 +54,21 @@ def read_events_from_file():
         device, sim, app_version_code = set_events_context(jsonvar)
         return read_events(jsonvar, device, sim, app_version_code)
 
-    except (json.JSONDecodeError, BadRequestKeyError, UnicodeError, TypeError):
-        return 'Bad Request', 400
-    except (KeyError, Exception):
+    except json.JSONDecodeError as e:
+        app.logger.error("JSONDecodeError: " + str(e))
+    except BadRequestKeyError as e:
+        app.logger.error("BadRequestKeyError: " + str(e))
+    except UnicodeError as e:
+        app.logger.error("UnicodeError: " + str(e))
+    except TypeError as e:
+        app.logger.error("TypeError: " + str(e))
+    except KeyError as e:
+        app.logger.error("KeyError: " + str(e))
         db.session.rollback()
-        return 'Bad Request', 400
+    except Exception as e:
+        app.logger.error("Unknow Exception: " + str(e))
+        db.session.rollback()
+    return 'Bad Request', 400
 
 
 def read_events(jsonvar, device, sim, app_version_code):
@@ -68,9 +78,9 @@ def read_events(jsonvar, device, sim, app_version_code):
 
     for events_name, events in jsonvar.items():
         total_events += save(events_name, events, device, sim, app_version_code)
-    print('Eventos Almacenados: ', total_events)
+    app.logger.info('Eventos Almacenados: ' + str(total_events))
 
-    return 'Eventos guardados', 201
+    return 'Saved Events', 201
 
 
 def set_events_context(jsonvar):
@@ -84,7 +94,7 @@ def set_events_context(jsonvar):
     if sim:
         from app.models.carrier import Carrier
         carrier = Carrier.query.filter(
-                Carrier.mnc == jsonvar['sim_records']['mnc'] and Carrier.mcc == jsonvar['sim_records']['mcc']).first()
+            Carrier.mnc == jsonvar['sim_records']['mnc'] and Carrier.mcc == jsonvar['sim_records']['mcc']).first()
 
         # Se vinculan sim con device en caso de no existir vínculo
         sim.add_device(device)
