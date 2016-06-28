@@ -43,15 +43,15 @@ from . import report
 start_scheduler()
 
 # Create log files
+if not app.debug:
+    log_folder = 'tmp/'
+    log_filename = 'adkintun-error.log'
+    if not os.path.exists(log_folder):
+        os.makedirs(log_folder)
 
-log_folder = 'tmp/'
-log_filename = 'adkintun-error.log'
-if not os.path.exists(log_folder):
-    os.makedirs(log_folder)
-
-file_handler = RotatingFileHandler(log_folder+log_filename, 'a', 1 * 1024 * 1024, 10)
-file_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
-app.logger.setLevel(logging.INFO)
-file_handler.setLevel(logging.INFO)
-app.logger.addHandler(file_handler)
-app.logger.info('Adkintun log start')
+    file_handler = RotatingFileHandler(log_folder+log_filename, 'a', 1 * 1024 * 1024, 10)
+    file_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
+    app.logger.setLevel(logging.INFO)
+    file_handler.setLevel(logging.INFO)
+    app.logger.addHandler(file_handler)
+    app.logger.info('Adkintun log start')
