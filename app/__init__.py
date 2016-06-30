@@ -1,14 +1,17 @@
-import logging, os
+import logging
+import os
 from logging.handlers import RotatingFileHandler
 
+from config import AppTokens
 from flask import Flask, g
 from flask_httpauth import HTTPTokenAuth
 from flask_sqlalchemy import SQLAlchemy
-from config import AppTokens
 
 # Create flask app
 app = Flask(__name__)
-app.config.from_object('config.DevelopmentConfig')
+
+# Load the default configuration
+app.config.from_object('config.DefaultConfig')
 
 # Define the database object which is imported
 # by modules and controllers
@@ -49,7 +52,7 @@ if not app.debug:
     if not os.path.exists(log_folder):
         os.makedirs(log_folder)
 
-    file_handler = RotatingFileHandler(log_folder+log_filename, 'a', 1 * 1024 * 1024, 10)
+    file_handler = RotatingFileHandler(log_folder + log_filename, 'a', 1 * 1024 * 1024, 10)
     file_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
     app.logger.setLevel(logging.INFO)
     file_handler.setLevel(logging.INFO)
