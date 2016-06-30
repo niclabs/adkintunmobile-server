@@ -3,10 +3,7 @@ from datetime import datetime
 from app import app
 from app.report.report_generation import total_devices_reported, total_sims_registered, total_gsm_events, \
     total_device_for_carrier, total_sims_for_carrier, total_gsm_events_for_carrier
-from config import Visualization
 from flask import render_template, request
-
-real_time_visualization = Visualization.real_time_info
 
 
 def get_min_date(dateStr, format):
