@@ -175,12 +175,13 @@ def save_mobile_traffic_event(event, device, sim):
 
 def save_cdma_events(events, device, sim, app_version_code):
     from app.models.cdma_event import CdmaEvent
+    from app.models.carrier import Carrier
     total_events = 0
     for event in events:
         total_events += 1
         eventModel = CdmaEvent()
         event['app_version_code'] = app_version_code
-
+        carrier = None
         for k, v in event.items():
             if k == 'timestamp':
                 eventModel.date = datetime.fromtimestamp(timestamp=v / 1000)
@@ -211,10 +212,20 @@ def save_cdma_events(events, device, sim, app_version_code):
                 setattr(eventModel, k + '_variance', event[k]['variance'])
             elif k == 'id':
                 continue
+            elif k == 'mnc':
+                try:
+                    carrier = Carrier.query.filter(Carrier.mnc == event[k] and Carrier.mcc == event['mcc']).first()
+                    # falta agregarle las cosas
+                except:
+                    app.logger.error("Unkown Carrier: mnc:" + str(event[k]) + " , mcc:" + str(event['mcc']))
+                    continue
             elif hasattr(eventModel, k):
                 setattr(eventModel, k, v)
 
-        store_event_in_db(eventModel, device, sim)
+        if carrier:
+            store_telephony_event_in_db(eventModel, device, sim, carrier)
+        else:
+            store_event_in_db(eventModel, device, sim)
 
     return total_events
 
@@ -241,11 +252,13 @@ def save_connectivity_events(events, device, sim, app_version_code):
 
 def save_gsm_events(events, device, sim, app_version_code):
     from app.models.gsm_event import GsmEvent
+    from app.models.carrier import Carrier
     total_events = 0
     for event in events:
         total_events += 1
         event['app_version_code'] = app_version_code
         eventModel = GsmEvent()
+        carrier = None
         for k, v in event.items():
             if k == 'timestamp':
                 eventModel.date = datetime.fromtimestamp(timestamp=v / 1000)
@@ -261,12 +274,20 @@ def save_gsm_events(events, device, sim, app_version_code):
                 setattr(eventModel, k + '_variance', event[k]['variance'])
             elif k == 'id':
                 continue
+            elif k == 'mnc':
+                try:
+                    carrier = Carrier.query.filter(Carrier.mnc == event[k] and Carrier.mcc == event['mcc']).first()
+                    # falta agregarle las cosas
+                except:
+                    app.logger.error("Unkown Carrier: mnc:" + str(event[k]) + " , mcc:" + str(event['mcc']))
+                    continue
             elif hasattr(eventModel, k):
                 setattr(eventModel, k, v)
 
-        # arreglar esta union
-        # sim.carrier.telephony_observation_events.append(eventModel)
-        store_event_in_db(eventModel, device, sim)
+        if carrier:
+            store_telephony_event_in_db(eventModel, device, sim, carrier)
+        else:
+            store_event_in_db(eventModel, device, sim)
     return total_events
 
 
@@ -316,3 +337,9 @@ def store_event_in_db(event, device, sim):
     db.session.add(event)
     db.session.add(device)
     db.session.commit()
+
+
+def store_telephony_event_in_db(event, device, sim, carrier):
+    carrier.telephony_observation_events.append(event)
+    db.session.add(carrier)
+    store_event_in_db(event, device, sim)
