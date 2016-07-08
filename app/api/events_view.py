@@ -94,7 +94,7 @@ def set_events_context(jsonvar):
     if sim:
         from app.models.carrier import Carrier
         carrier = Carrier.query.filter(
-            Carrier.mnc == jsonvar['sim_records']['mnc'] and Carrier.mcc == jsonvar['sim_records']['mcc']).first()
+            Carrier.mnc == jsonvar['sim_records']['mnc'], Carrier.mcc == jsonvar['sim_records']['mcc']).first()
 
         # Se vinculan sim con device en caso de no existir vínculo
         sim.add_device(device)
@@ -214,7 +214,7 @@ def save_cdma_events(events, device, sim, app_version_code):
                 continue
             elif k == 'mnc':
                 try:
-                    carrier = Carrier.query.filter(Carrier.mnc == event[k] and Carrier.mcc == event['mcc']).first()
+                    carrier = Carrier.query.filter(Carrier.mnc == event[k], Carrier.mcc == event['mcc']).first()
                     # falta agregarle las cosas
                 except:
                     app.logger.error("Unkown Carrier: mnc:" + str(event[k]) + " , mcc:" + str(event['mcc']))
@@ -276,7 +276,7 @@ def save_gsm_events(events, device, sim, app_version_code):
                 continue
             elif k == 'mnc':
                 try:
-                    carrier = Carrier.query.filter(Carrier.mnc == event[k] and Carrier.mcc == event['mcc']).first()
+                    carrier = Carrier.query.filter(Carrier.mnc == v, Carrier.mcc == event['mcc']).first()
                     # falta agregarle las cosas
                 except:
                     app.logger.error("Unkown Carrier: mnc:" + str(event[k]) + " , mcc:" + str(event['mcc']))
