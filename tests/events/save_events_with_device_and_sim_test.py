@@ -55,5 +55,3 @@ class SaveEventsWithDeviceAndSimTestCase(base_test_case.BaseTestCase):
                 for event in events:
                     assert device.device_id == event.device_id
                     assert sim.serial_number == event.sim_serial_number
-
-                    # TODO: Cambiar última comprobación por una diferencia de tiempo en vez de la fecha
