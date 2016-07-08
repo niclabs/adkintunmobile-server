@@ -1,7 +1,5 @@
 from flask.ext.migrate import Migrate, MigrateCommand
 
-from config import AppTokens
-from flask import g
 from flask_script import Manager
 
 from app import app, db
