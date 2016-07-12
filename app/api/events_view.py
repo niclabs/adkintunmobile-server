@@ -180,7 +180,6 @@ def save_cdma_events(events, device, sim, app_version_code):
         total_events += 1
         eventModel = CdmaEvent()
         event['app_version_code'] = app_version_code
-        carrier = None
         for k, v in event.items():
             if k == 'timestamp':
                 eventModel.date = datetime.fromtimestamp(timestamp=v / 1000)
@@ -334,7 +333,9 @@ def store_gsm_event_in_db(event, device, sim, carrier):
         if antenna:
             event.antennas.append(antenna)
         else:
-            app.logger.error("Unkown Antenna: lac:" + str(event.gsm_lac) + " , cid:" + str(event.gsm_cid)+ ", mnc: "+ str(carrier.mnc) + ", mcc: " + str(carrier.mcc))
+            app.logger.error(
+                "Unkown Antenna: lac:" + str(event.gsm_lac) + " , cid:" + str(event.gsm_cid) + ", mnc: " + str(
+                    carrier.mnc) + ", mcc: " + str(carrier.mcc))
     carrier.telephony_observation_events.append(event)
     db.session.add(carrier)
     store_event_in_db(event, device, sim)
