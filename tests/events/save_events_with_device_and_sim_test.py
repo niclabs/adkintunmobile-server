@@ -24,7 +24,7 @@ class SaveEventsWithDeviceAndSimTestCase(base_test_case.BaseTestCase):
         '''
         populate()
 
-    # test de guardado de eventos: 1 wifi traffic event y 2 state change event
+    #  Saving events test: 1 wifi traffic event y 2 state change event
     def test_save_normal_events_with_device_and_sim(self):
         with app.app_context():
             token = list(AppTokens.tokens.keys())[0]
@@ -49,7 +49,7 @@ class SaveEventsWithDeviceAndSimTestCase(base_test_case.BaseTestCase):
             # assert mobile event
             assert len(mobile_events) == 3
 
-            # assert eventos se guardan con device y sim
+            # assert device and sim are linked with the event
             all_events = [wifi_events, state_events, traffic_events, application_events]
             for events in all_events:
                 for event in events:
