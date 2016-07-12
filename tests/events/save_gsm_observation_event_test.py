@@ -21,7 +21,7 @@ class SaveGsmObservationEventTestCase(base_test_case.BaseTestCase):
         # Create the default sim
         populate()
 
-    # Saving event test: 1 wifi traffic event and 2 state change event
+    # Saving event test: 1 gsm observation event
     def test_save_normal_events(self):
         with app.app_context():
             token = list(AppTokens.tokens.keys())[0]
@@ -54,6 +54,6 @@ class SaveGsmObservationEventTestCase(base_test_case.BaseTestCase):
             assert gsm_event.device.device_id == "8000000000000000000"
 
             real_carrier = Carrier.query.filter(Carrier.mcc == 730, Carrier.mnc == 2).first()
-            real_carrier.telephony_observation_events.first().id == gsm_event.id
+            assert real_carrier.telephony_observation_events.first().id == gsm_event.id
 
 

@@ -46,11 +46,8 @@ class SaveEventsWithDeviceAndSimTestCase(base_test_case.BaseTestCase):
             mobile_events = MobileTrafficEvent.query.all()
             assert len(events) == 15
 
-            # assert mobile event
-            assert len(mobile_events) == 3
-
             # assert device and sim are linked with the event
-            all_events = [wifi_events, state_events, traffic_events, application_events]
+            all_events = [wifi_events, state_events, traffic_events, application_events, mobile_events]
             for events in all_events:
                 for event in events:
                     assert device.device_id == event.device_id
