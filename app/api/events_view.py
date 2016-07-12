@@ -96,10 +96,10 @@ def set_events_context(jsonvar):
         carrier = Carrier.query.filter(
             Carrier.mnc == jsonvar['sim_records']['mnc'], Carrier.mcc == jsonvar['sim_records']['mcc']).first()
 
-        # Se vinculan sim con device en caso de no existir vínculo
+        # Link sim with device
         sim.add_device(device)
 
-        # Se vincula carrier con sim
+        # Link carrier with sim
         carrier.add_sim(sim)
 
         db.session.add(sim)
@@ -175,7 +175,6 @@ def save_mobile_traffic_event(event, device, sim):
 
 def save_cdma_events(events, device, sim, app_version_code):
     from app.models.cdma_event import CdmaEvent
-    from app.models.carrier import Carrier
     total_events = 0
     for event in events:
         total_events += 1
@@ -186,46 +185,36 @@ def save_cdma_events(events, device, sim, app_version_code):
             if k == 'timestamp':
                 eventModel.date = datetime.fromtimestamp(timestamp=v / 1000)
             elif k == 'signal_strength':
-                # agregar atributos de signal_strength
+                # add new atributes of signal_strength
                 setattr(eventModel, k + '_size', event[k]['size'])
                 setattr(eventModel, k + '_mean', event[k]['mean'])
                 setattr(eventModel, k + '_variance', event[k]['variance'])
             elif k == 'cdma_ecio':
-                # agregar atributos de cdma_ecio
+                # add new atributes of cdma_ecio
                 setattr(eventModel, k + '_size', event[k]['size'])
                 setattr(eventModel, k + '_mean', event[k]['mean'])
                 setattr(eventModel, k + '_variance', event[k]['variance'])
             elif k == 'evdo_dbm':
-                # agregar atributos de evdo_dbm
+                # add new atributes of evdo_dbm
                 setattr(eventModel, k + '_size', event[k]['size'])
                 setattr(eventModel, k + '_mean', event[k]['mean'])
                 setattr(eventModel, k + '_variance', event[k]['variance'])
             elif k == 'evdo_ecio':
-                # agregar atributos de evdo_ecio
+                # add new atributes of evdo_ecio
                 setattr(eventModel, k + '_size', event[k]['size'])
                 setattr(eventModel, k + '_mean', event[k]['mean'])
                 setattr(eventModel, k + '_variance', event[k]['variance'])
             elif k == 'evdo_snr':
-                # agregar atributos de evdo_snr
+                # add new atributes of evdo_snr
                 setattr(eventModel, k + '_size', event[k]['size'])
                 setattr(eventModel, k + '_mean', event[k]['mean'])
                 setattr(eventModel, k + '_variance', event[k]['variance'])
             elif k == 'id':
                 continue
-            elif k == 'mnc':
-                try:
-                    carrier = Carrier.query.filter(Carrier.mnc == event[k], Carrier.mcc == event['mcc']).first()
-                    # falta agregarle las cosas
-                except:
-                    app.logger.error("Unkown Carrier: mnc:" + str(event[k]) + " , mcc:" + str(event['mcc']))
-                    continue
             elif hasattr(eventModel, k):
                 setattr(eventModel, k, v)
 
-        if carrier:
-            store_telephony_event_in_db(eventModel, device, sim, carrier)
-        else:
-            store_event_in_db(eventModel, device, sim)
+        store_event_in_db(eventModel, device, sim)
 
     return total_events
 
@@ -263,12 +252,12 @@ def save_gsm_events(events, device, sim, app_version_code):
             if k == 'timestamp':
                 eventModel.date = datetime.fromtimestamp(timestamp=v / 1000)
             elif k == 'signal_ber':
-                # agregar atributos de signal_ber
+                # add new atributes of signal_ber
                 setattr(eventModel, k + '_size', event[k]['size'])
                 setattr(eventModel, k + '_mean', event[k]['mean'])
                 setattr(eventModel, k + '_variance', event[k]['variance'])
             elif k == 'signal_strength':
-                # agregar atributos de signal_strength
+                # add new atributes of signal_strength
                 setattr(eventModel, k + '_size', event[k]['size'])
                 setattr(eventModel, k + '_mean', event[k]['mean'])
                 setattr(eventModel, k + '_variance', event[k]['variance'])
@@ -277,7 +266,6 @@ def save_gsm_events(events, device, sim, app_version_code):
             elif k == 'mnc':
                 try:
                     carrier = Carrier.query.filter(Carrier.mnc == v, Carrier.mcc == event['mcc']).first()
-                    # falta agregarle las cosas
                 except:
                     app.logger.error("Unkown Carrier: mnc:" + str(event[k]) + " , mcc:" + str(event['mcc']))
                     continue
@@ -285,7 +273,7 @@ def save_gsm_events(events, device, sim, app_version_code):
                 setattr(eventModel, k, v)
 
         if carrier:
-            store_telephony_event_in_db(eventModel, device, sim, carrier)
+            store_gsm_event_in_db(eventModel, device, sim, carrier)
         else:
             store_event_in_db(eventModel, device, sim)
     return total_events
@@ -339,7 +327,14 @@ def store_event_in_db(event, device, sim):
     db.session.commit()
 
 
-def store_telephony_event_in_db(event, device, sim, carrier):
+def store_gsm_event_in_db(event, device, sim, carrier):
+    from app.models.antenna import Antenna
+    if event.gsm_lac and event.gsm_cid:
+        antenna = Antenna.query.filter(Antenna.lac == event.gsm_lac, Antenna.cid == event.gsm_cid).first()
+        if antenna:
+            event.antennas.append(antenna)
+        else:
+            app.logger.error("Unkown Antenna: lac:" + str(event.gsm_lac) + " , cid:" + str(event.gsm_cid)+ ", mnc: "+ carrier.mnc + ", mcc: " + carrier.mcc)
     carrier.telephony_observation_events.append(event)
     db.session.add(carrier)
     store_event_in_db(event, device, sim)
