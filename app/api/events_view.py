@@ -334,7 +334,7 @@ def store_gsm_event_in_db(event, device, sim, carrier):
         if antenna:
             event.antennas.append(antenna)
         else:
-            app.logger.error("Unkown Antenna: lac:" + str(event.gsm_lac) + " , cid:" + str(event.gsm_cid)+ ", mnc: "+ carrier.mnc + ", mcc: " + carrier.mcc)
+            app.logger.error("Unkown Antenna: lac:" + str(event.gsm_lac) + " , cid:" + str(event.gsm_cid)+ ", mnc: "+ str(carrier.mnc) + ", mcc: " + str(carrier.mcc))
     carrier.telephony_observation_events.append(event)
     db.session.add(carrier)
     store_event_in_db(event, device, sim)
