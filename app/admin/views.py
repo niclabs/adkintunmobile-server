@@ -28,12 +28,12 @@ class StandardView(ModelView):
 
 class EventView(StandardView):
     column_sortable_list = (
-        ("sim", Sim.serial_number), ("device", Device.device_id), "id", "date", "app_version_code", "type")
+        ("sim", "sim.serial_number"), ("device", "device.device_id"), "id", "date", "app_version_code", "type")
 
 
 class GsmEventView(StandardView):
     column_sortable_list = (
-        ("sim", Sim.serial_number), ("device", Device.device_id), ("carrier", Carrier.id), "id", "date",
+        ("sim", "sim.serial_number"), ("device", "device.device_id"), ("carrier", "carrier.id"), "id", "date",
         "app_version_code",
         "type", "telephony_standard", "network_type", "signal_strength_size", "signal_strength_mean",
         "signal_strength_variance", "signal_ber_size", "signal_ber_mean", "signal_ber_variance", "gsm_lac", "gsm_cid",
