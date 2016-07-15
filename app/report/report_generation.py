@@ -45,7 +45,6 @@ def generate_json_general_reports():
 
 def save_json_report_to_file(json_data: dict, year: int, month: int, folder: str, name: str):
     '''
-
     Save data from a json to a file in the reports folder
     :param json_data: Json data        
     :param year: year of the report
@@ -129,7 +128,7 @@ def total_device_for_carrier(min_date=datetime(2015, 1, 1),
     GROUP BY consulta_1.id''')
 
     result = db.session.query().add_columns('id', 'devices_count').from_statement(stmt).params(
-            min_date=min_date, max_date=max_date)
+        min_date=min_date, max_date=max_date)
 
     return result.all()
 
@@ -153,7 +152,7 @@ def total_sims_for_carrier(min_date=datetime(2015, 1, 1),
     GROUP BY carrier_id''').columns(Sim.carrier_id)
 
     result = db.session.query(Sim.carrier_id).add_columns('sims_count').from_statement(stmt).params(
-            min_date=min_date, max_date=max_date)
+        min_date=min_date, max_date=max_date)
 
     return result.all()
 
@@ -179,7 +178,7 @@ def total_gsm_events_for_carrier(min_date=datetime(2015, 1, 1),
     GROUP BY carrier_id ''').columns(GsmEvent.carrier_id)
 
     result = db.session.query(GsmEvent.carrier_id).add_columns('events_count').from_statement(stmt).params(
-            min_date=min_date, max_date=max_date)
+        min_date=min_date, max_date=max_date)
 
     return result.all()
 
