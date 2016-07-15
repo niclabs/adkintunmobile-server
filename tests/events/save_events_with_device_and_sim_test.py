@@ -24,7 +24,7 @@ class SaveEventsWithDeviceAndSimTestCase(base_test_case.BaseTestCase):
         '''
         populate()
 
-    # test de guardado de eventos: 1 wifi traffic event y 2 state change event
+    # test de guardado de eventos: 1 wifi traffic event and 2 state change event
     def test_save_normal_events_with_device_and_sim(self):
         with app.app_context():
             token = list(AppTokens.tokens.keys())[0]
