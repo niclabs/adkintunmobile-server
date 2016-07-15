@@ -266,7 +266,7 @@ def save_gsm_events(events, device, sim, app_version_code):
                 try:
                     carrier = Carrier.query.filter(Carrier.mnc == v, Carrier.mcc == event['mcc']).first()
                 except:
-                    app.logger.error("Unkown Carrier: mnc:" + str(event[k]) + " , mcc:" + str(event['mcc']))
+                    app.logger.error("Unknown Carrier: mnc:" + str(event[k]) + " , mcc:" + str(event['mcc']))
                     continue
             elif hasattr(eventModel, k):
                 setattr(eventModel, k, v)
