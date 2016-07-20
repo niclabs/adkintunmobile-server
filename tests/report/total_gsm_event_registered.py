@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from app import app, db
 from app.models.device import Device
 from app.models.gsm_event import GsmEvent
-from app.report.report_generation import total_gsm_events
+from app.report.general_report_generation import total_gsm_events
 from tests import base_test_case
 
 
