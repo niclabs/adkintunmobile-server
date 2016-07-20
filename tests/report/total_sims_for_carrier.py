@@ -2,9 +2,8 @@ from datetime import datetime, timedelta
 
 from app import app, db
 from app.models.carrier import Carrier
-from app.models.device import Device
 from app.models.sim import Sim
-from app.report.report_generation import total_device_for_carrier, total_sims_for_carrier
+from app.report.general_report_generation import total_sims_for_carrier
 from tests import base_test_case
 
 
