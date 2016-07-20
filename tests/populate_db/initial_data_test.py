@@ -1,8 +1,8 @@
 from app import app
 
 from tests import base_test_case
-from manage import populate
 from app.models.carrier import Carrier
+from manage_commands import populate
 
 
 class InitialdataTestCase(base_test_case.BaseTestCase):
@@ -15,6 +15,6 @@ class InitialdataTestCase(base_test_case.BaseTestCase):
             carriers = Carrier.query.all()
             carriersFiltered = Carrier.query.filter(Carrier.mnc == 9).all()
 
-            assert len(carriers) == 12
+            assert len(carriers) == 14
             assert len(carriersFiltered) == 1
             assert carriersFiltered[0].name == "WOM"
