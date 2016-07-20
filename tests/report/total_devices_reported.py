@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from app import app, db
 from app.models.device import Device
 from app.models.state_change_event import StateChangeEvent
-from app.report.report_generation import total_devices_reported
+from app.report.general_report_generation import total_devices_registred
 from tests import base_test_case
 
 
@@ -37,11 +37,10 @@ class TotalDevicesReportedTestCase(base_test_case.BaseTestCase):
     # test de guardado de eventos: 1 wifi traffic event y 2 state change event
     def test_two_devices(self):
         with app.app_context():
-            total_devices = total_devices_reported()
+            total_devices = total_devices_registred()
             assert total_devices == 2
-
 
     def test_date_filter(self):
         with app.app_context():
-            total_devices = total_devices_reported(min_date=(datetime.now() + timedelta(days=-1)))
+            total_devices = total_devices_registred(min_date=(datetime.now() + timedelta(days=-1)))
             assert total_devices == 1

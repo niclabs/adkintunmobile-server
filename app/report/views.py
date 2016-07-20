@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from app import app
-from app.report.report_generation import total_devices_reported, total_sims_registered, total_gsm_events, \
+from app.report.general_report_generation import total_devices_registred, total_sims_registered, total_gsm_events, \
     total_device_for_carrier, total_sims_for_carrier, total_gsm_events_for_carrier
 from flask import render_template, request
 
@@ -26,7 +26,7 @@ def report_index():
 
 
 @app.route('/report/totales')
-def total_devices_reported():
+def total_devices_reported_view():
     min_date = None
     max_date = None
 
@@ -34,7 +34,7 @@ def total_devices_reported():
         min_date = get_min_date(request.args["min_date"], "%Y-%m-%d")
         max_date = get_max_date(request.args["max_date"], "%Y-%m-%d")
 
-    total_devices = total_devices_reported(min_date, max_date)
+    total_devices = total_devices_registred(min_date, max_date)
     total_sims = total_sims_registered(min_date, max_date)
     total_events = total_gsm_events(min_date, max_date)
 
