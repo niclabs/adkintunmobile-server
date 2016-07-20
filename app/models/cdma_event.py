@@ -34,7 +34,8 @@ class CdmaEvent(TelephonyObservationEvent):
                  signal_strength_size=None, signal_strength_mean=None, signal_strength_variance=None,
                  cdma_ecio_size=None, cdma_ecio_mean=None, cdma_ecio_variance=None, evdo_dbm_size=None,
                  evdo_dbm_mean=None, evdo_dbm_variance=None, evdo_ecio_size=None, evdo_ecio_mean=None,
-                 evdo_ecio_variance=None, evdo_snr_size=None, evdo_snr_mean=None, evdo_snr_variance=None):
+                 evdo_ecio_variance=None, evdo_snr_size=None, evdo_snr_mean=None, evdo_snr_variance=None, mnc=None,
+                 mcc=None):
         self.date = date
         self.app_version_code = app_version_code
         self.sim_serial_number = sim_serial_number
@@ -61,6 +62,8 @@ class CdmaEvent(TelephonyObservationEvent):
         self.evdo_snr_size = evdo_snr_size
         self.evdo_snr_mean = evdo_snr_mean
         self.evdo_snr_variance = evdo_snr_variance
+        self.mnc = mnc
+        self.mcc = mcc
 
     def __repr__(self):
         return '<CdmaEvent, id: %r, date: %r>' % (self.id, self.date)
