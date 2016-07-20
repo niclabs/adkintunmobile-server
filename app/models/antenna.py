@@ -1,20 +1,22 @@
 from app import db
-from app.models.antenna_carrier import antennas_carriers
 from app.models import base_model
+from sqlalchemy import UniqueConstraint
 
 
 class Antenna(base_model.BaseModel):
     '''
-    Clase antena.
+    Antenna Class.
     '''
-    __tablename__ = 'antennas'
+    __tablename__ = "antennas"
+    __table_args__ = (UniqueConstraint("cid", "lac", "carrier_id", name="antenna_pk"), {})
     id = db.Column(db.Integer, primary_key=True)
     cid = db.Column(db.Integer)
     lac = db.Column(db.Integer)
     lat = db.Column(db.Float)
     lon = db.Column(db.Float)
-    carriers = db.relationship('Carrier', secondary=antennas_carriers,
-                               backref=db.backref('antennas', lazy='dynamic'), lazy='dynamic')  # relationship
+    carrier_id = db.Column(db.Integer, db.ForeignKey("carriers.id"))
+    gsm_events = db.relationship('GsmEvent', backref='antenna',
+                                lazy='dynamic')
 
     def __init__(self, cid=None, lac=None, lat=None, lon=None):
         self.cid = cid
@@ -23,4 +25,4 @@ class Antenna(base_model.BaseModel):
         self.lon = lon
 
     def __repr__(self):
-        return '<Antenna, id: %r,  cid: %r, lac: %r, carriers: %r,>' % (self.id, self.cid, self.lac, self.carriers)
+        return "<Antenna, id: %r,  cid: %r, lac: %r, carrier: %r,>" % (self.id, self.cid, self.lac, self.carrier_id)

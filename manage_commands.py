@@ -1,4 +1,4 @@
-from app import db
+from app import db, app
 from app.data import initial_data_antennas
 from app.data import initial_data_carriers
 from flask_script import Command
@@ -9,7 +9,7 @@ class Test(Command):
     def run(self):
         import unittest
         testmodules = [
-            'tests',
+            "tests",
         ]
 
         suite = unittest.TestSuite()
@@ -17,8 +17,8 @@ class Test(Command):
         for t in testmodules:
             try:
                 # If the module defines a suite() function, call it to get the suite.
-                mod = __import__(t, globals(), locals(), ['suite'])
-                suitefn = getattr(mod, 'suite')
+                mod = __import__(t, globals(), locals(), ["suite"])
+                suitefn = getattr(mod, "suite")
                 suite.addTest(suitefn())
             except (ImportError, AttributeError):
                 # else, just load all the test cases from the module.
@@ -56,10 +56,15 @@ class PopulateAntennas(Command):
                 for json_element in v:
                     antenna = Antenna()
                     try:
-                        mnc = json_element['mnc']
-                        mcc = json_element['mcc']
+                        mnc = json_element["mnc"]
+                        mcc = json_element["mcc"]
                         carrier = Carrier.query.filter(Carrier.mnc == mnc and Carrier.mcc == mcc).first()
-                        antenna.carriers.append(carrier)
+                        if not carrier:
+                            app.logger.error(
+                                "Not carrier found for antenna (id:" + json_element["id"] + "),  mcc:" + str(
+                                    mcc) + ", mnc:" + str(mnc))
+                        else:
+                            carrier.antennas.append(antenna)
                     except KeyError:
                         continue
                     for k, v in json_element.items():
@@ -74,8 +79,11 @@ class PopulateAntennas(Command):
 
 
 def populate():
-    import json
-    from app.models.carrier import Carrier
+    populate_user()
+    populate_carriers()
+
+
+def populate_user():
     from config import AdminUser
     from app.models.user import User
     from werkzeug.security import generate_password_hash
@@ -92,7 +100,10 @@ def populate():
     except IntegrityError:
         db.session.rollback()
 
-    # Agregar carriers
+
+def populate_carriers():
+    import json
+    from app.models.carrier import Carrier
     jsonvar = json.loads(initial_data_carriers.initial_data_carriers)
     for k, v in jsonvar.items():
         if k == "carriers":
@@ -104,69 +115,17 @@ def delete_db():
 
 
 def populate_test():
-    db.create_all()
-    # devices
+    from app.models.antenna import Antenna
     from app.models.carrier import Carrier
-    from app.models.device import Device
-    from app.models.sim import Sim
-    from app.models.gsm_event import GsmEvent
-
-    from datetime import datetime
-    from datetime import timedelta
-
-    from config import AdminUser
-    from app.models.user import User
-    from werkzeug.security import generate_password_hash
-
-    device1 = Device(device_id="1", creation_date=datetime.now() + timedelta(days=-2))
-    device2 = Device(device_id="2", creation_date=datetime.now())
-    device3 = Device(device_id="3", creation_date=datetime.now())
-    device4 = Device(device_id="4", creation_date=datetime.now())
-
-    # sims
-    sim1 = Sim(serial_number="123", creation_date=datetime.now() + timedelta(days=-2))
-    sim2 = Sim(serial_number="456", creation_date=datetime.now())
-    sim3 = Sim(serial_number="789", creation_date=datetime.now())
-
-    sim1.devices.append(device1)
-    sim1.devices.append(device2)
-    sim2.devices.append(device1)
-    sim2.devices.append(device3)
-    sim3.devices.append(device4)
-
-    # carriers
-    carrier1 = Carrier(name="Compañia 1")
-    carrier2 = Carrier(name="Compañia 2")
-
-    carrier1.sims.append(sim1)
-    carrier1.sims.append(sim2)
-    carrier2.sims.append(sim3)
-
-    # GSM events
-    event1 = GsmEvent(date=datetime.now() + timedelta(days=-2))
-    event2 = GsmEvent(date=datetime.now())
-    event3 = GsmEvent(date=datetime.now())
-    event4 = GsmEvent(date=datetime.now() + timedelta(days=-2))
-    event5 = GsmEvent(date=datetime.now())
-
-    sim1.events.append(event1)
-    sim1.events.append(event2)
-    sim3.events.append(event3)
-    sim3.events.append(event4)
-    sim3.events.append(event5)
-
-    device1.events = [event1, event2]
-    device2.events = [event3]
-    device3.events = [event4, event5]
-
-    user = User()
-    user.first_name = AdminUser.first_name
-    user.last_name = AdminUser.last_name
-    user.login = AdminUser.login
-    user.email = AdminUser.email
-    user.password = generate_password_hash(AdminUser.password)
-
-    db.session.add(user)
-    db.session.add(carrier1)
-    db.session.add(carrier2)
-    db.session.commit()
+    populate_carriers()
+    antenna1 = Antenna(cid=1259355, lac=55700, lat=0.2, lon=0.1)
+    antenna2 = Antenna(cid=1277982, lac=55700, lat=0.3, lon=0.4)
+    carrier = Carrier.query.filter(Carrier.mnc == 2 and Carrier.mcc == 730).first()
+    carrier.antennas.append(antenna1)
+    carrier.antennas.append(antenna2)
+    db.session.add(antenna1)
+    db.session.add(antenna2)
+    try:
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
