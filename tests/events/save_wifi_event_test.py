@@ -3,29 +3,29 @@ from datetime import datetime
 from app import app
 from app.models.wifi_traffic_event import WifiTrafficEvent
 from config import AppTokens
-from manage_commands import populate
+from manage_commands import populate_test
 from tests import base_test_case
 from tests.events.one_event_in_type_json import events_json
 
 
 class SaveWifiEventTestCase(base_test_case.BaseTestCase):
-    '''
+    """
     Unit tests for the API
-    '''
+    """
 
     def populate(self):
-        '''
+        """
         Populate the model with test data
-        '''
-        populate()
+        """
+        populate_test()
 
     # Saving event test: 1 wifi traffic event
     def test_save_normal_events(self):
         with app.app_context():
             token = list(AppTokens.tokens.keys())[0]
-            request = self.app.post('/api/events', data=dict(
+            request = self.app.post("/api/events", data=dict(
                 events=events_json
-            ), headers={'Authorization': 'token ' + token})
+            ), headers={"Authorization": "token " + token})
 
             assert request.status_code == 201
             wifi_events = WifiTrafficEvent.query.all()
