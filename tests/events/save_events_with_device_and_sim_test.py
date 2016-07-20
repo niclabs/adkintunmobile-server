@@ -8,29 +8,29 @@ from app.models.state_change_event import StateChangeEvent
 from app.models.traffic_event import TrafficEvent
 from app.models.wifi_traffic_event import WifiTrafficEvent
 from config import AppTokens
-from manage_commands import populate
+from manage_commands import populate_test
 from tests import base_test_case
 from tests.events.normal_event_json import events_json
 
 
 class SaveEventsWithDeviceAndSimTestCase(base_test_case.BaseTestCase):
-    '''
+    """
     Unit tests for the API
-    '''
+    """
 
     def populate(self):
-        '''
+        """
         Populate the model with test data
-        '''
-        populate()
+        """
+        populate_test()
 
     #  Saving events test: 1 wifi traffic event and 2 state change event
     def test_save_normal_events_with_device_and_sim(self):
         with app.app_context():
             token = list(AppTokens.tokens.keys())[0]
-            request = self.app.post('/api/events', data=dict(
+            request = self.app.post("/api/events", data=dict(
                 events=events_json
-            ), headers={'Authorization': 'token ' + token})
+            ), headers={"Authorization": "token " + token})
 
             device = Device.query.filter(Device.device_id == "800000000000000000000").first()
             sim = Sim.query.filter(Sim.serial_number == "800000000000000000000").first()
