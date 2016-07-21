@@ -1,5 +1,6 @@
 from app import db, app
-from app.data import initial_data_antenna
+
+from app.data import initial_data_antennas
 from app.data import initial_data_carriers
 from flask_script import Command
 from sqlalchemy.exc import IntegrityError
@@ -50,7 +51,8 @@ class PopulateAntennas(Command):
         from app.models.carrier import Carrier
         from app.models.antenna import Antenna
 
-        jsonvar = json.loads(initial_data_antenna.initial_data_antennas)
+        jsonvar = json.loads(initial_data_antennas.initial_data_antennas)
+
         for k, v in jsonvar.items():
             if k == "antennas":
                 for json_element in v:
