@@ -4,7 +4,7 @@ from app import app, db
 from app.models.carrier import Carrier
 from app.models.device import Device
 from app.models.sim import Sim
-from app.report.report_generation import total_device_for_carrier
+from app.report.general_report_generation import total_device_for_carrier
 from tests import base_test_case
 
 
@@ -52,7 +52,6 @@ class TotalDevicesForCarrierReportedTestCase(base_test_case.BaseTestCase):
             assert total_devices_for_carrier[1].Carrier.name == "test_carrier_2"
             assert total_devices_for_carrier[0].devices_count == 3
             assert total_devices_for_carrier[1].devices_count == 1
-
 
     def test_date_filter(self):
         with app.app_context():
