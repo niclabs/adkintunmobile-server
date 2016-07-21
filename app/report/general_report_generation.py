@@ -1,34 +1,20 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 
-import os
 from app import db
-from flask import json
+from app.report.reports_generation import save_json_report_to_file
 
-BASE_DIRECTORY_REPORTS = 'app/static/reports/'
-GENERAL_REPORT_DIRECTORY = BASE_DIRECTORY_REPORTS + 'general_reports'
+BASE_DIRECTORY_REPORTS = "app/static/reports/"
+GENERAL_REPORT_DIRECTORY = BASE_DIRECTORY_REPORTS + "general_reports"
 
 
-def generate_json_general_reports():
-    '''
+def generate_json_general_reports(init_date, last_date):
+    """
     Calculate the report values and return and print them to a JSON file.
     This will be made the night of the first day of the next month of the report.
     :return: None
-    '''
+    """
 
-    # get month for the report
-    actual_month = datetime.now().month
-    actual_year = datetime.now().year
-    month_new_report = actual_month - 1
-    year_new_report = actual_year
-    if month_new_report == 0:
-        month_new_report = 12
-        year_new_report = year_new_report - 1
-
-    # select limit dates of the selected month
-    init_date = datetime(year=year_new_report, month=month_new_report, day=1)
-    last_date = datetime(year=actual_year, month=actual_month, day=1, hour=23, minute=59, second=59) - timedelta(days=1)
-
-    total_devices = total_devices_reported(init_date, last_date)
+    total_devices = total_devices_registred(init_date, last_date)
     total_sims = total_sims_registered(init_date, last_date)
     total_gsm = total_gsm_events(init_date, last_date)
     total_device_carrier = total_device_for_carrier(init_date, last_date)
@@ -40,32 +26,12 @@ def generate_json_general_reports():
                   "total_sims_carrier": serialize_pairs(total_sims_carrier),
                   "total_device_carrier": serialize_pairs(total_device_carrier)}
 
-    save_json_report_to_file(final_json, year_new_report, month_new_report, GENERAL_REPORT_DIRECTORY, "general_report_")
+    save_json_report_to_file(final_json, init_date.year, init_date.month, GENERAL_REPORT_DIRECTORY, "general_report_")
 
 
-def save_json_report_to_file(json_data: dict, year: int, month: int, folder: str, name: str):
-    '''
-    Save data from a json to a file in the reports folder
-    :param json_data: Json data        
-    :param year: year of the report
-    :param month: month of the report
-    :param folder: folder to store the json file
-    :param name: name of the json file
-    :return: None
-    '''
-    file_folder = folder + '/' + str(year) + '/'
-    file_name = name + str(month) + '_' + str(year) + '.json'
-
-    if not os.path.exists(file_folder):
-        os.makedirs(file_folder)
-
-    with open(file_folder + file_name, 'w') as outfile:
-        json.dump(json_data, outfile, indent=4)
-
-
-# Total de equipos que han entregado datos
-def total_devices_reported(min_date=datetime(2015, 1, 1),
-                           max_date=None):
+# Total devices registred
+def total_devices_registred(min_date=datetime(2015, 1, 1),
+                            max_date=None):
     from app.models.device import Device
 
     if not min_date:
@@ -77,7 +43,7 @@ def total_devices_reported(min_date=datetime(2015, 1, 1),
     return Device.query.filter(Device.events != None, Device.creation_date.between(min_date, max_date)).count()
 
 
-# Total de sims registradas
+# Total sim cards registred
 def total_sims_registered(min_date=datetime(2015, 1, 1),
                           max_date=None):
     from app.models.sim import Sim
@@ -91,7 +57,7 @@ def total_sims_registered(min_date=datetime(2015, 1, 1),
     return Sim.query.filter(Sim.creation_date.between(min_date, max_date)).count()
 
 
-# Total de mediciones de señal registradas (GSM)
+# Total signal meassurements registred (GSM events)
 def total_gsm_events(min_date=datetime(2015, 1, 1),
                      max_date=None):
     from app.models.gsm_event import GsmEvent
@@ -116,7 +82,7 @@ def total_device_for_carrier(min_date=datetime(2015, 1, 1),
     if not max_date:
         max_date = datetime.now()
 
-    stmt = text('''
+    stmt = text("""
     SELECT consulta_1.id, count(id) as devices_count
     FROM
     (SELECT DISTINCT devices.device_id, carriers.id
@@ -125,9 +91,9 @@ def total_device_for_carrier(min_date=datetime(2015, 1, 1),
     JOIN sims ON sims.serial_number = devices_sims.sim_id
     JOIN carriers on sims.carrier_id = carriers.id
     WHERE devices.creation_date BETWEEN :min_date AND :max_date) as consulta_1
-    GROUP BY consulta_1.id''')
+    GROUP BY consulta_1.id""")
 
-    result = db.session.query().add_columns('id', 'devices_count').from_statement(stmt).params(
+    result = db.session.query().add_columns("id", "devices_count").from_statement(stmt).params(
         min_date=min_date, max_date=max_date)
 
     return result.all()
@@ -145,13 +111,13 @@ def total_sims_for_carrier(min_date=datetime(2015, 1, 1),
     if not max_date:
         max_date = datetime.now()
 
-    stmt = text('''
+    stmt = text("""
     SELECT carrier_id, count(*) AS sims_count
     FROM sims
     WHERE sims.creation_date BETWEEN :min_date AND :max_date
-    GROUP BY carrier_id''').columns(Sim.carrier_id)
+    GROUP BY carrier_id""").columns(Sim.carrier_id)
 
-    result = db.session.query(Sim.carrier_id).add_columns('sims_count').from_statement(stmt).params(
+    result = db.session.query(Sim.carrier_id).add_columns("sims_count").from_statement(stmt).params(
         min_date=min_date, max_date=max_date)
 
     return result.all()
@@ -169,15 +135,15 @@ def total_gsm_events_for_carrier(min_date=datetime(2015, 1, 1),
     if not max_date:
         max_date = datetime.now()
 
-    stmt = text('''
+    stmt = text("""
     SELECT carrier_id, count(*) AS events_count
     FROM gsm_events
     JOIN events ON gsm_events.id = events.id
     JOIN sims ON events.sim_serial_number = sims.serial_number
     WHERE sims.creation_date BETWEEN :min_date AND :max_date
-    GROUP BY carrier_id ''').columns(GsmEvent.carrier_id)
+    GROUP BY carrier_id """).columns(GsmEvent.carrier_id)
 
-    result = db.session.query(GsmEvent.carrier_id).add_columns('events_count').from_statement(stmt).params(
+    result = db.session.query(GsmEvent.carrier_id).add_columns("events_count").from_statement(stmt).params(
         min_date=min_date, max_date=max_date)
 
     return result.all()

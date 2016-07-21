@@ -1,6 +1,9 @@
-initial_data_antennas = '''
+initial_data_antennas = """
 {
-    "antennas":
-    []
+    'antennas':
+    [
+
+]
+
 }
-'''
+"""

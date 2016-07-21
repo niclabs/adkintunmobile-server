@@ -1,15 +1,14 @@
 from datetime import datetime
 
-from app.report.report_generation import generate_json_general_reports
+from app.report.reports_generation import monthly_reports_generation
 from apscheduler.schedulers.background import BackgroundScheduler
 
 
 def start_scheduler():
-    pass
     scheduler = BackgroundScheduler()
     start_date = get_first_day()
-    scheduler.add_job(generate_json_general_reports, 'cron', id="procesamiento mensual", replace_existing=True,
-                      day='1', hour='0', minute='0', start_date=start_date)
+    scheduler.add_job(monthly_reports_generation, "cron", id="procesamiento mensual", replace_existing=True,
+                      day="1", hour="0", minute="0", start_date=start_date)
     scheduler.start()
 
 
