@@ -94,16 +94,16 @@ def read_and_save_events(jsonvar, device, sim, app_version_code):
 
 def set_events_context(jsonvar):
     from app.models.device import Device
-    device = Device.get_device_or_add_if_no_exist(jsonvar["device_records"])
+    device = Device.get_device_or_add_it(jsonvar["device_records"])
     app_version_code = jsonvar["device_records"]["app_version_code"]
 
     from app.models.sim import Sim
-    sim = Sim.get_sim_or_add_if_not_exist(jsonvar["sim_records"])
+    sim = Sim.get_sim_or_add_it(jsonvar["sim_records"])
 
     if sim:
+        # Get carrier or add it, if it does not exist
         from app.models.carrier import Carrier
-        carrier = Carrier.query.filter(
-            Carrier.mnc == jsonvar["sim_records"]["mnc"], Carrier.mcc == jsonvar["sim_records"]["mcc"]).first()
+        carrier = Carrier.get_carrier_or_add_it(jsonvar["sim_records"])
 
         # Link sim with device
         sim.add_device(device)

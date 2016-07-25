@@ -42,10 +42,10 @@ def add_device_sim_carrier(args):
     if carrier:
         # TODO add new carriers
 
-        device = Device.get_device_or_add_if_no_exist(args)
+        device = Device.get_device_or_add_it(args)
 
         # .store_if_not_exist(args)
-        sim = Sim().get_sim_or_add_if_not_exist(args)
+        sim = Sim().get_sim_or_add_it(args)
 
         # Se vinculan sim con device
         sim.devices.append(device)
