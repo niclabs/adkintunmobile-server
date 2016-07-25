@@ -10,7 +10,7 @@ class Device(base_model.BaseModel):
     device_id = db.Column(db.String(50), primary_key=True)
     brand = db.Column(db.String(50))
     board = db.Column(db.String(50))
-    build_id = db.Column(db.String(50))
+    build_id = db.Column(db.String(100))
     creation_date = db.Column(db.Date())
     device = db.Column(db.String(50))
     hardware = db.Column(db.String(50))
