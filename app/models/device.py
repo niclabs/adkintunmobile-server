@@ -43,7 +43,7 @@ class Device(base_model.BaseModel):
         return "<Device %r, device_id %r>" % (self.device, self.device_id)
 
     @staticmethod
-    def get_device_or_add_if_no_exist(args):
+    def get_device_or_add_it(args):
         """
         Search a device and retrieve it if exist, else create a new one and retrieve it.
         """

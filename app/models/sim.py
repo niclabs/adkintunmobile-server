@@ -26,7 +26,7 @@ class Sim(base_model.BaseModel):
                (self.serial_number, self.creation_date, self.carrier, self.carrier_id)
 
     @staticmethod
-    def get_sim_or_add_if_not_exist(args):
+    def get_sim_or_add_it(args):
         """
         Search a sim and retrieve it if exist, else create a new one and retrieve it.
         If there is not serial_number argument, return None

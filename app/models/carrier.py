@@ -24,7 +24,22 @@ class Carrier(base_model.BaseModel):
         return '<Carrier %r>' % (self.name)
 
     def add_sim(self, sim):
+        """
+        Add sim to sims parameter in a carrier, just if it was not previously added.
+        """
         from app.models.sim import Sim
         existent_sim = self.sims.filter(Sim.serial_number == sim.serial_number).first()
         if not existent_sim:
             self.sims.append(sim)
+
+    @staticmethod
+    def get_carrier_or_add_it(args):
+        """
+        Search a carrier and retrieve it if exist, else create a new one and retrieve it.
+        """
+
+        carrier = Carrier.query.filter(Carrier.mnc == args["mnc"], Carrier.mcc == args["mcc"]).first()
+        if not carrier:
+            carrier = Carrier(mnc=args["mnc"], mcc=args["mcc"], name="Unknown")
+            db.session.add(carrier)
+        return carrier
