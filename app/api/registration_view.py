@@ -10,28 +10,28 @@ class Registration(Resource):
     def post(self):
         post_parser = reqparse.RequestParser(bundle_errors=True)
         # SIM
-        post_parser.add_argument('serial_number', required=True)
-        post_parser.add_argument('carrier_id', required=True)
+        post_parser.add_argument("serial_number", required=True)
+        post_parser.add_argument("carrier_id", required=True)
         # Device
-        post_parser.add_argument('brand', required=True)
-        post_parser.add_argument('board', required=True)
-        post_parser.add_argument('build_id', required=True)
-        post_parser.add_argument('device', required=True)
-        post_parser.add_argument('hardware', required=True)
-        post_parser.add_argument('manufacturer', required=True)
-        post_parser.add_argument('model', required=True)
-        post_parser.add_argument('release', required=True)
-        post_parser.add_argument('release_type', required=True)
-        post_parser.add_argument('product', required=True)
-        post_parser.add_argument('sdk', required=True)
-        post_parser.add_argument('device_id', required=True)
+        post_parser.add_argument("brand", required=True)
+        post_parser.add_argument("board", required=True)
+        post_parser.add_argument("build_id", required=True)
+        post_parser.add_argument("device", required=True)
+        post_parser.add_argument("hardware", required=True)
+        post_parser.add_argument("manufacturer", required=True)
+        post_parser.add_argument("model", required=True)
+        post_parser.add_argument("release", required=True)
+        post_parser.add_argument("release_type", required=True)
+        post_parser.add_argument("product", required=True)
+        post_parser.add_argument("sdk", required=True)
+        post_parser.add_argument("device_id", required=True)
 
         args = post_parser.parse_args()
-
+    
         return add_device_sim_carrier(args)
 
 
-api.add_resource(Registration, '/api/registration')
+api.add_resource(Registration, "/api/registration")
 
 def add_device_sim_carrier(args):
     from app.models.sim import Sim
@@ -42,10 +42,10 @@ def add_device_sim_carrier(args):
     if carrier:
         # TODO add new carriers
 
-        device = Device.store_if_no_exist(args)
+        device = Device.get_device_or_add_if_no_exist(args)
 
         # .store_if_not_exist(args)
-        sim = Sim().store_if_not_exist(args)
+        sim = Sim().get_sim_or_add_if_not_exist(args)
 
         # Se vinculan sim con device
         sim.devices.append(device)
@@ -54,7 +54,7 @@ def add_device_sim_carrier(args):
         carrier.sims.append(sim)
 
         db.session.commit()
-        return 'registration complete', 201
+        return "registration complete", 201
 
     else:
-        return 'Carrier does not exist', 400
+        return "Carrier does not exist", 400
