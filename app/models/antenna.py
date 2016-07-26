@@ -16,7 +16,7 @@ class Antenna(base_model.BaseModel):
     lon = db.Column(db.Float)
     carrier_id = db.Column(db.Integer, db.ForeignKey("carriers.id"))
     gsm_events = db.relationship('GsmEvent', backref='antenna',
-                                lazy='dynamic')
+                                 lazy='dynamic')
 
     def __init__(self, cid=None, lac=None, lat=None, lon=None):
         self.cid = cid
