@@ -5,4 +5,6 @@ from flask_restful import Api
 
 api = Api(app)
 app.config['BUNDLE_ERRORS'] = True
-from . import events_view
+from app.api import events_view
+
+
