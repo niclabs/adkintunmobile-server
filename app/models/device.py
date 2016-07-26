@@ -3,14 +3,14 @@ from app.models import base_model
 
 
 class Device(base_model.BaseModel):
-    '''
-    Clase Dispositivo.
-    '''
-    __tablename__ = 'devices'
+    """
+    Device model class
+    """
+    __tablename__ = "devices"
     device_id = db.Column(db.String(50), primary_key=True)
     brand = db.Column(db.String(50))
     board = db.Column(db.String(50))
-    build_id = db.Column(db.String(50))
+    build_id = db.Column(db.String(100))
     creation_date = db.Column(db.Date())
     device = db.Column(db.String(50))
     hardware = db.Column(db.String(50))
@@ -20,7 +20,7 @@ class Device(base_model.BaseModel):
     release_type = db.Column(db.String(50))
     product = db.Column(db.String(50))
     sdk = db.Column(db.Integer)
-    events = db.relationship('Event', backref='device', lazy='dynamic')
+    events = db.relationship("Event", backref="device", lazy="dynamic")
 
     def __init__(self, device_id, brand=None, board=None, build_id=None, device=None, hardware=None,
                  manufacturer=None, model=None, release=None, release_type=None, product=None, sdk=None,
@@ -40,27 +40,30 @@ class Device(base_model.BaseModel):
         self.creation_date = creation_date
 
     def __repr__(self):
-        return '<Device %r, device_id %r>' % (self.device, self.device_id)
+        return "<Device %r, device_id %r>" % (self.device, self.device_id)
 
     @staticmethod
-    def store_if_no_exist(args):
+    def get_device_or_add_it(args):
+        """
+        Search a device and retrieve it if exist, else create a new one and retrieve it.
+        """
         from datetime import datetime
 
-        device = Device.query.filter(Device.device_id == args['device_id']).first()
+        device = Device.query.filter(Device.device_id == args["device_id"]).first()
         if not device:
             device = Device(
-                    device_id=args['device_id'],
-                    brand=args['brand'],
-                    board=args['board'],
-                    build_id=args['build_id'],
-                    device=args['device'],
-                    hardware=args['hardware'],
-                    manufacturer=args['manufacturer'],
-                    model=args['model'],
-                    release=args['release'],
-                    release_type=args['release_type'],
-                    product=args['product'],
-                    sdk=args['sdk'],
-                    creation_date=datetime.now())
+                device_id=args["device_id"],
+                brand=args["brand"],
+                board=args["board"],
+                build_id=args["build_id"],
+                device=args["device"],
+                hardware=args["hardware"],
+                manufacturer=args["manufacturer"],
+                model=args["model"],
+                release=args["release"],
+                release_type=args["release_type"],
+                product=args["product"],
+                sdk=args["sdk"],
+                creation_date=datetime.now())
             db.session.add(device)
         return device
