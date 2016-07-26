@@ -37,10 +37,10 @@ def verify_token(token):
     return False
 
 
-from . import api
-from . import public
-from . import admin
-from . import report
+from app import api
+from app import public
+from app import admin
+from app import report
 
 # Start scheduler with automatic report generation
 start_scheduler()
