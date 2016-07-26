@@ -334,14 +334,14 @@ def store_gsm_event_in_db(event, device, sim, carrier):
     from app.models.antenna import Antenna
     if event.gsm_lac and event.gsm_cid:
         antenna = Antenna.query.filter(Antenna.lac == event.gsm_lac, Antenna.cid == event.gsm_cid,
-                                       carrier.mcc == event.mcc, carrier.mnc == event.mnc).first()
+                                       Antenna.carrier_id == carrier.id).first()
         if antenna:
             antenna.gsm_events.append(event)
             db.session.add(antenna)
             db.session.add(carrier)
             add_event_in_db(event, device, sim)
         else:
-            app.logger.error(
+            app.logger.info(
                 "Unkown Antenna: lac:" + str(event.gsm_lac) + " , cid:" + str(event.gsm_cid) + ", mnc: " + str(
                     carrier.mnc) + ", mcc: " + str(carrier.mcc))
             add_event_in_db(event, device, sim)
