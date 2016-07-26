@@ -5,7 +5,7 @@ from app.models.device_sim import devices_sims
 
 class Sim(base_model.BaseModel):
     """
-    Clase tarjeta sim.
+    Sim card model class
     """
     __tablename__ = "sims"
 
