@@ -6,7 +6,7 @@ Adkintun Mobile server.
 What is new?
 -------
 
-* 1.1 beta (28.7.2016)
+* 1.0.1 beta (28.7.2016)
     * Bug fixes.
     * Add carriers dynamically, with tests.
     
