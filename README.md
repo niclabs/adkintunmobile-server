@@ -3,6 +3,17 @@ Adkintun Mobile Server [![Build Status](https://travis-ci.org/niclabs/AdkintunMo
 
 Adkintun Mobile server.
 
+What is new?
+-------
+
+* 1.1 beta (28.7.2016)
+    * Bug fixes.
+    * Add carriers dynamically, with tests.
+    
+* 1.0 beta (20.7.2016)
+    * First release AdkintunMobile Server.
+
+
 Current requirements
 --------------------
 
