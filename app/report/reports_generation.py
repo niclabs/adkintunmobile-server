@@ -4,8 +4,10 @@ import os
 from flask import json
 
 
+
 def monthly_reports_generation():
     from app.report.general_report_generation import generate_json_general_reports
+    from app.report.antenna_network_report_generation import generate_json_network_reports
     # get month for the report
     actual_month = datetime.now().month
     actual_year = datetime.now().year
@@ -20,10 +22,11 @@ def monthly_reports_generation():
     last_date = datetime(year=actual_year, month=actual_month, day=1, hour=23, minute=59, second=59) - timedelta(days=1)
 
     generate_json_general_reports(init_date, last_date)
+    generate_json_network_reports(init_date, last_date)
 
 
 def save_json_report_to_file(json_data: dict, year: int, month: int, folder: str, name: str):
-    '''
+    """
     Save data from a json to a file in the reports folder
     :param json_data: Json data
     :param year: year of the report
@@ -31,12 +34,12 @@ def save_json_report_to_file(json_data: dict, year: int, month: int, folder: str
     :param folder: folder to store the json file
     :param name: name of the json file
     :return: None
-    '''
-    file_folder = folder + '/' + str(year) + '/'
-    file_name = name + str(month) + '_' + str(year) + '.json'
+    """
+    file_folder = folder + "/" + str(year) + "/"
+    file_name = name + str(month) + "_" + str(year) + ".json"
 
     if not os.path.exists(file_folder):
         os.makedirs(file_folder)
 
-    with open(file_folder + file_name, 'w') as outfile:
+    with open(file_folder + file_name, "w") as outfile:
         json.dump(json_data, outfile, indent=4)
