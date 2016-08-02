@@ -143,7 +143,7 @@ def save_application_traffic_event(event, device, sim):
         if k == "timestamp":
             eventModel.date = datetime.fromtimestamp(timestamp=v / 1000)
         elif k == "package_name":
-            application = Application.store_if_not_exist(v)
+            application = Application.get_app_or_add_it(v)
         elif k == "id":
             continue
         elif hasattr(eventModel, k):
