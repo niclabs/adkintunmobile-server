@@ -37,10 +37,10 @@ def verify_token(token):
     return False
 
 
-from . import api
-from . import public
-from . import admin
-from . import report
+from app import api
+from app import public
+from app import admin
+from app import report
 
 # Start scheduler with automatic report generation
 start_scheduler()
@@ -52,7 +52,7 @@ if not app.debug:
     if not os.path.exists(log_folder):
         os.makedirs(log_folder)
 
-    file_handler = RotatingFileHandler(log_folder + log_filename, 'a', 1 * 1024 * 1024, 10)
+    file_handler = RotatingFileHandler(log_folder + log_filename, 'a', maxBytes=50 * 1024 * 1024)
     file_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
     app.logger.setLevel(logging.INFO)
     file_handler.setLevel(logging.INFO)
