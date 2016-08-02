@@ -5,6 +5,9 @@ Adkintun Mobile server.
 
 What is new?
 -------
+* 1.0.2 beta (02.8.2016)
+    * Bug fixes and refactor code.
+    * Limit size log file.
 
 * 1.0.1 beta (28.7.2016)
     * Bug fixes.
