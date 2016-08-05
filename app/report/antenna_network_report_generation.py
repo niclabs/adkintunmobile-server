@@ -1,10 +1,12 @@
 from datetime import datetime
 
+from sqlalchemy import text
+
 from app import db
-from app.models.gsm_event import GsmEvent
+from app.models.antenna import Antenna
+from app.models.sim import Sim
 from app.models.telephony_observation_event import TelephonyObservationEvent
 from app.report.reports_generation import save_json_report_to_file
-from sqlalchemy import text
 
 BASE_DIRECTORY_REPORTS = 'app/static/reports/'
 GENERAL_REPORT_DIRECTORY = BASE_DIRECTORY_REPORTS + 'network_reports'
@@ -33,28 +35,33 @@ def network_report_for_antenna(min_date=datetime(2015, 1, 1),
         max_date = datetime.now()
 
     stmt = text("""
-      SELECT
-      gsm_events.antenna_id,
-      telephony_observation_events.network_type,
-      count(gsm_events.id) as size,
-      telephony_observation_events.carrier_id
+    SELECT
+        telephony_observation_events.network_type,
+        antennas.id,
+        count(gsm_events.id) as size,
+        sims.carrier_id
     FROM
-      public.antennas,
-      public.gsm_events,
-      public.events,
-      public.telephony_observation_events
+        public.antennas,
+        public.gsm_events,
+        public.events,
+        public.telephony_observation_events,
+        public.sims
     WHERE
-      antennas.id = gsm_events.antenna_id AND
-      gsm_events.id = telephony_observation_events.id AND
-      events.id = gsm_events.id AND
-      events.date BETWEEN :min_date AND :max_date
+        gsm_events.antenna_id = antennas.id AND
+        gsm_events.id = telephony_observation_events.id AND
+        events.id = gsm_events.id AND
+        events.sim_serial_number = sims.serial_number AND
+        events.date BETWEEN :min_date AND :max_date
     GROUP BY
-      telephony_observation_events.network_type,
-      gsm_events.antenna_id,
-      telephony_observation_events.carrier_id; """)
+        telephony_observation_events.network_type,
+        antennas.id,
+        sims.carrier_id;""")
 
-    result = db.session.query(GsmEvent.antenna_id, TelephonyObservationEvent.network_type,
-                              TelephonyObservationEvent.carrier_id).add_columns("size").from_statement(stmt).params(
+    result = db.session.query(Antenna.id, TelephonyObservationEvent.network_type,
+                              Sim.carrier_id).add_columns("size").from_statement(stmt).params(
         min_date=min_date, max_date=max_date)
 
-    return result.all()
+    final = [dict(network_type=row[0], antenna_id=row[1], size=row[2], carrier_id=row[3]) for row in
+             result.all()]
+
+    return final;
