@@ -22,8 +22,8 @@ def monthly_reports_generation():
     init_date = datetime(year=year_new_report, month=month_new_report, day=1)
     last_date = datetime(year=actual_year, month=actual_month, day=1, hour=23, minute=59, second=59) - timedelta(days=1)
 
-    # generate_json_general_reports(init_date, last_date)
-    # generate_json_network_reports(init_date, last_date)
+    generate_json_general_reports(init_date, last_date)
+    generate_json_network_reports(init_date, last_date)
     generate_json_signal_reports(init_date, last_date)
 
 def save_json_report_to_file(json_data: dict, year: int, month: int, folder: str, name: str):
@@ -36,6 +36,7 @@ def save_json_report_to_file(json_data: dict, year: int, month: int, folder: str
     :param name: name of the json file
     :return: None
     """
+
     file_folder = folder + "/" + str(year) + "/"
     file_name = name + str(month) + "_" + str(year) + ".json"
 
