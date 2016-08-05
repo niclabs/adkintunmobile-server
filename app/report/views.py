@@ -23,3 +23,14 @@ def network_reports(year, month):
         return jsonify(data)
     except Exception as e:
         return page_not_found(e)
+
+
+@app.route("/reports/signal_reports/<year>/<month>")
+def signal_reports(year, month):
+    try:
+        data = json.load(
+            open("app/static/reports/signal_reports/" + year + "/signal_report_" + month + "_" + year + ".json",
+                 "r"))
+        return jsonify(data)
+    except Exception as e:
+        return page_not_found(e)
