@@ -3,9 +3,8 @@ from datetime import datetime
 from sqlalchemy import text
 
 from app import db
-from app.report.reports_generation import save_json_report_to_file
+from app.report.reports_generation import save_json_report_to_file, BASE_DIRECTORY_REPORTS
 
-BASE_DIRECTORY_REPORTS = 'app/static/reports/'
 SIGNAL_REPORT_DIRECTORY = BASE_DIRECTORY_REPORTS + 'signal_reports'
 
 

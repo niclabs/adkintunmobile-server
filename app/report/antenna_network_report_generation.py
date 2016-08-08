@@ -6,9 +6,8 @@ from app import db
 from app.models.antenna import Antenna
 from app.models.sim import Sim
 from app.models.telephony_observation_event import TelephonyObservationEvent
-from app.report.reports_generation import save_json_report_to_file
+from app.report.reports_generation import save_json_report_to_file, BASE_DIRECTORY_REPORTS
 
-BASE_DIRECTORY_REPORTS = 'app/static/reports/'
 NETWORK_REPORT_DIRECTORY = BASE_DIRECTORY_REPORTS + 'network_reports'
 
 
@@ -19,14 +18,14 @@ def generate_json_network_reports(init_date, last_date):
     :return: None
     """
 
-    report = network_report_for_antenna(init_date, last_date)
+    report = network_report_for_carrier(init_date, last_date)
 
     save_json_report_to_file(report, init_date.year, init_date.month, NETWORK_REPORT_DIRECTORY,
                              "network_report_")
 
 
-# Signal strength mean by antenna
-def network_report_for_antenna(min_date=datetime(2015, 1, 1),
+# network report
+def network_report_for_carrier(min_date=datetime(2015, 1, 1),
                                max_date=None):
     if not min_date:
         min_date = datetime(2015, 1, 1)
@@ -58,7 +57,7 @@ def network_report_for_antenna(min_date=datetime(2015, 1, 1),
         antennas.id,
         sims.carrier_id;""")
 
-    result = db.session.query( TelephonyObservationEvent.network_type, Antenna.id,
+    result = db.session.query(TelephonyObservationEvent.network_type, Antenna.id,
                               Sim.carrier_id).add_columns("size").from_statement(stmt).params(
         min_date=min_date, max_date=max_date)
 
