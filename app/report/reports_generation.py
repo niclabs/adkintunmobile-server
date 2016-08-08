@@ -1,8 +1,9 @@
+import os
 from datetime import datetime, timedelta
 
-import os
 from flask import json
 
+BASE_DIRECTORY_REPORTS = 'app/static/reports/'
 
 
 def monthly_reports_generation():
@@ -25,6 +26,7 @@ def monthly_reports_generation():
     generate_json_general_reports(init_date, last_date)
     generate_json_network_reports(init_date, last_date)
     generate_json_signal_reports(init_date, last_date)
+
 
 def save_json_report_to_file(json_data: dict, year: int, month: int, folder: str, name: str):
     """
