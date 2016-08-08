@@ -6,19 +6,19 @@ from app import db
 from app.report.reports_generation import save_json_report_to_file
 
 BASE_DIRECTORY_REPORTS = 'app/static/reports/'
-GENERAL_REPORT_DIRECTORY = BASE_DIRECTORY_REPORTS + 'signal_reports'
+SIGNAL_REPORT_DIRECTORY = BASE_DIRECTORY_REPORTS + 'signal_reports'
 
 
 def generate_json_signal_reports(init_date, last_date):
     """
-    Calculate the network report values and return and print them to a JSON file.
+    Calculate the signal antenna reports and print them to a JSON file.
     This will be made the night of the first day of the next month of the report.
     :return: None
     """
 
     report = signal_strength_mean_for_antenna(init_date, last_date)
 
-    save_json_report_to_file(report, init_date.year, init_date.month, GENERAL_REPORT_DIRECTORY,
+    save_json_report_to_file(report, init_date.year, init_date.month, SIGNAL_REPORT_DIRECTORY,
                              "signal_report_")
 
 

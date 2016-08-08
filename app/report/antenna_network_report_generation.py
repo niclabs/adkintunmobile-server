@@ -9,7 +9,7 @@ from app.models.telephony_observation_event import TelephonyObservationEvent
 from app.report.reports_generation import save_json_report_to_file
 
 BASE_DIRECTORY_REPORTS = 'app/static/reports/'
-GENERAL_REPORT_DIRECTORY = BASE_DIRECTORY_REPORTS + 'network_reports'
+NETWORK_REPORT_DIRECTORY = BASE_DIRECTORY_REPORTS + 'network_reports'
 
 
 def generate_json_network_reports(init_date, last_date):
@@ -21,7 +21,7 @@ def generate_json_network_reports(init_date, last_date):
 
     report = network_report_for_antenna(init_date, last_date)
 
-    save_json_report_to_file(report, init_date.year, init_date.month, GENERAL_REPORT_DIRECTORY,
+    save_json_report_to_file(report, init_date.year, init_date.month, NETWORK_REPORT_DIRECTORY,
                              "network_report_")
 
 
