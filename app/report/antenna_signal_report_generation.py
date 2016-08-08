@@ -1,7 +1,6 @@
 from datetime import datetime
 
 from sqlalchemy import text
-from sqlalchemy.ext.serializer import dumps
 
 from app import db
 from app.report.reports_generation import save_json_report_to_file
@@ -65,12 +64,12 @@ def signal_strength_mean_for_antenna(min_date=datetime(2015, 1, 1),
     ) AS c1
     GROUP BY carrier_id, antenna_id) AS c2;""")
 
-    result = db.session.query().with_labels().add_columns( "carrier_id", "antenna_id", "observations", "signal_mean").from_statement(
+    result = db.session.query().with_labels().add_columns("carrier_id", "antenna_id", "observations",
+                                                          "signal_mean").from_statement(
         stmt).params(
         min_date=min_date, max_date=max_date)
 
-
-    final = [dict(carrier_id=row[0], antenna_id=row[1], observations=row[2], signal_mean=row[3]) for row in result.all() ]
-
+    final = [dict(carrier_id=row[0], antenna_id=row[1], observations=row[2], signal_mean=row[3]) for row in
+             result.all()]
 
     return final
