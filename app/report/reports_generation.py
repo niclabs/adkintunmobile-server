@@ -10,6 +10,8 @@ def monthly_reports_generation():
     from app.report.general_report_generation import generate_json_general_reports
     from app.report.antenna_network_report_generation import generate_json_network_reports
     from app.report.antenna_signal_report_generation import generate_json_signal_reports
+    from app.report.application_report_generation import generate_json_app_reports
+
     # get month for the report
     actual_month = datetime.now().month
     actual_year = datetime.now().year
@@ -26,6 +28,7 @@ def monthly_reports_generation():
     generate_json_general_reports(init_date, last_date)
     generate_json_network_reports(init_date, last_date)
     generate_json_signal_reports(init_date, last_date)
+    generate_json_app_reports(init_date, last_date)
 
 
 def save_json_report_to_file(json_data: dict, year: int, month: int, folder: str, name: str):
@@ -46,4 +49,4 @@ def save_json_report_to_file(json_data: dict, year: int, month: int, folder: str
         os.makedirs(file_folder)
 
     with open(file_folder + file_name, "w") as outfile:
-        json.dump(json_data, outfile, indent=4)
+        json.dump(json_data, outfile, indent=4, sort_keys=False)
