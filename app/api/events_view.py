@@ -2,12 +2,12 @@ import gzip
 import json
 from datetime import datetime
 
-from app import auth
-from app import db, app
-from app.api import api
 from flask import request
 from flask_restful import Resource, reqparse
 from werkzeug.exceptions import BadRequestKeyError
+
+from app import db, app, auth, Session
+from app.api import api
 
 
 class ReadEventsFromArgument(Resource):
@@ -52,7 +52,9 @@ def read_events_from_file():
         string = string.replace("\n", "")
         jsonvar = json.loads(string)
         device, sim, app_version_code = set_events_context(jsonvar)
-        return read_and_save_events(jsonvar, device, sim, app_version_code)
+
+        session = Session()
+        return read_and_save_events(jsonvar, device, sim, app_version_code, session)
 
     except json.JSONDecodeError as e:
         app.logger.error("JSONDecodeError: " + str(e))
@@ -64,27 +66,28 @@ def read_events_from_file():
         app.logger.error("TypeError: " + str(e))
     except KeyError as e:
         app.logger.error("KeyError: " + str(e))
-        db.session.rollback()
+        session.rollback()
     except Exception as e:
         app.logger.error("Unknow Exception: " + str(e))
-        db.session.rollback()
+        session.rollback()
     return "Bad Request", 400
 
 
-def read_and_save_events(jsonvar, device, sim, app_version_code):
+def read_and_save_events(jsonvar, device, sim, app_version_code, session):
     total_events = 0
     del jsonvar["device_records"]
     del jsonvar["sim_records"]
 
+
     for events_name, events in jsonvar.items():
-        total_events += add_events(events_name, events, device, sim, app_version_code)
+        total_events += add_events(events_name, events, device, sim, app_version_code, session)
 
     try:
         # save and commit events and information to the database
-        db.session.commit()
+        session.commit()
     except Exception as e:
-        app.logger.error("Error adding events to de database " + str(e))
-        db.session.rollback()
+        app.logger.error("Error adding events to database " + str(e))
+        session.rollback()
         return "Bad Request", 400
 
     app.logger.info("Saved Events: " + str(total_events))
@@ -99,7 +102,7 @@ def set_events_context(jsonvar):
 
     from app.models.sim import Sim
     sim = Sim.get_sim_or_add_it(jsonvar["sim_records"])
-
+    session = Session()
     if sim:
         # Get carrier or add it, if it does not exist
         from app.models.carrier import Carrier
@@ -111,30 +114,31 @@ def set_events_context(jsonvar):
         # Link carrier with sim
         carrier.add_sim(sim)
 
-        db.session.add(sim)
-        db.session.add(carrier)
+
+        session.add(sim)
+        session.add(carrier)
 
     # add new device, sim or carrier
-    db.session.commit()
+    session.commit()
 
     return device, sim, app_version_code
 
 
-def save_traffics_events(events, device, sim, app_version_code):
+def save_traffics_events(events, device, sim, app_version_code, session):
     total_events = 0
     for event in events:
         total_events += 1
         event["app_version_code"] = app_version_code
         if event["event_type"] == 2:
-            save_mobile_traffic_event(event, device, sim)
+            save_mobile_traffic_event(event, device, sim, session)
         elif event["event_type"] == 4:
-            save_wifi_traffic_event(event, device, sim)
+            save_wifi_traffic_event(event, device, sim, session)
         elif event["event_type"] == 8:
-            save_application_traffic_event(event, device, sim)
+            save_application_traffic_event(event, device, sim, session)
     return total_events
 
 
-def save_application_traffic_event(event, device, sim):
+def save_application_traffic_event(event, device, sim, session):
     from app.models.application_traffic_event import ApplicationTrafficEvent
     from app.models.application import Application
     eventModel = ApplicationTrafficEvent()
@@ -149,10 +153,10 @@ def save_application_traffic_event(event, device, sim):
         elif hasattr(eventModel, k):
             setattr(eventModel, k, v)
     application.application_traffic_event.append(eventModel)
-    add_event_in_db(eventModel, device, sim)
+    add_event_in_db(eventModel, device, sim, session)
 
 
-def save_wifi_traffic_event(event, device, sim):
+def save_wifi_traffic_event(event, device, sim, session):
     from app.models.wifi_traffic_event import WifiTrafficEvent
 
     eventModel = WifiTrafficEvent()
@@ -165,10 +169,10 @@ def save_wifi_traffic_event(event, device, sim):
         elif hasattr(eventModel, k):
             setattr(eventModel, k, v)
 
-    add_event_in_db(eventModel, device, sim)
+    add_event_in_db(eventModel, device, sim, session)
 
 
-def save_mobile_traffic_event(event, device, sim):
+def save_mobile_traffic_event(event, device, sim, session):
     from app.models.mobile_traffic_event import MobileTrafficEvent
     eventModel = MobileTrafficEvent()
     for k, v in event.items():
@@ -180,10 +184,10 @@ def save_mobile_traffic_event(event, device, sim):
         elif hasattr(eventModel, k):
             setattr(eventModel, k, v)
 
-    add_event_in_db(eventModel, device, sim)
+    add_event_in_db(eventModel, device, sim, session)
 
 
-def save_cdma_events(events, device, sim, app_version_code):
+def save_cdma_events(events, device, sim, app_version_code, session):
     from app.models.cdma_event import CdmaEvent
     total_events = 0
     for event in events:
@@ -222,13 +226,13 @@ def save_cdma_events(events, device, sim, app_version_code):
                 continue
             elif hasattr(eventModel, k):
                 setattr(eventModel, k, v)
-        link_observation_with_carrier(eventModel)
-        add_event_in_db(eventModel, device, sim)
+        link_observation_with_carrier(eventModel, session)
+        add_event_in_db(eventModel, device, sim, session)
 
     return total_events
 
 
-def save_connectivity_events(events, device, sim, app_version_code):
+def save_connectivity_events(events, device, sim, app_version_code, session):
     from app.models.connectivity_event import ConnectivityEvent
     total_events = 0
     for event in events:
@@ -244,11 +248,11 @@ def save_connectivity_events(events, device, sim, app_version_code):
             elif hasattr(eventModel, k):
                 setattr(eventModel, k, v)
 
-        add_event_in_db(eventModel, device, sim)
+        add_event_in_db(eventModel, device, sim, session)
     return total_events
 
 
-def save_gsm_events(events, device, sim, app_version_code):
+def save_gsm_events(events, device, sim, app_version_code, session):
     from app.models.gsm_event import GsmEvent
     total_events = 0
     for event in events:
@@ -272,19 +276,19 @@ def save_gsm_events(events, device, sim, app_version_code):
                 continue
             elif hasattr(eventModel, k):
                 setattr(eventModel, k, v)
-        carrier = link_observation_with_carrier(eventModel)
+        carrier = link_observation_with_carrier(eventModel, session)
         if carrier:
-            store_gsm_event_in_db(eventModel, device, sim, carrier)
+            link_gsm_event_with_antenna(eventModel, device, sim, carrier, session)
         else:
-            add_event_in_db(eventModel, device, sim)
+            add_event_in_db(eventModel, device, sim, session)
     return total_events
 
 
-def save_telephony_events(events, device, sim, app_version_code):
+def save_telephony_events(events, device, sim, app_version_code, session):
     return 0
 
 
-def save_state_events(events, device, sim, app_version_code):
+def save_state_events(events, device, sim, app_version_code, session):
     from app.models.state_change_event import StateChangeEvent
     total_events = 0
     for event in events:
@@ -300,7 +304,7 @@ def save_state_events(events, device, sim, app_version_code):
             elif hasattr(eventModel, k):
                 setattr(eventModel, k, v)
 
-        add_event_in_db(eventModel, device, sim)
+        add_event_in_db(eventModel, device, sim, session)
     return total_events
 
 
@@ -314,46 +318,46 @@ events_names = {
 }
 
 
-def add_events(events_name, events, device, sim, app_version_code):
-    return events_names[events_name](events, device, sim, app_version_code)
+def add_events(events_name, events, device, sim, app_version_code, session):
+    return events_names[events_name](events, device, sim, app_version_code, session)
 
 
-def add_event_in_db(event, device, sim):
+def add_event_in_db(event, device, sim, session):
     """
     Add each event to the database, but not make a commit.
     """
     device.events.append(event)
     if sim:
         sim.events.append(event)
-        db.session.add(sim)
-    db.session.add(event)
-    db.session.add(device)
+        session.add(sim)
+    session.add(event)
+    session.add(device)
 
 
-def store_gsm_event_in_db(event, device, sim, carrier):
+def link_gsm_event_with_antenna(event, device, sim, carrier, session):
     from app.models.antenna import Antenna
     if event.gsm_lac and event.gsm_cid:
         antenna = Antenna.query.filter(Antenna.lac == event.gsm_lac, Antenna.cid == event.gsm_cid,
                                        Antenna.carrier_id == carrier.id).first()
         if antenna:
             antenna.gsm_events.append(event)
-            db.session.add(antenna)
-            db.session.add(carrier)
-            add_event_in_db(event, device, sim)
+            session.add(antenna)
+            session.add(carrier)
+            add_event_in_db(event, device, sim, session)
         else:
             app.logger.info(
                 "Unkown Antenna: lac:" + str(event.gsm_lac) + " , cid:" + str(event.gsm_cid) + ", mnc: " + str(
                     carrier.mnc) + ", mcc: " + str(carrier.mcc))
-            add_event_in_db(event, device, sim)
+            add_event_in_db(event, device, sim, session)
 
 
-def link_observation_with_carrier(event):
-    from app.models.carrier import Carrier
+def link_observation_with_carrier(event, session):
     if event.mnc and event.mcc:
-        try:
-            carrier = Carrier.query.filter(Carrier.mnc == event.mnc, Carrier.mcc == event.mcc).first()
-            carrier.telephony_observation_events.append(event)
-            return carrier
-        except:
-            app.logger.error("Unknown Carrier: mnc:" + str(event.mnc) + " , mcc:" + str(event.mcc))
-            return None
+        from app.models.carrier import Carrier
+        carrier = Carrier.get_carrier_or_add_it(args={"mnc":event.mnc, "mcc":event.mcc})
+        carrier.telephony_observation_events.append(event)
+        session.add(carrier)
+        return carrier
+
+
+

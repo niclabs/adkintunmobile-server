@@ -24,6 +24,9 @@ class Application(base_model.BaseModel):
         """
         app = Application.query.filter(Application.package_name == packageName).first()
         if not app:
+            from app import Session
             app = Application(package_name=packageName)
-            db.session.add(app)
+            session = Session()
+            session.add(app)
+            session.commit()
         return app
