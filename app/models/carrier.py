@@ -37,9 +37,11 @@ class Carrier(base_model.BaseModel):
         """
         Search a carrier and retrieve it if exist, else create a new one and retrieve it.
         """
-
         carrier = Carrier.query.filter(Carrier.mnc == args["mnc"], Carrier.mcc == args["mcc"]).first()
         if not carrier:
+            from app import Session
             carrier = Carrier(mnc=args["mnc"], mcc=args["mcc"], name="Unknown")
-            db.session.add(carrier)
+            session = Session()
+            session.add(carrier)
+            session.commit()
         return carrier

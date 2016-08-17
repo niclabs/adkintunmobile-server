@@ -36,8 +36,11 @@ class Sim(base_model.BaseModel):
             sim = Sim.query.filter(Sim.serial_number == args["serial_number"]).first()
 
             if not sim:
+                from app import Session
                 sim = Sim(serial_number=args["serial_number"], creation_date=datetime.now())
-                db.session.add(sim)
+                session = Session()
+                session.add(sim)
+                session.commit()
             return sim
         else:
             return None

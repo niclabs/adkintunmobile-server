@@ -6,6 +6,7 @@ from config import AppTokens
 from flask import Flask, g
 from flask_httpauth import HTTPTokenAuth
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import sessionmaker, scoped_session
 
 # Create flask app
 app = Flask(__name__)
@@ -16,6 +17,8 @@ app.config.from_object('config.DefaultConfig')
 # Define the database object which is imported
 # by modules and controllers
 db = SQLAlchemy(app)
+session_factory = sessionmaker(bind=db.get_engine(app=app), expire_on_commit=True)
+Session = scoped_session(session_factory)
 
 from app.automatization.scheduler_manager import start_scheduler
 
