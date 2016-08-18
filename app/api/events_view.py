@@ -338,6 +338,7 @@ def add_event_in_db(event, device_id, sim_serial_number, session):
 
 def link_gsm_event_with_antenna(event, device_id, sim_serial_number, session):
     from app.models.antenna import Antenna
+
     if event.gsm_lac and event.gsm_cid and event.mcc and event.mnc:
         antenna = Antenna.get_antenna_or_add_it(
             args={"cid": event.gsm_cid, "lac": event.gsm_lac, "mnc": event.mnc, "mcc": event.mcc})
