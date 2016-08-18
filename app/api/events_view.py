@@ -24,7 +24,11 @@ class ReadEventsFromArgument(Resource):
             args = post_parser.parse_args()
             jsonvar = json.loads(args.events)
             device, sim, app_version_code = set_events_context(jsonvar)
-            return read_and_save_events(jsonvar, device, sim, app_version_code)
+            session = Session()
+            if sim:
+                return read_and_save_events(jsonvar, device.device_id, sim.serial_number, app_version_code, session)
+            else:
+                return read_and_save_events(jsonvar, device.device_id, None, app_version_code, session)
 
         except (json.JSONDecodeError, BadRequestKeyError, UnicodeError) as e:
             return e, 400
@@ -54,7 +58,11 @@ def read_events_from_file():
         device, sim, app_version_code = set_events_context(jsonvar)
 
         session = Session()
-        return read_and_save_events(jsonvar, device, sim, app_version_code, session)
+
+        if sim:
+            return read_and_save_events(jsonvar, device.device_id, sim.serial_number, app_version_code, session)
+        else:
+            return read_and_save_events(jsonvar, device.device_id, None, app_version_code, session)
 
     except json.JSONDecodeError as e:
         app.logger.error("JSONDecodeError: " + str(e))
@@ -66,21 +74,18 @@ def read_events_from_file():
         app.logger.error("TypeError: " + str(e))
     except KeyError as e:
         app.logger.error("KeyError: " + str(e))
-        session.rollback()
     except Exception as e:
         app.logger.error("Unknow Exception: " + str(e))
-        session.rollback()
     return "Bad Request", 400
 
 
-def read_and_save_events(jsonvar, device, sim, app_version_code, session):
+def read_and_save_events(jsonvar, device_id, sim_serial_number, app_version_code, session):
     total_events = 0
     del jsonvar["device_records"]
     del jsonvar["sim_records"]
 
-
     for events_name, events in jsonvar.items():
-        total_events += add_events(events_name, events, device, sim, app_version_code, session)
+        total_events += add_events(events_name, events, device_id, sim_serial_number, app_version_code, session)
 
     try:
         # save and commit events and information to the database
@@ -103,20 +108,19 @@ def set_events_context(jsonvar):
     from app.models.sim import Sim
     sim = Sim.get_sim_or_add_it(jsonvar["sim_records"])
     session = Session()
-    if sim:
-        # Get carrier or add it, if it does not exist
-        from app.models.carrier import Carrier
-        carrier = Carrier.get_carrier_or_add_it(jsonvar["sim_records"])
 
-        # Link sim with device
-        sim.add_device(device)
+    # Get carrier or add it, if it does not exist
+    from app.models.carrier import Carrier
+    carrier = Carrier.get_carrier_or_add_it(jsonvar["sim_records"])
 
-        # Link carrier with sim
-        carrier.add_sim(sim)
+    # Link sim with device
+    sim.add_device(device)
 
+    # Link carrier with sim
+    carrier.add_sim(sim)
 
-        session.add(sim)
-        session.add(carrier)
+    session.add(sim)
+    session.add(carrier)
 
     # add new device, sim or carrier
     session.commit()
@@ -124,21 +128,21 @@ def set_events_context(jsonvar):
     return device, sim, app_version_code
 
 
-def save_traffics_events(events, device, sim, app_version_code, session):
+def save_traffics_events(events, device_id, sim_serial_number, app_version_code, session):
     total_events = 0
     for event in events:
         total_events += 1
         event["app_version_code"] = app_version_code
         if event["event_type"] == 2:
-            save_mobile_traffic_event(event, device, sim, session)
+            save_mobile_traffic_event(event, device_id, sim_serial_number, session)
         elif event["event_type"] == 4:
-            save_wifi_traffic_event(event, device, sim, session)
+            save_wifi_traffic_event(event, device_id, sim_serial_number, session)
         elif event["event_type"] == 8:
-            save_application_traffic_event(event, device, sim, session)
+            save_application_traffic_event(event, device_id, sim_serial_number, session)
     return total_events
 
 
-def save_application_traffic_event(event, device, sim, session):
+def save_application_traffic_event(event, device_id, sim_serial_number, session):
     from app.models.application_traffic_event import ApplicationTrafficEvent
     from app.models.application import Application
     eventModel = ApplicationTrafficEvent()
@@ -153,10 +157,10 @@ def save_application_traffic_event(event, device, sim, session):
         elif hasattr(eventModel, k):
             setattr(eventModel, k, v)
     application.application_traffic_event.append(eventModel)
-    add_event_in_db(eventModel, device, sim, session)
+    add_event_in_db(eventModel, device_id, sim_serial_number, session)
 
 
-def save_wifi_traffic_event(event, device, sim, session):
+def save_wifi_traffic_event(event, device_id, sim_serial_number, session):
     from app.models.wifi_traffic_event import WifiTrafficEvent
 
     eventModel = WifiTrafficEvent()
@@ -169,25 +173,23 @@ def save_wifi_traffic_event(event, device, sim, session):
         elif hasattr(eventModel, k):
             setattr(eventModel, k, v)
 
-    add_event_in_db(eventModel, device, sim, session)
+    add_event_in_db(eventModel, device_id, sim_serial_number, session)
 
 
-def save_mobile_traffic_event(event, device, sim, session):
+def save_mobile_traffic_event(event, device_id, sim_serial_number, session):
     from app.models.mobile_traffic_event import MobileTrafficEvent
     eventModel = MobileTrafficEvent()
     for k, v in event.items():
-
         if k == "timestamp":
             eventModel.date = datetime.fromtimestamp(timestamp=v / 1000)
         elif k == "id":
             continue
         elif hasattr(eventModel, k):
             setattr(eventModel, k, v)
+    add_event_in_db(eventModel, device_id, sim_serial_number, session)
 
-    add_event_in_db(eventModel, device, sim, session)
 
-
-def save_cdma_events(events, device, sim, app_version_code, session):
+def save_cdma_events(events, device_id, sim_serial_number, app_version_code, session):
     from app.models.cdma_event import CdmaEvent
     total_events = 0
     for event in events:
@@ -226,13 +228,13 @@ def save_cdma_events(events, device, sim, app_version_code, session):
                 continue
             elif hasattr(eventModel, k):
                 setattr(eventModel, k, v)
-        link_observation_with_carrier(eventModel, session)
-        add_event_in_db(eventModel, device, sim, session)
+        link_observation_with_carrier(eventModel)
+        add_event_in_db(eventModel, device_id, sim_serial_number, session)
 
     return total_events
 
 
-def save_connectivity_events(events, device, sim, app_version_code, session):
+def save_connectivity_events(events, device_id, sim_serial_number, app_version_code, session):
     from app.models.connectivity_event import ConnectivityEvent
     total_events = 0
     for event in events:
@@ -248,11 +250,11 @@ def save_connectivity_events(events, device, sim, app_version_code, session):
             elif hasattr(eventModel, k):
                 setattr(eventModel, k, v)
 
-        add_event_in_db(eventModel, device, sim, session)
+        add_event_in_db(eventModel, device_id, sim_serial_number, session)
     return total_events
 
 
-def save_gsm_events(events, device, sim, app_version_code, session):
+def save_gsm_events(events, device_id, sim_serial_number, app_version_code, session):
     from app.models.gsm_event import GsmEvent
     total_events = 0
     for event in events:
@@ -276,19 +278,19 @@ def save_gsm_events(events, device, sim, app_version_code, session):
                 continue
             elif hasattr(eventModel, k):
                 setattr(eventModel, k, v)
-        carrier = link_observation_with_carrier(eventModel, session)
+        carrier = link_observation_with_carrier(eventModel)
         if carrier:
-            link_gsm_event_with_antenna(eventModel, device, sim, carrier, session)
+            link_gsm_event_with_antenna(eventModel, device_id, sim_serial_number, session)
         else:
-            add_event_in_db(eventModel, device, sim, session)
+            add_event_in_db(eventModel, device_id, sim_serial_number, session)
     return total_events
 
 
-def save_telephony_events(events, device, sim, app_version_code, session):
+def save_telephony_events(events, device_id, sim_serial_number, app_version_code, session):
     return 0
 
 
-def save_state_events(events, device, sim, app_version_code, session):
+def save_state_events(events, device_id, sim_serial_number, app_version_code, session):
     from app.models.state_change_event import StateChangeEvent
     total_events = 0
     for event in events:
@@ -304,7 +306,7 @@ def save_state_events(events, device, sim, app_version_code, session):
             elif hasattr(eventModel, k):
                 setattr(eventModel, k, v)
 
-        add_event_in_db(eventModel, device, sim, session)
+        add_event_in_db(eventModel, device_id, sim_serial_number, session)
     return total_events
 
 
@@ -318,46 +320,34 @@ events_names = {
 }
 
 
-def add_events(events_name, events, device, sim, app_version_code, session):
-    return events_names[events_name](events, device, sim, app_version_code, session)
+def add_events(events_name, events, device_id, sim_serial_number, app_version_code, session):
+    return events_names[events_name](events, device_id, sim_serial_number, app_version_code, session)
 
 
-def add_event_in_db(event, device, sim, session):
+def add_event_in_db(event, device_id, sim_serial_number, session):
     """
     Add each event to the database, but not make a commit.
+    Also, vinculate event with a sim and a device if can.
     """
-    device.events.append(event)
-    if sim:
-        sim.events.append(event)
-        session.add(sim)
+    if device_id:
+        event.device_id = device_id
+    if sim_serial_number:
+        event.sim_serial_number = sim_serial_number
     session.add(event)
-    session.add(device)
 
 
-def link_gsm_event_with_antenna(event, device, sim, carrier, session):
+def link_gsm_event_with_antenna(event, device_id, sim_serial_number, session):
     from app.models.antenna import Antenna
-    if event.gsm_lac and event.gsm_cid:
-        antenna = Antenna.query.filter(Antenna.lac == event.gsm_lac, Antenna.cid == event.gsm_cid,
-                                       Antenna.carrier_id == carrier.id).first()
-        if antenna:
-            antenna.gsm_events.append(event)
-            session.add(antenna)
-            session.add(carrier)
-            add_event_in_db(event, device, sim, session)
-        else:
-            app.logger.info(
-                "Unkown Antenna: lac:" + str(event.gsm_lac) + " , cid:" + str(event.gsm_cid) + ", mnc: " + str(
-                    carrier.mnc) + ", mcc: " + str(carrier.mcc))
-            add_event_in_db(event, device, sim, session)
+    if event.gsm_lac and event.gsm_cid and event.mcc and event.mnc:
+        antenna = Antenna.get_antenna_or_add_it(
+            args={"cid": event.gsm_cid, "lac": event.gsm_lac, "mnc": event.mnc, "mcc": event.mcc})
+        event.antenna_id = antenna.id
+        add_event_in_db(event, device_id, sim_serial_number, session)
 
 
-def link_observation_with_carrier(event, session):
+def link_observation_with_carrier(event):
     if event.mnc and event.mcc:
         from app.models.carrier import Carrier
-        carrier = Carrier.get_carrier_or_add_it(args={"mnc":event.mnc, "mcc":event.mcc})
-        carrier.telephony_observation_events.append(event)
-        session.add(carrier)
+        carrier = Carrier.get_carrier_or_add_it(args={"mnc": event.mnc, "mcc": event.mcc})
+        event.carrier_id = carrier.id
         return carrier
-
-
-
