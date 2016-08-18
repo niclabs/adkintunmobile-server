@@ -1,6 +1,7 @@
+from sqlalchemy import UniqueConstraint
+
 from app import db
 from app.models import base_model
-from sqlalchemy import UniqueConstraint
 
 
 class Antenna(base_model.BaseModel):
@@ -23,7 +24,7 @@ class Antenna(base_model.BaseModel):
         self.lac = lac
         self.lat = lat
         self.lon = lon
-        self.carrier_id=carrier_id
+        self.carrier_id = carrier_id
 
     def __repr__(self):
         return "<Antenna, id: %r,  cid: %r, lac: %r, carrier: %r,>" % (self.id, self.cid, self.lac, self.carrier_id)
@@ -43,7 +44,7 @@ class Antenna(base_model.BaseModel):
     @staticmethod
     def get_antenna_or_add_it(args):
         """
-        Search a carrier and retrieve it if exist, else create a new one and retrieve it.
+        Search an antenna and retrieve it if exist, else create a new one and retrieve it.
         """
         from app.models.carrier import Carrier
         carrier = Carrier.query.filter(mnc=args.mnc, mcc=args.mcc)
