@@ -18,18 +18,19 @@ class Antenna(base_model.BaseModel):
     gsm_events = db.relationship("GsmEvent", backref="antenna",
                                  lazy="dynamic")
 
-    def __init__(self, cid=None, lac=None, lat=None, lon=None):
+    def __init__(self, cid=None, lac=None, lat=None, lon=None, carrier_id=None):
         self.cid = cid
         self.lac = lac
         self.lat = lat
         self.lon = lon
+        self.carrier_id=carrier_id
 
     def __repr__(self):
         return "<Antenna, id: %r,  cid: %r, lac: %r, carrier: %r,>" % (self.id, self.cid, self.lac, self.carrier_id)
 
     @property
     def serialize(self):
-        """Return object data in easily serializeable format"""
+        """Return object data in easily serializable format"""
         return {
             "id": self.id,
             "cid": self.cid,
@@ -38,3 +39,19 @@ class Antenna(base_model.BaseModel):
             "lon": self.lon,
             "carrier_id": self.carrier_id
         }
+
+    @staticmethod
+    def get_antenna_or_add_it(args):
+        """
+        Search a carrier and retrieve it if exist, else create a new one and retrieve it.
+        """
+        from app.models.carrier import Carrier
+        carrier = Carrier.query.filter(mnc=args.mnc, mcc=args.mcc)
+        antenna = Antenna.query.filter(lac=args.lac, cid=args.cid, carrier_id=carrier.id).first()
+        if not antenna:
+            from app import Session
+            antenna = Antenna(lac=args.gsm_lac, cid=args.gsm_cid, carrier_id=carrier.id)
+            session = Session()
+            session.add(antenna)
+            session.commit()
+        return antenna
