@@ -50,9 +50,7 @@ class Antenna(base_model.BaseModel):
         carrier = Carrier.query.filter(mnc=args.mnc, mcc=args.mcc)
         antenna = Antenna.query.filter(lac=args.lac, cid=args.cid, carrier_id=carrier.id).first()
         if not antenna:
-            from app import Session
             antenna = Antenna(lac=args.gsm_lac, cid=args.gsm_cid, carrier_id=carrier.id)
-            session = Session()
-            session.add(antenna)
-            session.commit()
+            db.session.add(antenna)
+            db.session.commit()
         return antenna
