@@ -39,9 +39,7 @@ class Carrier(base_model.BaseModel):
         """
         carrier = Carrier.query.filter(Carrier.mnc == args["mnc"], Carrier.mcc == args["mcc"]).first()
         if not carrier:
-            from app import Session
             carrier = Carrier(mnc=args["mnc"], mcc=args["mcc"], name="Unknown")
-            session = Session()
-            session.add(carrier)
-            session.commit()
+            db.session.add(carrier)
+            db.session.commit()
         return carrier
