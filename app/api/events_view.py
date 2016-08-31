@@ -20,33 +20,33 @@ class ReadEventsFromArgument(Resource):
         post_parser = reqparse.RequestParser(bundle_errors=True)
         post_parser.add_argument("events", required=True)
 
-        # try:
-        args = post_parser.parse_args()
-        jsonvar = json.loads(args.events)
-        device, sim, app_version_code = set_events_context(jsonvar)
-        if sim:
-            events = prepare_events(jsonvar, device.device_id, sim.serial_number, app_version_code)
-        else:
-            events = prepare_events(jsonvar, device.device_id, None, app_version_code)
+        try:
+            args = post_parser.parse_args()
+            jsonvar = json.loads(args.events)
+            device, sim, app_version_code = set_events_context(jsonvar)
+            if sim:
+                events = prepare_events(jsonvar, device.device_id, sim.serial_number, app_version_code)
+            else:
+                events = prepare_events(jsonvar, device.device_id, None, app_version_code)
 
-        # except json.JSONDecodeError as e:
-        #     app.logger.error("JSONDecodeError: " + str(e))
-        #     return "Bad Request", 400
-        # except BadRequestKeyError as e:
-        #     app.logger.error("BadRequestKeyError: " + str(e))
-        #     return "Bad Request", 400
-        # except UnicodeError as e:
-        #     app.logger.error("UnicodeError: " + str(e))
-        #     return "Bad Request", 400
-        # except TypeError as e:
-        #     app.logger.error("TypeError: " + str(e))
-        #     return "Bad Request", 400
-        # except KeyError as e:
-        #     app.logger.error("KeyError: " + str(e))
-        #     return "Bad Request", 400
-        # except Exception as e:
-        #     app.logger.error("Unknow Exception: " + str(e))
-        #     return "Bad Request", 400
+        except json.JSONDecodeError as e:
+            app.logger.error("JSONDecodeError: " + str(e))
+            return "Bad Request", 400
+        except BadRequestKeyError as e:
+            app.logger.error("BadRequestKeyError: " + str(e))
+            return "Bad Request", 400
+        except UnicodeError as e:
+            app.logger.error("UnicodeError: " + str(e))
+            return "Bad Request", 400
+        except TypeError as e:
+            app.logger.error("TypeError: " + str(e))
+            return "Bad Request", 400
+        except KeyError as e:
+            app.logger.error("KeyError: " + str(e))
+            return "Bad Request", 400
+        except Exception as e:
+            app.logger.error("Unknow Exception: " + str(e))
+            return "Bad Request", 400
 
         return save_events(events)
 
