@@ -33,13 +33,16 @@ class Carrier(base_model.BaseModel):
             self.sims.append(sim)
 
     @staticmethod
-    def get_carrier_or_add_it(args):
+    def get_carrier_or_add_it(mnc, mcc):
         """
         Search a carrier and retrieve it if exist, else create a new one and retrieve it.
         """
-        carrier = Carrier.query.filter(Carrier.mnc == args["mnc"], Carrier.mcc == args["mcc"]).first()
-        if not carrier:
-            carrier = Carrier(mnc=args["mnc"], mcc=args["mcc"], name="Unknown")
-            db.session.add(carrier)
-            db.session.commit()
-        return carrier
+        if mnc and mcc:
+            carrier = Carrier.query.filter(Carrier.mnc == mnc, Carrier.mcc == mcc).first()
+            if not carrier:
+                carrier = Carrier(mnc=mnc, mcc=mcc, name="Unknown")
+                db.session.add(carrier)
+                db.session.commit()
+            return carrier
+        else:
+            return None
