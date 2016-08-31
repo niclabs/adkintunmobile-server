@@ -42,15 +42,19 @@ class Antenna(base_model.BaseModel):
         }
 
     @staticmethod
-    def get_antenna_or_add_it(args):
+    def get_antenna_or_add_it(lac, cid, mnc, mcc):
         """
         Search an antenna and retrieve it if exist, else create a new one and retrieve it.
         """
-        from app.models.carrier import Carrier
-        carrier = Carrier.query.filter(mnc=args.mnc, mcc=args.mcc)
-        antenna = Antenna.query.filter(lac=args.lac, cid=args.cid, carrier_id=carrier.id).first()
-        if not antenna:
-            antenna = Antenna(lac=args.gsm_lac, cid=args.gsm_cid, carrier_id=carrier.id)
-            db.session.add(antenna)
-            db.session.commit()
-        return antenna
+        if mnc and mcc and lac and cid:
+            from app.models.carrier import Carrier
+            carrier = Carrier.query.filter(Carrier.mnc == mnc, Carrier.mcc == mcc).first()
+            antenna = Antenna.query.filter(Antenna.lac == lac, Antenna.cid == cid,
+                                           Antenna.carrier_id == carrier.id).first()
+            if not antenna:
+                antenna = Antenna(lac=lac, cid=cid, carrier_id=carrier.id)
+                db.session.add(antenna)
+                db.session.commit()
+            return antenna
+        else:
+            return None

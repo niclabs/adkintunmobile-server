@@ -6,13 +6,13 @@ from flask import request
 from flask_restful import Resource, reqparse
 from werkzeug.exceptions import BadRequestKeyError
 
-from app import db, app, auth, Session
+from app import db, app, auth
 from app.api import api
 
 
 class ReadEventsFromArgument(Resource):
     """
-    Used for tests
+    Api method to save events. Just used for tests
     """
     method_decorators = [auth.login_required]
 
@@ -20,21 +20,35 @@ class ReadEventsFromArgument(Resource):
         post_parser = reqparse.RequestParser(bundle_errors=True)
         post_parser.add_argument("events", required=True)
 
-        try:
-            args = post_parser.parse_args()
-            jsonvar = json.loads(args.events)
-            device, sim, app_version_code = set_events_context(jsonvar)
-            session = Session()
-            if sim:
-                return prepare_events(jsonvar, device.device_id, sim.serial_number, app_version_code)
-            else:
-                return prepare_events(jsonvar, device.device_id, None, app_version_code)
+        # try:
+        args = post_parser.parse_args()
+        jsonvar = json.loads(args.events)
+        device, sim, app_version_code = set_events_context(jsonvar)
+        if sim:
+            events = prepare_events(jsonvar, device.device_id, sim.serial_number, app_version_code)
+        else:
+            events = prepare_events(jsonvar, device.device_id, None, app_version_code)
 
-        except (json.JSONDecodeError, BadRequestKeyError, UnicodeError) as e:
-            return e, 400
-        except (KeyError, Exception) as e:
-            db.session.rollback()
-            return e, 400
+        # except json.JSONDecodeError as e:
+        #     app.logger.error("JSONDecodeError: " + str(e))
+        #     return "Bad Request", 400
+        # except BadRequestKeyError as e:
+        #     app.logger.error("BadRequestKeyError: " + str(e))
+        #     return "Bad Request", 400
+        # except UnicodeError as e:
+        #     app.logger.error("UnicodeError: " + str(e))
+        #     return "Bad Request", 400
+        # except TypeError as e:
+        #     app.logger.error("TypeError: " + str(e))
+        #     return "Bad Request", 400
+        # except KeyError as e:
+        #     app.logger.error("KeyError: " + str(e))
+        #     return "Bad Request", 400
+        # except Exception as e:
+        #     app.logger.error("Unknow Exception: " + str(e))
+        #     return "Bad Request", 400
+
+        return save_events(events)
 
 
 api.add_resource(ReadEventsFromArgument, "/api/events")
@@ -43,6 +57,10 @@ api.add_resource(ReadEventsFromArgument, "/api/events")
 @app.route("/events", methods=["POST"])
 @auth.login_required
 def save_events_from_file():
+    """
+    Api method to receive the events from all the devices
+    :return: HTML answer
+    """
     try:
         f = request.files["uploaded_file"]
 
@@ -62,34 +80,49 @@ def save_events_from_file():
         else:
             events = prepare_events(jsonvar, device.device_id, None, app_version_code)
 
-        # Seguir aquí con el procesamiento de eventos
-
-        # try:
-        #     # save and commit events and information to the database
-        #     session.commit()
-        # except Exception as e:
-        #     app.logger.error("Error adding events to database " + str(e))
-        #     session.rollback()
-        #     return "Bad Request", 400
-        #
-        # app.logger.info("Saved Events: " + len(list_events))
-        #
-        # return "Events saved successfully", 201
-        pass
-
     except json.JSONDecodeError as e:
         app.logger.error("JSONDecodeError: " + str(e))
+        return "Bad Request", 400
     except BadRequestKeyError as e:
         app.logger.error("BadRequestKeyError: " + str(e))
+        return "Bad Request", 400
     except UnicodeError as e:
         app.logger.error("UnicodeError: " + str(e))
+        return "Bad Request", 400
     except TypeError as e:
         app.logger.error("TypeError: " + str(e))
+        return "Bad Request", 400
     except KeyError as e:
         app.logger.error("KeyError: " + str(e))
+        return "Bad Request", 400
     except Exception as e:
         app.logger.error("Unknow Exception: " + str(e))
-    return "Bad Request", 400
+        return "Bad Request", 400
+
+    # continue with processation of events
+    return save_events(events)
+
+
+def save_events(events):
+    """
+    Save events to the database
+    :param events: List with the events to save
+    :return: HTML answer
+    """
+    for event in events:
+        db.session.add(event)
+
+    try:
+        # save and commit events and information to the database
+        db.session.commit()
+    except Exception as e:
+        app.logger.error("Error adding events to database " + str(e))
+        db.session.rollback()
+        return "Bad Request", 400
+
+    app.logger.info("Saved Events: " + str(len(events)))
+
+    return "Events saved successfully", 201
 
 
 def prepare_events(jsonvar, device_id, sim_serial_number, app_version_code):
@@ -120,11 +153,10 @@ def set_events_context(jsonvar):
 
     from app.models.sim import Sim
     sim = Sim.get_sim_or_add_it(jsonvar["sim_records"])
-    session = Session()
 
     # Get carrier or add it, if it does not exist
     from app.models.carrier import Carrier
-    carrier = Carrier.get_carrier_or_add_it(jsonvar["sim_records"])
+    carrier = Carrier.get_carrier_or_add_it(mnc=jsonvar["sim_records"]["mnc"], mcc=jsonvar["sim_records"]["mcc"])
 
     # Link sim with device
     sim.add_device(device)
@@ -132,11 +164,11 @@ def set_events_context(jsonvar):
     # Link carrier with sim
     carrier.add_sim(sim)
 
-    session.add(sim)
-    session.add(carrier)
+    db.session.add(sim)
+    db.session.add(carrier)
 
     # add new device, sim or carrier
-    session.commit()
+    db.session.commit()
 
     return device, sim, app_version_code
 
@@ -280,7 +312,7 @@ def store_gsm_events(events, device_id, sim_serial_number, app_version_code, lis
             elif hasattr(eventModel, k):
                 setattr(eventModel, k, v)
         link_observation_with_carrier(eventModel)
-        link_gsm_event_with_antenna(eventModel, device_id, sim_serial_number)
+        link_gsm_event_with_antenna(eventModel)
         vinculate_event_device_sim(eventModel, device_id, sim_serial_number)
         list_events.append(eventModel)
 
@@ -331,18 +363,16 @@ def vinculate_event_device_sim(event, device_id, sim_serial_number):
         event.sim_serial_number = sim_serial_number
 
 
-def link_gsm_event_with_antenna(event, device_id, sim_serial_number):
+def link_gsm_event_with_antenna(event):
     from app.models.antenna import Antenna
 
     if event.gsm_lac and event.gsm_cid and event.mcc and event.mnc:
-        antenna = Antenna.get_antenna_or_add_it(
-            args={"cid": event.gsm_cid, "lac": event.gsm_lac, "mnc": event.mnc, "mcc": event.mcc})
+        antenna = Antenna.get_antenna_or_add_it(cid=event.gsm_cid, lac=event.gsm_lac, mnc=event.mnc, mcc=event.mcc)
         event.antenna_id = antenna.id
 
 
 def link_observation_with_carrier(event):
     if event.mnc and event.mcc:
         from app.models.carrier import Carrier
-        carrier = Carrier.get_carrier_or_add_it(args={"mnc": event.mnc, "mcc": event.mcc})
+        carrier = Carrier.get_carrier_or_add_it(mnc=event.mnc, mcc=event.mcc)
         event.carrier_id = carrier.id
-

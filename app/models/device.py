@@ -65,8 +65,6 @@ class Device(base_model.BaseModel):
                 product=args["product"],
                 sdk=args["sdk"],
                 creation_date=datetime.now())
-            from app import Session
-            session = Session()
-            session.add(device)
-            session.commit()
+            db.session.add(device)
+            db.session.commit()
         return device
