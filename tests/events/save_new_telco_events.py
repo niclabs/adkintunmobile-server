@@ -22,7 +22,7 @@ class SaveNewTelcoEventsTestCase(base_test_case.BaseTestCase):
         populate_test()
 
     # Saving event test: 1 gsm observation event and 1 state record, both whit a non-existent telco
-    def test_save_normal_events(self):
+    def test_save_new_telco_events(self):
         with app.app_context():
             token = list(AppTokens.tokens.keys())[0]
             request = self.app.post("/api/events", data=dict(

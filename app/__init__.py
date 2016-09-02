@@ -2,10 +2,11 @@ import logging
 import os
 from logging.handlers import RotatingFileHandler
 
-from config import AppTokens
 from flask import Flask, g
 from flask_httpauth import HTTPTokenAuth
 from flask_sqlalchemy import SQLAlchemy
+
+from config import AppTokens
 
 # Create flask app
 app = Flask(__name__)

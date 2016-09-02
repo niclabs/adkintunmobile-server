@@ -20,7 +20,7 @@ class SaveConnectivityEventTestCase(base_test_case.BaseTestCase):
         populate_test()
 
     # Saving events test: 1 connectivity event
-    def test_save_normal_events(self):
+    def test_save_connectivity_event(self):
         with app.app_context():
             token = list(AppTokens.tokens.keys())[0]
             request = self.app.post("/api/events", data=dict(

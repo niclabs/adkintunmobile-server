@@ -6,7 +6,7 @@ class BaseModel(db.Model):
     '''
     Clase modelo base.
     '''
-    __abstract__  = True
+    __abstract__ = True
 
     @property
     def dict(self):
