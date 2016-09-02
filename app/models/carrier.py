@@ -43,7 +43,7 @@ class Carrier(base_model.BaseModel):
                 carrier = Carrier(mnc=mnc, mcc=mcc, name="Unknown")
                 db.session.add(carrier)
                 db.session.commit()
-                app.logger.error("New antenna added: mnc:"+str(mnc)+", mcc: "+str(mcc))
+                app.logger.info("New antenna added: mnc:"+str(mnc)+", mcc: "+str(mcc))
             return carrier
         else:
             return None
