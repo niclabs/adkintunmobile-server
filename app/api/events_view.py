@@ -118,7 +118,7 @@ def save_events(events):
     except Exception as e:
         app.logger.error("Error adding events to database " + str(e))
         db.session.rollback()
-        return "Bad Request", 400
+        return "Conflict adding events to database", 409
 
     app.logger.info("Saved Events: " + str(len(events)))
 
