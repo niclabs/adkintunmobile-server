@@ -291,7 +291,7 @@ def store_gsm_events(events, device_id, sim_serial_number, app_version_code, lis
 
 
 def save_telephony_events(events, device_id, sim_serial_number, app_version_code, list_events):
-    return 0
+    pass
 
 
 def save_state_events(events, device_id, sim_serial_number, app_version_code, list_events):
