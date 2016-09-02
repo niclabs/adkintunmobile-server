@@ -174,54 +174,27 @@ def set_events_context(jsonvar):
 
 
 def store_traffics_events(events, device_id, sim_serial_number, app_version_code, list_events):
+    from app.models.wifi_traffic_event import WifiTrafficEvent
+    from app.models.mobile_traffic_event import MobileTrafficEvent
+    from app.models.application_traffic_event import ApplicationTrafficEvent
     for event in events:
         event["app_version_code"] = app_version_code
         if event["event_type"] == 2:
-            store_mobile_traffic_event(event, device_id, sim_serial_number, list_events)
+            store_traffic_event(event, device_id, sim_serial_number, list_events, MobileTrafficEvent)
         elif event["event_type"] == 4:
-            store_wifi_traffic_event(event, device_id, sim_serial_number, list_events)
+            store_traffic_event(event, device_id, sim_serial_number, list_events, WifiTrafficEvent)
         elif event["event_type"] == 8:
-            store_application_traffic_event(event, device_id, sim_serial_number, list_events)
+            store_traffic_event(event, device_id, sim_serial_number, list_events, ApplicationTrafficEvent)
 
-
-def store_application_traffic_event(event, device_id, sim_serial_number, list_events):
-    from app.models.application_traffic_event import ApplicationTrafficEvent
-    from app.models.application import Application
-    eventModel = ApplicationTrafficEvent()
+def store_traffic_event(event, device_id, sim_serial_number, list_events, model):
+    eventModel = model()
     for k, v in event.items():
         if k == "timestamp":
             eventModel.date = datetime.fromtimestamp(timestamp=v / 1000)
         elif k == "package_name":
+            from app.models.application import Application
             application = Application.get_app_or_add_it(v)
             eventModel.application_id = application.id
-        elif k == "id":
-            continue
-        elif hasattr(eventModel, k):
-            setattr(eventModel, k, v)
-    vinculate_event_device_sim(eventModel, device_id, sim_serial_number)
-    list_events.append(eventModel)
-
-
-def store_wifi_traffic_event(event, device_id, sim_serial_number, list_events):
-    from app.models.wifi_traffic_event import WifiTrafficEvent
-    eventModel = WifiTrafficEvent()
-    for k, v in event.items():
-        if k == "timestamp":
-            eventModel.date = datetime.fromtimestamp(timestamp=v / 1000)
-        elif k == "id":
-            continue
-        elif hasattr(eventModel, k):
-            setattr(eventModel, k, v)
-    vinculate_event_device_sim(eventModel, device_id, sim_serial_number)
-    list_events.append(eventModel)
-
-
-def store_mobile_traffic_event(event, device_id, sim_serial_number, list_events):
-    from app.models.mobile_traffic_event import MobileTrafficEvent
-    eventModel = MobileTrafficEvent()
-    for k, v in event.items():
-        if k == "timestamp":
-            eventModel.date = datetime.fromtimestamp(timestamp=v / 1000)
         elif k == "id":
             continue
         elif hasattr(eventModel, k):
