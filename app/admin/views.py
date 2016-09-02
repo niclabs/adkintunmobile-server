@@ -12,6 +12,7 @@ from app.models.gsm_event import GsmEvent
 from app.models.sim import Sim
 from app.models.state_change_event import StateChangeEvent
 from app.models.traffic_event import TrafficEvent
+from app.models.application_traffic_event import ApplicationTrafficEvent
 from flask_admin.contrib.sqla import ModelView
 
 
@@ -55,3 +56,4 @@ admin.add_view(StandardView(CdmaEvent, db.session))
 admin.add_view(StandardView(ConnectivityEvent, db.session))
 admin.add_view(StandardView(StateChangeEvent, db.session))
 admin.add_view(StandardView(TrafficEvent, db.session))
+admin.add_view(StandardView(ApplicationTrafficEvent, db.session))

@@ -26,4 +26,5 @@ class Application(base_model.BaseModel):
         if not app:
             app = Application(package_name=packageName)
             db.session.add(app)
+            db.session.commit()
         return app
