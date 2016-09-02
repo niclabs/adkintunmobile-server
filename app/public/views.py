@@ -21,10 +21,10 @@ def terms_and_conditions():
     except Exception as e:
         return page_not_found(e)
 
-
+#Just for testing
 @app.route("/test_reports")
 def tests_reports():
     from app.report.reports_generation import monthly_reports_generation
 
     monthly_reports_generation()
-    return "Reportes generados", 200
+    return "Reports Generated", 200
