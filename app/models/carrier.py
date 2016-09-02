@@ -1,4 +1,4 @@
-from app import db, app
+from app import db
 from app.models import base_model
 
 
@@ -33,17 +33,13 @@ class Carrier(base_model.BaseModel):
             self.sims.append(sim)
 
     @staticmethod
-    def get_carrier_or_add_it(mnc, mcc):
+    def get_carrier_or_add_it(args):
         """
         Search a carrier and retrieve it if exist, else create a new one and retrieve it.
         """
-        if mnc and mcc:
-            carrier = Carrier.query.filter(Carrier.mnc == mnc, Carrier.mcc == mcc).first()
-            if not carrier:
-                carrier = Carrier(mnc=mnc, mcc=mcc, name="Unknown")
-                db.session.add(carrier)
-                db.session.commit()
-                app.logger.info("New antenna added: mnc:"+str(mnc)+", mcc: "+str(mcc))
-            return carrier
-        else:
-            return None
+
+        carrier = Carrier.query.filter(Carrier.mnc == args["mnc"], Carrier.mcc == args["mcc"]).first()
+        if not carrier:
+            carrier = Carrier(mnc=args["mnc"], mcc=args["mcc"], name="Unknown")
+            db.session.add(carrier)
+        return carrier

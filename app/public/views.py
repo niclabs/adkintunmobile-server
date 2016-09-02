@@ -1,30 +1,70 @@
 from app import app
-from flask import render_template, jsonify, json
+from flask import render_template, json, jsonify
 
 
-@app.route("/")
+@app.route('/')
 def index():
-    return render_template("index.html")
+    return render_template('index.html')
 
 
-@app.errorhandler(404)
-def page_not_found(error):
-    return render_template("page_not_found.html"), 404
+from datetime import timedelta
+from flask import make_response, request, current_app
+from functools import update_wrapper
 
 
-@app.route("/terms_and_conditions")
-def terms_and_conditions():
+def crossdomain(origin=None, methods=None, headers=None, max_age=21600, attach_to_all=True, automatic_options=True):
+    if methods is not None:
+        methods = ', '.join(sorted(x.upper() for x in methods))
+    if headers is not None and not isinstance(headers, str):
+        headers = ', '.join(x.upper() for x in headers)
+    if not isinstance(origin, str):
+        origin = ', '.join(origin)
+    if isinstance(max_age, timedelta):
+        max_age = max_age.total_seconds()
+
+    def get_methods():
+        if methods is not None:
+            return methods
+
+        options_resp = current_app.make_default_options_response()
+        return options_resp.headers['allow']
+
+    def decorator(f):
+        def wrapped_function(*args, **kwargs):
+            if automatic_options and request.method == 'OPTIONS':
+                resp = current_app.make_default_options_response()
+            else:
+                resp = make_response(f(*args, **kwargs))
+            if not attach_to_all and request.method != 'OPTIONS':
+                return resp
+
+            h = resp.headers
+
+            h['Access-Control-Allow-Origin'] = origin
+            h['Access-Control-Allow-Methods'] = get_methods()
+            h['Access-Control-Max-Age'] = str(max_age)
+            if headers is not None:
+                h['Access-Control-Allow-Headers'] = headers
+            return resp
+
+        f.provide_automatic_options = False
+        return update_wrapper(wrapped_function, f)
+
+    return decorator
+
+
+@app.route('/reports/general_reports/<year>/<month>')
+@crossdomain(origin='*')
+def general_reports(year, month):
     try:
         data = json.load(
-            open("app/static/text/terms_and_conditions.json", "r"))
+            open('app/static/reports/general_reports/' + year + '/general_report_' + month + '_' + year + '.json',
+                 'r'))
         return jsonify(data)
     except Exception as e:
         return page_not_found(e)
 
-#Just for testing
-@app.route("/test_reports")
-def tests_reports():
-    from app.report.reports_generation import monthly_reports_generation
 
-    monthly_reports_generation()
-    return "Reports Generated", 200
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template('page_not_found.html'), 404

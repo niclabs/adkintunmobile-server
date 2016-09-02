@@ -38,7 +38,6 @@ class Sim(base_model.BaseModel):
             if not sim:
                 sim = Sim(serial_number=args["serial_number"], creation_date=datetime.now())
                 db.session.add(sim)
-                db.session.commit()
             return sim
         else:
             return None
