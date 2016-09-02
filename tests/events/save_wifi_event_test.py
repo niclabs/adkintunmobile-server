@@ -20,7 +20,7 @@ class SaveWifiEventTestCase(base_test_case.BaseTestCase):
         populate_test()
 
     # Saving event test: 1 wifi traffic event
-    def test_save_normal_events(self):
+    def test_save_wifi_event(self):
         with app.app_context():
             token = list(AppTokens.tokens.keys())[0]
             request = self.app.post("/api/events", data=dict(
