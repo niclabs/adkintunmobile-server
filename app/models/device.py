@@ -45,7 +45,7 @@ class Device(base_model.BaseModel):
     @staticmethod
     def get_device_or_add_it(args):
         """
-        Search a device and retrieve it if exist, else create a new one and retrieve it adding it in a new session.
+        Search a device and retrieve it if exist, else create a new one and retrieve it.
         """
         from datetime import datetime
 
@@ -66,5 +66,4 @@ class Device(base_model.BaseModel):
                 sdk=args["sdk"],
                 creation_date=datetime.now())
             db.session.add(device)
-            db.session.commit()
         return device

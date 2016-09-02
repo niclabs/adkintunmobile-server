@@ -25,7 +25,7 @@ class SaveEventsWithDeviceAndSimTestCase(base_test_case.BaseTestCase):
         populate_test()
 
     #  Saving events test: 1 wifi traffic event and 2 state change event
-    def test_save_events_with_device_and_sim(self):
+    def test_save_normal_events_with_device_and_sim(self):
         with app.app_context():
             token = list(AppTokens.tokens.keys())[0]
             request = self.app.post("/api/events", data=dict(

@@ -1,1 +1,1 @@
-from app.public import views
+from . import views

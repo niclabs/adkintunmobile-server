@@ -20,7 +20,7 @@ class SaveGsmObservationEventTestCase(base_test_case.BaseTestCase):
         populate_test()
 
     # Saving event test: 1 gsm observation event
-    def test_save_gsm_observation_events(self):
+    def test_save_normal_events(self):
         with app.app_context():
             token = list(AppTokens.tokens.keys())[0]
             request = self.app.post("/api/events", data=dict(
