@@ -5,6 +5,15 @@ Adkintun Mobile server.
 
 What is new?
 -------
+* 1.1 beta (02.9.2016)
+    * Bug fixes and refactor code.
+    * New api methods for antennas
+    * New api method for terms and condition
+    * Added antenna signal mean reports generation and api
+    * Added antenna network report generation and api
+    * Added application rankings generation and api
+    * New way to add events and their context
+
 * 1.0.2 beta (02.8.2016)
     * Bug fixes and refactor code.
     * Limit size log file.
