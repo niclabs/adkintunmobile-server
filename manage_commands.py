@@ -1,9 +1,8 @@
-from app import db, app
-
-from app.data import initial_data_antennas
-from app.data import initial_data_carriers
 from flask_script import Command
 from sqlalchemy.exc import IntegrityError
+
+from app import db
+from app.data import initial_data_carriers
 
 
 class Test(Command):
@@ -43,41 +42,6 @@ def save_models(elements, model_class):
 class Populate(Command):
     def run(self):
         populate()
-
-
-class PopulateAntennas(Command):
-    def run(self):
-        import json
-        from app.models.carrier import Carrier
-        from app.models.antenna import Antenna
-
-        jsonvar = json.loads(initial_data_antennas.initial_data_antennas)
-
-        for k, v in jsonvar.items():
-            if k == "antennas":
-                for json_element in v:
-                    antenna = Antenna()
-                    try:
-                        mnc = json_element["mnc"]
-                        mcc = json_element["mcc"]
-                        carrier = Carrier.query.filter(Carrier.mnc == mnc and Carrier.mcc == mcc).first()
-                        if not carrier:
-                            app.logger.error(
-                                "Not carrier found for antenna (id:" + json_element["id"] + "),  mcc:" + str(
-                                    mcc) + ", mnc:" + str(mnc))
-                        else:
-                            carrier.antennas.append(antenna)
-                    except KeyError:
-                        continue
-                    for k, v in json_element.items():
-                        if hasattr(antenna, k):
-                            setattr(antenna, k, v)
-                    try:
-                        db.session.add(antenna)
-                        db.session.commit()
-                    except (IntegrityError, Exception):
-                        db.session.rollback()
-                        continue
 
 
 def populate():
