@@ -1,6 +1,6 @@
 import requests
 
-from app import db
+from app import db, app
 
 BASE_URL = "http://opencellid.org/cell/get"
 
@@ -26,7 +26,7 @@ def get_antenna_geolocalization(mcc: int, mnc: int, lac: int, cid: int, key_id: 
         return None, None
 
 
-def update_antennas_Localization(max_number_of_queries: int) -> int:
+def update_antennas_localization(max_number_of_queries: int) -> int:
     """
     Search antennas without latitude and logitude data and ask it to OpenCellId
     Recieve a maximum of queries for day.
@@ -52,4 +52,5 @@ def update_antennas_Localization(max_number_of_queries: int) -> int:
             db.session.commit()
             upload_antennas += 1
 
+    app.logger.info("New geolocalized antennas: " + str(upload_antennas))
     return upload_antennas
