@@ -5,7 +5,12 @@ Adkintun Mobile server.
 
 What is new?
 -------
-* 1.1 beta (02.9.2016)
+* 1.1.1 (7.9.2016)
+    * Created method to geolocalized antennas, and update them to the database
+    * Added job to the schedduler for antennas geolocalization
+    * Refactor code
+
+* 1.1 beta (2.9.2016)
     * Bug fixes and refactor code.
     * New api methods for antennas
     * New api method for terms and condition
