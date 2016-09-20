@@ -1,11 +1,11 @@
-from flask import render_template, json, jsonify
+from flask import render_template, json, jsonify, redirect
 
 from app import app
 
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return redirect("http://www.adkintunmobile.cl", code=302)
 
 
 @app.errorhandler(404)
@@ -30,3 +30,8 @@ def tests_reports():
 
     monthly_reports_generation()
     return "Reports Generated", 200
+
+
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template('page_not_found.html'), 404
