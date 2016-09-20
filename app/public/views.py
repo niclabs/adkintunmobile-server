@@ -1,5 +1,6 @@
+from flask import render_template, json, jsonify
+
 from app import app
-from flask import render_template, jsonify, json
 
 
 @app.route("/")
@@ -21,7 +22,8 @@ def terms_and_conditions():
     except Exception as e:
         return page_not_found(e)
 
-#Just for testing
+
+# Just for testing
 @app.route("/test_reports")
 def tests_reports():
     from app.report.reports_generation import monthly_reports_generation
