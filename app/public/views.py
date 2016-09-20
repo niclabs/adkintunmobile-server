@@ -23,13 +23,22 @@ def terms_and_conditions():
         return page_not_found(e)
 
 
-# Just for testing
-@app.route("/test_reports")
-def tests_reports():
+# Trigger for reports generation
+@app.route("/generate_reports")
+def generate_reports():
     from app.report.reports_generation import monthly_reports_generation
 
     monthly_reports_generation()
     return "Reports Generated", 200
+
+
+# Trigger for reports generation
+@app.route("/geolocalizate_antennas")
+def geolocalizate_antennas():
+    from app.data.antennas_geolocalization import update_antennas_localization
+
+    geolocalizated_antennas = update_antennas_localization(max_number_of_queries=1000)
+    return "Geolocalizated antennas:" + str(geolocalizated_antennas), 200
 
 
 @app.errorhandler(404)
