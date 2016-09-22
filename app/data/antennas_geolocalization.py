@@ -16,12 +16,15 @@ def get_antenna_geolocalization(mcc: int, mnc: int, lac: int, cid: int, key_id: 
     :param base_url: OpenCellId url
     :return: Tuple Lat, Long returned from OpenCellId
     """
-    url = BASE_URL + "?key=" + key_id + "&mnc=" + str(mnc) + "&mcc=" + str(mcc) + "&cellid=" + str(cid) + "&lac=" + str(
+    url = base_url + "?key=" + key_id + "&mnc=" + str(mnc) + "&mcc=" + str(mcc) + "&cellid=" + str(cid) + "&lac=" + str(
         lac) + "&format=json"
     r = requests.get(url)
     if r.status_code == 200:
         json = r.json()
-        return json["lat"], json["lon"]
+        try:
+            return json["lat"], json["lon"]
+        except:
+            return None, None
     else:
         return None, None
 
