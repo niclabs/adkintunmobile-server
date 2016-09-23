@@ -32,15 +32,6 @@ def generate_reports():
     return "Reports Generated", 200
 
 
-# Trigger for reports generation
-@app.route("/geolocalizate_antennas")
-def geolocalizate_antennas():
-    from app.data.antennas_geolocalization import update_antennas_localization
-
-    geolocalizated_antennas = update_antennas_localization(max_number_of_queries=1000)
-    return "Geolocalizated antennas:" + str(geolocalizated_antennas), 200
-
-
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template('page_not_found.html'), 404
