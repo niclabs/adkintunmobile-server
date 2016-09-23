@@ -1,8 +1,20 @@
-from flask_script import Command
+from flask_script import Command, Option
 from sqlalchemy.exc import IntegrityError
 
 from app import db
 from app.data import initial_data_carriers
+
+
+class Geolocalization(Command):
+    option_list = (
+        Option('--antennas', '-a', dest='antennas'),
+    )
+
+    def run(self, antennas=1000):
+        from app.data.antennas_geolocalization import update_antennas_localization
+
+        geolocalizated_antennas = update_antennas_localization(max_number_of_queries=antennas)
+        print("Geolocalizated antennas:" + str(geolocalizated_antennas))
 
 
 class Test(Command):
