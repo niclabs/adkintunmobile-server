@@ -1,7 +1,7 @@
 from flask_script import Command, Option
 from sqlalchemy.exc import IntegrityError
 
-from app import db
+from app import db, app
 from app.data import initial_data_carriers
 
 
@@ -13,8 +13,23 @@ class Geolocalization(Command):
     def run(self, antennas=1000):
         from app.data.antennas_geolocalization import update_antennas_localization
 
-        geolocalizated_antennas = update_antennas_localization(max_number_of_queries=antennas)
-        print("Geolocalizated antennas:" + str(geolocalizated_antennas))
+        geolocated_antennas = update_antennas_localization(max_number_of_queries=antennas)
+        app.logger.info("New geolocated antennas: " + str(geolocated_antennas))
+        print("New geolocated antennas:" + str(geolocated_antennas))
+
+
+class ReportsGeneration(Command):
+    option_list = (
+        Option('--month', '-m', dest='month'),
+        Option('--year', '-y', dest='year'),
+    )
+
+    def run(self, month=None, year=None):
+        from app.report.reports_generation import monthly_reports_generation
+
+        monthly_reports_generation(month, year)
+        app.logger.info("Reports have been generated")
+        print("Reports have been generated")
 
 
 class Test(Command):

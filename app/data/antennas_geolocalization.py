@@ -1,6 +1,6 @@
 import requests
 
-from app import db, app
+from app import db
 
 BASE_URL = "http://opencellid.org/cell/get"
 
@@ -55,5 +55,4 @@ def update_antennas_localization(max_number_of_queries: int) -> int:
             db.session.commit()
             upload_antennas += 1
 
-    app.logger.info("New geolocalized antennas: " + str(upload_antennas))
     return upload_antennas

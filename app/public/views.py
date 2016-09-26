@@ -23,15 +23,6 @@ def terms_and_conditions():
         return page_not_found(e)
 
 
-# Trigger for reports generation
-@app.route("/generate_reports")
-def generate_reports():
-    from app.report.reports_generation import monthly_reports_generation
-
-    monthly_reports_generation()
-    return "Reports Generated", 200
-
-
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template('page_not_found.html'), 404
