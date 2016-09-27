@@ -19,3 +19,6 @@ def start_scheduler():
 
 def get_first_day():
     return datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+
+# Start scheduler with automatic report generation and antenna geolocalization
+start_scheduler()

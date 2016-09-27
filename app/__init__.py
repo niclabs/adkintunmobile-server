@@ -44,7 +44,7 @@ from app import admin
 from app import report
 
 # Start scheduler with automatic report generation
-start_scheduler()
+# start_scheduler()
 
 # Create log files
 if not app.debug:
