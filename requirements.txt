@@ -8,5 +8,5 @@ psycopg2
 flask_admin
 flask-login
 flask-httpauth
-APScheduler
 requests
+uwsgi
