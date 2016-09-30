@@ -18,8 +18,6 @@ app.config.from_object('config.DefaultConfig')
 # by modules and controllers
 db = SQLAlchemy(app)
 
-from app.automatization.scheduler_manager import start_scheduler
-
 # Authetication scheme
 auth = HTTPTokenAuth(scheme='Token')
 
@@ -43,8 +41,6 @@ from app import public
 from app import admin
 from app import report
 
-# Start scheduler with automatic report generation
-start_scheduler()
 
 # Create log files
 if not app.debug:
@@ -59,3 +55,6 @@ if not app.debug:
     file_handler.setLevel(logging.INFO)
     app.logger.addHandler(file_handler)
     app.logger.info('Adkintun log start')
+
+#start uwsgi cron jobs for antennas geolocalization and reports generation
+import app.automatization.scheduler_manager
