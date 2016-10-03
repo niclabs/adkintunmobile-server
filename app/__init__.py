@@ -8,6 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from config import AppTokens
 
+
 # Create flask app
 app = Flask(__name__)
 
@@ -56,5 +57,9 @@ if not app.debug:
     app.logger.addHandler(file_handler)
     app.logger.info('Adkintun log start')
 
-#start uwsgi cron jobs for antennas geolocalization and reports generation
-import app.automatization.scheduler_manager
+# start uwsgi cron jobs for antennas geolocalization and reports generation
+# Just run in a uwsgi instance!
+try:
+    import app.automatization.scheduler_manager
+except:
+    pass
