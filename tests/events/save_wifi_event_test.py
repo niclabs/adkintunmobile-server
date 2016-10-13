@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from app import app
+from app import application
 from app.models.wifi_traffic_event import WifiTrafficEvent
 from config import AppTokens
 from manage_commands import populate_test
@@ -21,7 +21,7 @@ class SaveWifiEventTestCase(base_test_case.BaseTestCase):
 
     # Saving event test: 1 wifi traffic event
     def test_save_wifi_event(self):
-        with app.app_context():
+        with application.app_context():
             token = list(AppTokens.tokens.keys())[0]
             request = self.app.post("/api/events", data=dict(
                 events=events_json

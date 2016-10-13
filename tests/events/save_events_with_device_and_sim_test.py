@@ -1,4 +1,4 @@
-from app import app
+from app import application
 from app.models.application_traffic_event import ApplicationTrafficEvent
 from app.models.device import Device
 from app.models.event import Event
@@ -26,7 +26,7 @@ class SaveEventsWithDeviceAndSimTestCase(base_test_case.BaseTestCase):
 
     #  Saving events test: 1 wifi traffic event and 2 state change event
     def test_save_events_with_device_and_sim(self):
-        with app.app_context():
+        with application.app_context():
             token = list(AppTokens.tokens.keys())[0]
             request = self.app.post("/api/events", data=dict(
                 events=events_json

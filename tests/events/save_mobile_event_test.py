@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from app import app
+from app import application
 from app.models.mobile_traffic_event import MobileTrafficEvent
 from config import AppTokens
 from manage_commands import populate_test
@@ -22,7 +22,7 @@ class SaveMobileEventTestCase(base_test_case.BaseTestCase):
 
     #  Saving events test: 1 mobile event
     def test_save_mobile_events(self):
-        with app.app_context():
+        with application.app_context():
             token = list(AppTokens.tokens.keys())[0]
             request = self.app.post("/api/events", data=dict(
                 events=events_json

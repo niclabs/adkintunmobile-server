@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from app import app
+from app import application as app
 from app.models.application import Application
 from app.models.application_traffic_event import ApplicationTrafficEvent
 from config import AppTokens

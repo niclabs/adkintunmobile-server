@@ -1,4 +1,4 @@
-from app import db, app
+from app import db, application
 from app.models import base_model
 
 
@@ -43,7 +43,7 @@ class Carrier(base_model.BaseModel):
                 carrier = Carrier(mnc=mnc, mcc=mcc, name="Unknown")
                 db.session.add(carrier)
                 db.session.commit()
-                app.logger.info("New antenna added: mnc:"+str(mnc)+", mcc: "+str(mcc))
+                application.logger.info("New antenna added: mnc:" + str(mnc) + ", mcc: " + str(mcc))
             return carrier
         else:
             return None

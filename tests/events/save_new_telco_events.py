@@ -1,4 +1,4 @@
-from app import app
+from app import application
 from app.models.carrier import Carrier
 from app.models.gsm_event import GsmEvent
 from app.models.mobile_traffic_event import MobileTrafficEvent
@@ -23,7 +23,7 @@ class SaveNewTelcoEventsTestCase(base_test_case.BaseTestCase):
 
     # Saving event test: 1 gsm observation event and 1 state record, both whit a non-existent telco
     def test_save_new_telco_events(self):
-        with app.app_context():
+        with application.app_context():
             token = list(AppTokens.tokens.keys())[0]
             request = self.app.post("/api/events", data=dict(
                 events=events_json

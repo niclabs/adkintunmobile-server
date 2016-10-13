@@ -1,4 +1,4 @@
-from app import app
+from app import application
 
 from tests import base_test_case
 from app.models.carrier import Carrier
@@ -10,7 +10,7 @@ class InitialdataTestCase(base_test_case.BaseTestCase):
         pass
 
     def test_save_carriers(self):
-        with app.app_context():
+        with application.app_context():
             populate()
             carriers = Carrier.query.all()
             carriersFiltered = Carrier.query.filter(Carrier.mnc == 9).all()

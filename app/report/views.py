@@ -1,9 +1,9 @@
-from app import app
+from app import application
 from app.public.views import page_not_found
 from flask import json, jsonify
 
 
-@app.route("/reports/general_reports/<year>/<month>")
+@application.route("/reports/general_reports/<year>/<month>")
 def general_reports(year, month):
     try:
         data = json.load(
@@ -14,7 +14,7 @@ def general_reports(year, month):
         return page_not_found(e)
 
 
-@app.route("/reports/network_reports/<year>/<month>")
+@application.route("/reports/network_reports/<year>/<month>")
 def network_reports(year, month):
     try:
         data = json.load(
@@ -25,7 +25,7 @@ def network_reports(year, month):
         return page_not_found(e)
 
 
-@app.route("/reports/signal_reports/<year>/<month>")
+@application.route("/reports/signal_reports/<year>/<month>")
 def signal_reports(year, month):
     try:
         data = json.load(
@@ -36,7 +36,7 @@ def signal_reports(year, month):
         return page_not_found(e)
 
 
-@app.route("/reports/apps_reports/<year>/<month>")
+@application.route("/reports/apps_reports/<year>/<month>")
 def apps_reports(year, month):
     try:
         data = json.load(

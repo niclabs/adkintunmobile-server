@@ -6,7 +6,7 @@ from flask import request
 from flask_restful import Resource, reqparse
 from werkzeug.exceptions import BadRequestKeyError
 
-from app import db, app, auth
+from app import db, application, auth
 from app.api import api
 
 
@@ -30,22 +30,22 @@ class ReadEventsFromArgument(Resource):
                 events = prepare_events(jsonvar, device.device_id, None, app_version_code)
 
         except json.JSONDecodeError as e:
-            app.logger.error("JSONDecodeError: " + str(e))
+            application.logger.error("JSONDecodeError: " + str(e))
             return "Bad Request", 400
         except BadRequestKeyError as e:
-            app.logger.error("BadRequestKeyError: " + str(e))
+            application.logger.error("BadRequestKeyError: " + str(e))
             return "Bad Request", 400
         except UnicodeError as e:
-            app.logger.error("UnicodeError: " + str(e))
+            application.logger.error("UnicodeError: " + str(e))
             return "Bad Request", 400
         except TypeError as e:
-            app.logger.error("TypeError: " + str(e))
+            application.logger.error("TypeError: " + str(e))
             return "Bad Request", 400
         except KeyError as e:
-            app.logger.error("KeyError: " + str(e))
+            application.logger.error("KeyError: " + str(e))
             return "Bad Request", 400
         except Exception as e:
-            app.logger.error("Unknow Exception: " + str(e))
+            application.logger.error("Unknow Exception: " + str(e))
             return "Bad Request", 400
 
         return save_events(events)
@@ -54,7 +54,7 @@ class ReadEventsFromArgument(Resource):
 api.add_resource(ReadEventsFromArgument, "/api/events")
 
 
-@app.route("/events", methods=["POST"])
+@application.route("/events", methods=["POST"])
 @auth.login_required
 def save_events_from_file():
     """
@@ -81,22 +81,22 @@ def save_events_from_file():
             events = prepare_events(jsonvar, device.device_id, None, app_version_code)
 
     except json.JSONDecodeError as e:
-        app.logger.error("JSONDecodeError: " + str(e))
+        application.logger.error("JSONDecodeError: " + str(e))
         return "Bad Request", 400
     except BadRequestKeyError as e:
-        app.logger.error("BadRequestKeyError: " + str(e))
+        application.logger.error("BadRequestKeyError: " + str(e))
         return "Bad Request", 400
     except UnicodeError as e:
-        app.logger.error("UnicodeError: " + str(e))
+        application.logger.error("UnicodeError: " + str(e))
         return "Bad Request", 400
     except TypeError as e:
-        app.logger.error("TypeError: " + str(e))
+        application.logger.error("TypeError: " + str(e))
         return "Bad Request", 400
     except KeyError as e:
-        app.logger.error("KeyError: " + str(e))
+        application.logger.error("KeyError: " + str(e))
         return "Bad Request", 400
     except Exception as e:
-        app.logger.error("Unknow Exception: " + str(e))
+        application.logger.error("Unknow Exception: " + str(e))
         return "Bad Request", 400
 
     # continue with processation of events
@@ -116,11 +116,11 @@ def save_events(events):
         # save and commit events and information to the database
         db.session.commit()
     except Exception as e:
-        app.logger.error("Error adding events to database " + str(e))
+        application.logger.error("Error adding events to database " + str(e))
         db.session.rollback()
         return "Conflict adding events to database", 409
 
-    app.logger.info("Saved Events: " + str(len(events)))
+    application.logger.info("Saved Events: " + str(len(events)))
 
     return "Events saved successfully", 201
 
