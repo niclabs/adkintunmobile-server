@@ -20,13 +20,16 @@ def reports(path=""):
 def general_report(year, month):
     return api_reports(type="general_report", year=year, month=month)
 
+
 @application.route("/apps_report/<year>/<month>/")
 def apps_report(year, month):
     return api_reports(type="apps_report", year=year, month=month)
 
+
 @application.route("/network_report/<year>/<month>/")
 def network_report(year, month):
     return api_reports(type="network_report", year=year, month=month)
+
 
 @application.route("/signal_report/<year>/<month>/")
 def signal_report(year, month):
