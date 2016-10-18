@@ -46,18 +46,17 @@ def monthly_reports_generation(month=None, year=None):
     generate_json_app_reports(init_date, last_date)
 
 
-def save_json_report_to_file(json_data: dict, year: int, month: int, folder: str, name: str):
+def save_json_report_to_file(json_data: dict, year: int, month: int, name: str):
     """
     Save data from a json to a file in the reports folder
     :param json_data: Json data
     :param year: year of the report
     :param month: month of the report
-    :param folder: folder to store the json file
     :param name: name of the json file
     :return: None
     """
 
-    file_folder = folder + "/" + str(year) + "/"
+    file_folder = BASE_DIRECTORY_REPORTS + "/" + str(year) + "/" + str(month) + "/"
     file_name = name + str(month) + "_" + str(year) + ".json"
 
     if not os.path.exists(file_folder):

@@ -3,9 +3,7 @@ from datetime import datetime
 from sqlalchemy import text
 
 from app import db
-from app.report.reports_generation import save_json_report_to_file, BASE_DIRECTORY_REPORTS
-
-SIGNAL_REPORT_DIRECTORY = BASE_DIRECTORY_REPORTS + 'signal_reports'
+from app.report.reports_generation import save_json_report_to_file
 
 
 def generate_json_signal_reports(init_date, last_date):
@@ -17,7 +15,7 @@ def generate_json_signal_reports(init_date, last_date):
 
     report = signal_strength_mean_for_antenna(init_date, last_date)
 
-    save_json_report_to_file(report, init_date.year, init_date.month, SIGNAL_REPORT_DIRECTORY,
+    save_json_report_to_file(report, init_date.year, init_date.month,
                              "signal_report_")
 
 

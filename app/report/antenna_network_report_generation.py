@@ -6,9 +6,7 @@ from app import db
 from app.models.antenna import Antenna
 from app.models.sim import Sim
 from app.models.telephony_observation_event import TelephonyObservationEvent
-from app.report.reports_generation import save_json_report_to_file, BASE_DIRECTORY_REPORTS
-
-NETWORK_REPORT_DIRECTORY = BASE_DIRECTORY_REPORTS + 'network_reports'
+from app.report.reports_generation import save_json_report_to_file
 
 
 def generate_json_network_reports(init_date, last_date):
@@ -20,7 +18,7 @@ def generate_json_network_reports(init_date, last_date):
 
     report = network_report_for_carrier(init_date, last_date)
 
-    save_json_report_to_file(report, init_date.year, init_date.month, NETWORK_REPORT_DIRECTORY,
+    save_json_report_to_file(report, init_date.year, init_date.month,
                              "network_report_")
 
 
@@ -64,4 +62,4 @@ def network_report_for_carrier(min_date=datetime(2015, 1, 1),
     final = [dict(network_type=row[0], antenna_id=row[1], carrier_id=row[2], size=row[3]) for row in
              result.all()]
 
-    return final;
+    return final
