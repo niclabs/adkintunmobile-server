@@ -21,8 +21,3 @@ def terms_and_conditions():
         return jsonify(data)
     except Exception as e:
         return page_not_found(e)
-
-
-@application.errorhandler(404)
-def page_not_found(error):
-    return render_template('page_not_found.html'), 404
