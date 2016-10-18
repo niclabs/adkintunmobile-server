@@ -10,3 +10,4 @@ flask-login
 flask-httpauth
 requests
 uwsgi
+flask-autoindex

@@ -3,6 +3,7 @@ import os
 from logging.handlers import RotatingFileHandler
 
 from flask import Flask, g
+from flask_autoindex import AutoIndex
 from flask_httpauth import HTTPTokenAuth
 from flask_sqlalchemy import SQLAlchemy
 
@@ -21,6 +22,8 @@ db = SQLAlchemy(application)
 # Authetication scheme
 auth = HTTPTokenAuth(scheme="Token")
 
+# Listing reports directory
+autoindex = AutoIndex(application, browse_root="app/static/reports", add_url_rules=False)
 
 @auth.verify_token
 def verify_token(token):
@@ -59,6 +62,12 @@ if not application.debug:
 # Just run in a uwsgi instance!
 try:
     import app.automatization.scheduler_manager
+
     application.logger.info("Uwsgi mules created for antennas geolocalization and reports generation")
 except:
     application.logger.error("Problem with the mules")
+
+
+
+
+
