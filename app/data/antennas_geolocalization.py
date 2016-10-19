@@ -4,6 +4,9 @@ from app import db
 
 BASE_URL = "http://opencellid.org/cell/get"
 
+# Maintains the last antenna id searched in opencellid
+LAST_ID = 0
+
 
 def get_antenna_geolocalization(mcc: int, mnc: int, lac: int, cid: int, key_id: str, base_url: str) -> tuple:
     """
@@ -40,8 +43,15 @@ def update_antennas_localization(max_number_of_queries: int) -> int:
     from app.models.antenna import Antenna
     from app.models.carrier import Carrier
     from config import OpenCellIdToken
+    global LAST_ID, BASE_URL
 
-    antennas = Antenna.query.filter(Antenna.lat == None, Antenna.lon == None).limit(max_number_of_queries)
+    if LAST_ID >= Antenna.query.count() :
+        LAST_ID=0
+
+    antennas = Antenna.query.filter(Antenna.lat == None, Antenna.lon == None, Antenna.id > LAST_ID).limit(
+        max_number_of_queries)
+
+    LAST_ID += max_number_of_queries
 
     upload_antennas = 0
     for antenna in antennas:
