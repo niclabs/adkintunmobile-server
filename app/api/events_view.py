@@ -154,18 +154,20 @@ def set_events_context(jsonvar):
     from app.models.sim import Sim
     sim = Sim.get_sim_or_add_it(jsonvar["sim_records"])
 
-    # Get carrier or add it, if it does not exist
-    from app.models.carrier import Carrier
-    carrier = Carrier.get_carrier_or_add_it(mnc=jsonvar["sim_records"]["mnc"], mcc=jsonvar["sim_records"]["mcc"])
+    if sim:
+        # Get carrier or add it, if it does not exist
+        from app.models.carrier import Carrier
+        carrier = Carrier.get_carrier_or_add_it(mnc=jsonvar["sim_records"]["mnc"], mcc=jsonvar["sim_records"]["mcc"])
 
-    # Link sim with device
-    sim.add_device(device)
+        # Link carrier with sim
+        carrier.add_sim(sim)
 
-    # Link carrier with sim
-    carrier.add_sim(sim)
+        # Link sim with device
+        sim.add_device(device)
 
-    db.session.add(sim)
-    db.session.add(carrier)
+
+        db.session.add(sim)
+        db.session.add(carrier)
 
     # add new device, sim or carrier
     db.session.commit()
