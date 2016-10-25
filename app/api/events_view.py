@@ -24,11 +24,16 @@ class ReadEventsFromArgument(Resource):
             args = post_parser.parse_args()
             jsonvar = json.loads(args.events)
             device, sim, app_version_code = set_events_context(jsonvar)
-            if sim:
-                events = prepare_events(jsonvar, device.device_id, sim.serial_number, app_version_code)
-            else:
-                events = prepare_events(jsonvar, device.device_id, None, app_version_code)
 
+            device_id = None
+            serial_number = None
+
+            if device:
+                device_id = device.device_id
+            if sim:
+                serial_number = sim.serial_number
+
+            events = prepare_events(jsonvar, device_id, serial_number, app_version_code)
         except json.JSONDecodeError as e:
             application.logger.error("JSONDecodeError: " + str(e))
             return "Bad Request", 400
@@ -75,10 +80,16 @@ def save_events_from_file():
         jsonvar = json.loads(string)
         device, sim, app_version_code = set_events_context(jsonvar)
 
+        device_id = None
+        serial_number = None
+
+        if device:
+            device_id = device.device_id
         if sim:
-            events = prepare_events(jsonvar, device.device_id, sim.serial_number, app_version_code)
-        else:
-            events = prepare_events(jsonvar, device.device_id, None, app_version_code)
+            serial_number = sim.serial_number
+
+        events = prepare_events(jsonvar, device_id, serial_number, app_version_code)
+
 
     except json.JSONDecodeError as e:
         application.logger.error("JSONDecodeError: " + str(e))
@@ -165,7 +176,6 @@ def set_events_context(jsonvar):
         # Link sim with device
         sim.add_device(device)
 
-
         db.session.add(sim)
         db.session.add(carrier)
 
@@ -187,6 +197,7 @@ def store_traffics_events(events, device_id, sim_serial_number, app_version_code
             store_traffic_event(event, device_id, sim_serial_number, list_events, WifiTrafficEvent)
         elif event["event_type"] == 8:
             store_traffic_event(event, device_id, sim_serial_number, list_events, ApplicationTrafficEvent)
+
 
 def store_traffic_event(event, device_id, sim_serial_number, list_events, model):
     eventModel = model()

@@ -48,23 +48,25 @@ class Device(base_model.BaseModel):
         Search a device and retrieve it if exist, else create a new one and retrieve it adding it in a new session.
         """
         from datetime import datetime
-
-        device = Device.query.filter(Device.device_id == args["device_id"]).first()
-        if not device:
-            device = Device(
-                device_id=args["device_id"],
-                brand=args["brand"],
-                board=args["board"],
-                build_id=args["build_id"],
-                device=args["device"],
-                hardware=args["hardware"],
-                manufacturer=args["manufacturer"],
-                model=args["model"],
-                release=args["release"],
-                release_type=args["release_type"],
-                product=args["product"],
-                sdk=args["sdk"],
-                creation_date=datetime.now())
-            db.session.add(device)
-            db.session.commit()
-        return device
+        if "device_id" in args:
+            device = Device.query.filter(Device.device_id == args["device_id"]).first()
+            if not device:
+                device = Device(
+                    device_id=args["device_id"],
+                    brand=args["brand"],
+                    board=args["board"],
+                    build_id=args["build_id"],
+                    device=args["device"],
+                    hardware=args["hardware"],
+                    manufacturer=args["manufacturer"],
+                    model=args["model"],
+                    release=args["release"],
+                    release_type=args["release_type"],
+                    product=args["product"],
+                    sdk=args["sdk"],
+                    creation_date=datetime.now())
+                db.session.add(device)
+                db.session.commit()
+            return device
+        else:
+            return None
