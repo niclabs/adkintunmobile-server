@@ -1,10 +1,10 @@
 from app import application
+from app.data.populate_methods import populate_standard_test
 from app.models.carrier import Carrier
 from app.models.gsm_event import GsmEvent
 from app.models.mobile_traffic_event import MobileTrafficEvent
 from app.models.sim import Sim
 from config import AppTokens
-from manage_commands import populate_test
 from tests import base_test_case
 from tests.events.new_telco_events import events_json
 
@@ -19,7 +19,7 @@ class SaveNewTelcoEventsTestCase(base_test_case.BaseTestCase):
         Populate the model with test data
         """
         # Create the default sim
-        populate_test()
+        populate_standard_test()
 
     # Saving event test: 1 gsm observation event and 1 state record, both whit a non-existent telco
     def test_save_new_telco_events(self):

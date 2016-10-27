@@ -1,9 +1,9 @@
 from datetime import datetime
 
 from app import application
+from app.data.populate_methods import populate_standard_test
 from app.models.wifi_traffic_event import WifiTrafficEvent
 from config import AppTokens
-from manage_commands import populate_test
 from tests import base_test_case
 from tests.events.one_event_in_type_json import events_json
 
@@ -17,7 +17,7 @@ class SaveWifiEventTestCase(base_test_case.BaseTestCase):
         """
         Populate the model with test data
         """
-        populate_test()
+        populate_standard_test()
 
     # Saving event test: 1 wifi traffic event
     def test_save_wifi_event(self):

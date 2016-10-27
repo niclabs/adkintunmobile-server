@@ -1,8 +1,8 @@
 from app import application
+from app.data.populate_methods import populate_standard_test
 from app.models.carrier import Carrier
 from app.models.gsm_event import GsmEvent
 from config import AppTokens
-from manage_commands import populate_test
 from tests import base_test_case
 from tests.events.one_event_in_type_json import events_json
 
@@ -17,7 +17,7 @@ class SaveGsmObservationEventTestCase(base_test_case.BaseTestCase):
         Populate the model with test data
         """
         # Create the default sim
-        populate_test()
+        populate_standard_test()
 
     # Saving event test: 1 gsm observation event
     def test_save_gsm_observation_events(self):
@@ -51,11 +51,10 @@ class SaveGsmObservationEventTestCase(base_test_case.BaseTestCase):
             assert gsm_event.device.device_id == "8000000000000000000"
 
             from app.models.antenna import Antenna
-            antenna = Antenna.query.filter(Antenna.cid==1259355, Antenna.lac==55700, Antenna.lat==0.2, Antenna.lon==0.1).first()
+            antenna = Antenna.query.filter(Antenna.cid == 1259355, Antenna.lac == 55700, Antenna.lat == 0.2,
+                                           Antenna.lon == 0.1).first()
 
             assert antenna.gsm_events.first().id == gsm_event.id
 
             real_carrier = Carrier.query.filter(Carrier.mcc == 730, Carrier.mnc == 2).first()
             assert real_carrier.telephony_observation_events.first().id == gsm_event.id
-
-

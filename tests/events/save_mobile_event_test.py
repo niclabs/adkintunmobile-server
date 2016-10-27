@@ -1,9 +1,9 @@
 from datetime import datetime
 
 from app import application
+from app.data.populate_methods import populate_standard_test
 from app.models.mobile_traffic_event import MobileTrafficEvent
 from config import AppTokens
-from manage_commands import populate_test
 from tests import base_test_case
 from tests.events.one_event_in_type_json import events_json
 
@@ -18,7 +18,7 @@ class SaveMobileEventTestCase(base_test_case.BaseTestCase):
         Populate the model with test data
         """
         # Create the default sim
-        populate_test()
+        populate_standard_test()
 
     #  Saving events test: 1 mobile event
     def test_save_mobile_events(self):

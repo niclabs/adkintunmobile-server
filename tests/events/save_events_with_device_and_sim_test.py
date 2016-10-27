@@ -1,4 +1,5 @@
 from app import application
+from app.data.populate_methods import populate_standard_test
 from app.models.application_traffic_event import ApplicationTrafficEvent
 from app.models.device import Device
 from app.models.event import Event
@@ -8,9 +9,8 @@ from app.models.state_change_event import StateChangeEvent
 from app.models.traffic_event import TrafficEvent
 from app.models.wifi_traffic_event import WifiTrafficEvent
 from config import AppTokens
-from manage_commands import populate_test
 from tests import base_test_case
-from tests.events.normal_event_json import events_json
+from tests.events.standard_event_json import events_json
 
 
 class SaveEventsWithDeviceAndSimTestCase(base_test_case.BaseTestCase):
@@ -22,7 +22,7 @@ class SaveEventsWithDeviceAndSimTestCase(base_test_case.BaseTestCase):
         """
         Populate the model with test data
         """
-        populate_test()
+        populate_standard_test()
 
     #  Saving events test: 1 wifi traffic event and 2 state change event
     def test_save_events_with_device_and_sim(self):
