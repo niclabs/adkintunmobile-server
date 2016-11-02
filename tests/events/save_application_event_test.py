@@ -1,10 +1,10 @@
 from datetime import datetime
 
-from app import app
+from app import application as app
+from tests.populate_db.populate_methods import populate_standard_test
 from app.models.application import Application
 from app.models.application_traffic_event import ApplicationTrafficEvent
 from config import AppTokens
-from manage_commands import populate_test
 from tests import base_test_case
 from tests.events.one_event_in_type_json import events_json
 
@@ -18,7 +18,7 @@ class SaveApplicationEventTestCase(base_test_case.BaseTestCase):
         """
         Populate the model with test data
         """
-        populate_test()
+        populate_standard_test()
 
     # Saving events test: 1 application traffic event
     def test_save_application_event(self):

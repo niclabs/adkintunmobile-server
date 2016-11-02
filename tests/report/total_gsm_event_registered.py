@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from app import app, db
+from app import application, db
 from app.models.device import Device
 from app.models.gsm_event import GsmEvent
 from app.report.general_report_generation import total_gsm_events
@@ -39,11 +39,11 @@ class TotalSimsRegisteredTestCase(base_test_case.BaseTestCase):
 
     # test de guardado de eventos: 1 wifi traffic event y 2 state change event
     def test_two_devices(self):
-        with app.app_context():
+        with application.app_context():
             gsm_events = total_gsm_events()
             assert gsm_events == 3
 
     def test_two_devices(self):
-        with app.app_context():
+        with application.app_context():
             gsm_events = total_gsm_events(min_date=(datetime.now() + timedelta(days=-1)))
             assert gsm_events == 2

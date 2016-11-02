@@ -5,6 +5,12 @@ Adkintun Mobile server.
 
 What is new?
 -------
+* 1.1.2 (30.9.2016)
+    * Fixed antennas geolocalization bugs
+    * Changed apscheduler for uwsgi mules
+    * Changed trigger pages for commands
+    * minor fixes
+
 * 1.1.1 (7.9.2016)
     * Created method to geolocalized antennas, and update them to the database
     * Added job to the schedduler for antennas geolocalization
@@ -36,12 +42,15 @@ Current requirements
 
 * Flask
 * Flask-Script
-* VirtualEnv
-* Postgresql
-* SQLAlchemy.
-* Flask-SQLAlchemy.
-* Flask-Migrate.
-* Flask-RESTful.
-* Flask-Admin.
+* sqlalchemy
+* flask-sqlalchemy
+* flask-migrate
+* flask-restful
+* psycopg2
+* flask_admin
+* flask-login
+* flask-httpauth
+* requests
+* uwsgi
 
 For more info visit the project [Wiki](https://github.com/niclabs/AdkintunMobile-Server/wiki)

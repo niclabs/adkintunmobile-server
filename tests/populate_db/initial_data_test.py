@@ -1,17 +1,15 @@
-from app import app
-
-from tests import base_test_case
+from app import application
 from app.models.carrier import Carrier
-from manage_commands import populate
+from tests import base_test_case
+from tests.populate_db.populate_methods import populate_standard_test
 
 
 class InitialdataTestCase(base_test_case.BaseTestCase):
     def populate(self):
-        pass
+        populate_standard_test()
 
     def test_save_carriers(self):
-        with app.app_context():
-            populate()
+        with application.app_context():
             carriers = Carrier.query.all()
             carriersFiltered = Carrier.query.filter(Carrier.mnc == 9).all()
 

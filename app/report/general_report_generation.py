@@ -1,11 +1,9 @@
 from datetime import datetime
 
-from app import db
-from app.report.reports_generation import save_json_report_to_file
 from sqlalchemy import text
 
-BASE_DIRECTORY_REPORTS = "app/static/reports/"
-GENERAL_REPORT_DIRECTORY = BASE_DIRECTORY_REPORTS + "general_reports"
+from app import db
+from app.report.reports_generation import save_json_report_to_file
 
 
 def generate_json_general_reports(init_date, last_date):
@@ -28,7 +26,7 @@ def generate_json_general_reports(init_date, last_date):
                   "total_sims_carrier": serialize_pairs(total_sims_carrier),
                   "total_device_carrier": serialize_pairs(total_device_carrier)}
 
-    save_json_report_to_file(final_json, init_date.year, init_date.month, GENERAL_REPORT_DIRECTORY,
+    save_json_report_to_file(final_json, init_date.year, init_date.month,
                              "general_report_")  # Total devices registred
 
 
