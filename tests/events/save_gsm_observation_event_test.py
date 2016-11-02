@@ -1,5 +1,5 @@
 from app import application
-from app.data.populate_methods import populate_standard_test
+from tests.populate_db.populate_methods import populate_standard_test
 from app.models.carrier import Carrier
 from app.models.gsm_event import GsmEvent
 from config import AppTokens

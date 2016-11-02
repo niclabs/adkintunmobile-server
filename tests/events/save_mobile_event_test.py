@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from app import application
-from app.data.populate_methods import populate_standard_test
+from tests.populate_db.populate_methods import populate_standard_test
 from app.models.mobile_traffic_event import MobileTrafficEvent
 from config import AppTokens
 from tests import base_test_case

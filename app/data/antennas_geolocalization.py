@@ -8,7 +8,7 @@ BASE_URL = "http://opencellid.org/cell/get"
 LAST_ID = 0
 
 
-def get_antenna_geolocalization(mcc: int, mnc: int, lac: int, cid: int, key_id: str, base_url: str) -> tuple:
+def get_antenna_geolocalization(mcc: int, mnc: int, lac: int, cid: int, key_id: str) -> tuple:
     """
     Get the geolocalization for an antenna from OpenCellId if exist
     :param mnc: Antenna mnc
@@ -16,10 +16,10 @@ def get_antenna_geolocalization(mcc: int, mnc: int, lac: int, cid: int, key_id: 
     :param lac: Antena local area code
     :param cid: Antenna Cell id
     :param key_id: Key id token for OpenCellId
-    :param base_url: OpenCellId url
     :return: Tuple Lat, Long returned from OpenCellId
     """
-    url = base_url + "?key=" + key_id + "&mnc=" + str(mnc) + "&mcc=" + str(mcc) + "&cellid=" + str(cid) + "&lac=" + str(
+
+    url = BASE_URL + "?key=" + key_id + "&mnc=" + str(mnc) + "&mcc=" + str(mcc) + "&cellid=" + str(cid) + "&lac=" + str(
         lac) + "&format=json"
     r = requests.get(url)
     if r.status_code == 200:
@@ -43,10 +43,10 @@ def update_antennas_localization(max_number_of_queries: int) -> int:
     from app.models.antenna import Antenna
     from app.models.carrier import Carrier
     from config import OpenCellIdToken
-    global LAST_ID, BASE_URL
+    global LAST_ID
 
-    if LAST_ID >= Antenna.query.count() :
-        LAST_ID=0
+    if LAST_ID >= Antenna.query.count():
+        LAST_ID = 0
 
     antennas = Antenna.query.filter(Antenna.lat == None, Antenna.lon == None, Antenna.id > LAST_ID).limit(
         max_number_of_queries)
@@ -57,7 +57,7 @@ def update_antennas_localization(max_number_of_queries: int) -> int:
     for antenna in antennas:
         carrier = Carrier.query.filter(Carrier.id == antenna.carrier_id).first()
         lat, lon = get_antenna_geolocalization(mcc=carrier.mcc, mnc=carrier.mnc, lac=antenna.lac, cid=antenna.cid,
-                                               key_id=OpenCellIdToken.token, base_url=BASE_URL)
+                                               key_id=OpenCellIdToken.token)
         if lat and lon:
             antenna.lat = lat
             antenna.lon = lon

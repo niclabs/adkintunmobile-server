@@ -1,5 +1,5 @@
 from app import application
-from app.data.populate_methods import populate_standard_test
+from tests.populate_db.populate_methods import populate_standard_test
 from app.models.application_traffic_event import ApplicationTrafficEvent
 from app.models.device import Device
 from app.models.event import Event
