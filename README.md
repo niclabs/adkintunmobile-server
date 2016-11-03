@@ -5,6 +5,14 @@ Adkintun Mobile server.
 
 What is new?
 -------
+* 1.2 (2.11.2016)
+    * Fix admin views
+    * Remove APScheduler, used uWSGI mules for background jobs.
+    * Listing reports directory (using flask_autoindex)
+    * Bug fixes
+    * Added new test
+    * Refactor populate methods
+    
 * 1.1.2 (30.9.2016)
     * Fixed antennas geolocalization bugs
     * Changed apscheduler for uwsgi mules
@@ -52,5 +60,6 @@ Current requirements
 * flask-httpauth
 * requests
 * uwsgi
+* flask-autoindex
 
 For more info visit the project [Wiki](https://github.com/niclabs/AdkintunMobile-Server/wiki)
