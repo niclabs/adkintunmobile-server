@@ -10,10 +10,10 @@ from app.models.traffic_event import TrafficEvent
 from app.models.wifi_traffic_event import WifiTrafficEvent
 from config import AppTokens
 from tests import base_test_case
-from tests.events.more_than_one_event_in_type_json import events_json
+from tests.events.standard_event_without_sim_json import events_json
 
 
-class SaveMultipleEventsWithDeviceAndSimTestCase(base_test_case.BaseTestCase):
+class SaveEventsWithoutSim(base_test_case.BaseTestCase):
     """
     Unit tests for the API
     """
@@ -25,18 +25,20 @@ class SaveMultipleEventsWithDeviceAndSimTestCase(base_test_case.BaseTestCase):
         populate_standard_test()
 
     #  Saving events test: 1 wifi traffic event and 2 state change event
-    def test_save_multiple_events_with_device_and_sim(self):
+    def test_save_events_without_sim(self):
         with application.app_context():
             token = list(AppTokens.tokens.keys())[0]
             request = self.app.post("/api/events", data=dict(
                 events=events_json
             ), headers={"Authorization": "token " + token})
 
-            device = Device.query.filter(Device.device_id == "8000000000000000000").first()
-            sim = Sim.query.filter(Sim.serial_number == "8000000000000000000").first()
-            assert device
-            assert sim
             assert request.status_code == 201
+
+            device = Device.query.filter(Device.device_id == "800000000000000000000").first()
+            sims = Sim.query.all()
+            assert device
+            assert len(sims) == 0
+
             # assert events
             events = Event.query.all()
             wifi_events = WifiTrafficEvent.query.all()
@@ -44,11 +46,11 @@ class SaveMultipleEventsWithDeviceAndSimTestCase(base_test_case.BaseTestCase):
             traffic_events = TrafficEvent.query.all()
             application_events = ApplicationTrafficEvent.query.all()
             mobile_events = MobileTrafficEvent.query.all()
-            assert len(events) == 12
+            assert len(events) == 15
 
             # assert device and sim are linked with the event
             all_events = [wifi_events, state_events, traffic_events, application_events, mobile_events]
             for events in all_events:
                 for event in events:
                     assert device.device_id == event.device_id
-                    assert sim.serial_number == event.sim_serial_number
+                    assert event.sim_serial_number == None

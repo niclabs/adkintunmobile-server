@@ -1,19 +1,19 @@
 from flask import render_template, json, jsonify, redirect
 
-from app import app
+from app import application
 
 
-@app.route("/")
+@application.route("/")
 def index():
     return redirect("http://www.adkintunmobile.cl", code=302)
 
 
-@app.errorhandler(404)
+@application.errorhandler(404)
 def page_not_found(error):
     return render_template("page_not_found.html"), 404
 
 
-@app.route("/terms_and_conditions")
+@application.route("/terms_and_conditions")
 def terms_and_conditions():
     try:
         data = json.load(
@@ -21,8 +21,3 @@ def terms_and_conditions():
         return jsonify(data)
     except Exception as e:
         return page_not_found(e)
-
-
-@app.errorhandler(404)
-def page_not_found(error):
-    return render_template('page_not_found.html'), 404

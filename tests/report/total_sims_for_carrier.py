@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from app import app, db
+from app import application, db
 from app.models.carrier import Carrier
 from app.models.sim import Sim
 from app.report.general_report_generation import total_sims_for_carrier
@@ -32,7 +32,7 @@ class TotalDevicesForCarrierReportedTestCase(base_test_case.BaseTestCase):
 
     # test de guardado de eventos: 1 wifi traffic event y 2 state change event
     def test_two_carrier(self):
-        with app.app_context():
+        with application.app_context():
             sims_for_carrier = total_sims_for_carrier()
             assert len(sims_for_carrier) == 2
 
@@ -42,7 +42,7 @@ class TotalDevicesForCarrierReportedTestCase(base_test_case.BaseTestCase):
             assert sims_for_carrier[1].sims_count == 1
 
     def test_date_filter(self):
-        with app.app_context():
+        with application.app_context():
             sims_for_carrier = total_sims_for_carrier(min_date=(datetime.now() + timedelta(days=-1)))
             assert len(sims_for_carrier) == 2
 

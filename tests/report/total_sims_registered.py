@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from app import app, db
+from app import application, db
 from app.models.sim import Sim
 from app.report.general_report_generation import total_sims_registered
 from tests import base_test_case
@@ -24,11 +24,11 @@ class TotalSimsRegisteredTestCase(base_test_case.BaseTestCase):
 
     # test de guardado de eventos: 1 wifi traffic event y 2 state change event
     def test_two_devices(self):
-        with app.app_context():
+        with application.app_context():
             total_sims = total_sims_registered()
             assert total_sims == 3
 
     def test_date_filter(self):
-        with app.app_context():
+        with application.app_context():
             total_sims = total_sims_registered(min_date=(datetime.now() + timedelta(days=-1)))
             assert total_sims == 2

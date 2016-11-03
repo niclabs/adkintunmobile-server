@@ -6,7 +6,7 @@ from flask import request
 from flask_restful import Resource, reqparse
 from werkzeug.exceptions import BadRequestKeyError
 
-from app import db, app, auth
+from app import db, application, auth
 from app.api import api
 
 
@@ -24,28 +24,33 @@ class ReadEventsFromArgument(Resource):
             args = post_parser.parse_args()
             jsonvar = json.loads(args.events)
             device, sim, app_version_code = set_events_context(jsonvar)
-            if sim:
-                events = prepare_events(jsonvar, device.device_id, sim.serial_number, app_version_code)
-            else:
-                events = prepare_events(jsonvar, device.device_id, None, app_version_code)
 
+            device_id = None
+            serial_number = None
+
+            if device:
+                device_id = device.device_id
+            if sim:
+                serial_number = sim.serial_number
+
+            events = prepare_events(jsonvar, device_id, serial_number, app_version_code)
         except json.JSONDecodeError as e:
-            app.logger.error("JSONDecodeError: " + str(e))
+            application.logger.error("JSONDecodeError: " + str(e))
             return "Bad Request", 400
         except BadRequestKeyError as e:
-            app.logger.error("BadRequestKeyError: " + str(e))
+            application.logger.error("BadRequestKeyError: " + str(e))
             return "Bad Request", 400
         except UnicodeError as e:
-            app.logger.error("UnicodeError: " + str(e))
+            application.logger.error("UnicodeError: " + str(e))
             return "Bad Request", 400
         except TypeError as e:
-            app.logger.error("TypeError: " + str(e))
+            application.logger.error("TypeError: " + str(e))
             return "Bad Request", 400
         except KeyError as e:
-            app.logger.error("KeyError: " + str(e))
+            application.logger.error("KeyError: " + str(e))
             return "Bad Request", 400
         except Exception as e:
-            app.logger.error("Unknow Exception: " + str(e))
+            application.logger.error("Unknow Exception: " + str(e))
             return "Bad Request", 400
 
         return save_events(events)
@@ -54,7 +59,7 @@ class ReadEventsFromArgument(Resource):
 api.add_resource(ReadEventsFromArgument, "/api/events")
 
 
-@app.route("/events", methods=["POST"])
+@application.route("/events", methods=["POST"])
 @auth.login_required
 def save_events_from_file():
     """
@@ -75,28 +80,34 @@ def save_events_from_file():
         jsonvar = json.loads(string)
         device, sim, app_version_code = set_events_context(jsonvar)
 
+        device_id = None
+        serial_number = None
+
+        if device:
+            device_id = device.device_id
         if sim:
-            events = prepare_events(jsonvar, device.device_id, sim.serial_number, app_version_code)
-        else:
-            events = prepare_events(jsonvar, device.device_id, None, app_version_code)
+            serial_number = sim.serial_number
+
+        events = prepare_events(jsonvar, device_id, serial_number, app_version_code)
+
 
     except json.JSONDecodeError as e:
-        app.logger.error("JSONDecodeError: " + str(e))
+        application.logger.error("JSONDecodeError: " + str(e))
         return "Bad Request", 400
     except BadRequestKeyError as e:
-        app.logger.error("BadRequestKeyError: " + str(e))
+        application.logger.error("BadRequestKeyError: " + str(e))
         return "Bad Request", 400
     except UnicodeError as e:
-        app.logger.error("UnicodeError: " + str(e))
+        application.logger.error("UnicodeError: " + str(e))
         return "Bad Request", 400
     except TypeError as e:
-        app.logger.error("TypeError: " + str(e))
+        application.logger.error("TypeError: " + str(e))
         return "Bad Request", 400
     except KeyError as e:
-        app.logger.error("KeyError: " + str(e))
+        application.logger.error("KeyError: " + str(e))
         return "Bad Request", 400
     except Exception as e:
-        app.logger.error("Unknow Exception: " + str(e))
+        application.logger.error("Unknow Exception: " + str(e))
         return "Bad Request", 400
 
     # continue with processation of events
@@ -116,11 +127,11 @@ def save_events(events):
         # save and commit events and information to the database
         db.session.commit()
     except Exception as e:
-        app.logger.error("Error adding events to database " + str(e))
+        application.logger.error("Error adding events to database " + str(e))
         db.session.rollback()
         return "Conflict adding events to database", 409
 
-    app.logger.info("Saved Events: " + str(len(events)))
+    application.logger.info("Saved Events: " + str(len(events)))
 
     return "Events saved successfully", 201
 
@@ -154,18 +165,19 @@ def set_events_context(jsonvar):
     from app.models.sim import Sim
     sim = Sim.get_sim_or_add_it(jsonvar["sim_records"])
 
-    # Get carrier or add it, if it does not exist
-    from app.models.carrier import Carrier
-    carrier = Carrier.get_carrier_or_add_it(mnc=jsonvar["sim_records"]["mnc"], mcc=jsonvar["sim_records"]["mcc"])
+    if sim:
+        # Get carrier or add it, if it does not exist
+        from app.models.carrier import Carrier
+        carrier = Carrier.get_carrier_or_add_it(mnc=jsonvar["sim_records"]["mnc"], mcc=jsonvar["sim_records"]["mcc"])
 
-    # Link sim with device
-    sim.add_device(device)
+        # Link carrier with sim
+        carrier.add_sim(sim)
 
-    # Link carrier with sim
-    carrier.add_sim(sim)
+        # Link sim with device
+        sim.add_device(device)
 
-    db.session.add(sim)
-    db.session.add(carrier)
+        db.session.add(sim)
+        db.session.add(carrier)
 
     # add new device, sim or carrier
     db.session.commit()
@@ -185,6 +197,7 @@ def store_traffics_events(events, device_id, sim_serial_number, app_version_code
             store_traffic_event(event, device_id, sim_serial_number, list_events, WifiTrafficEvent)
         elif event["event_type"] == 8:
             store_traffic_event(event, device_id, sim_serial_number, list_events, ApplicationTrafficEvent)
+
 
 def store_traffic_event(event, device_id, sim_serial_number, list_events, model):
     eventModel = model()

@@ -1,10 +1,10 @@
-from app import app, auth
+from app import application, auth
 from app.models.antenna import Antenna
 from app.public.views import page_not_found
 from flask import jsonify
 
 
-@app.route("/antenna/<id>", methods=["GET"])
+@application.route("/antenna/<id>", methods=["GET"])
 @auth.login_required
 def get_antenna_info(id):
     antenna = Antenna.query.filter(Antenna.id == id).first()

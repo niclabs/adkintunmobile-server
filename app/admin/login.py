@@ -1,5 +1,5 @@
 import flask_login as login
-from app import db, app
+from app import db, application
 from app.models.user import User
 from flask import url_for, redirect, request
 from flask_admin import AdminIndexView
@@ -41,7 +41,7 @@ class RegistrationForm(form.Form):
 # Initialize flask-login
 def init_login():
     login_manager = login.LoginManager()
-    login_manager.init_app(app)
+    login_manager.init_app(application)
 
     # Create user loader function
     @login_manager.user_loader

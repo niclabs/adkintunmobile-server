@@ -1,10 +1,10 @@
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 
-from app import app, db
+from app import application, db
 
-migrate = Migrate(app, db)
-manager = Manager(app)
+migrate = Migrate(application, db)
+manager = Manager(application)
 
 from manage_commands import Test, Populate, Geolocalization, ReportsGeneration
 
