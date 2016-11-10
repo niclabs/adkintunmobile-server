@@ -4,16 +4,6 @@ from app import db
 from app.data import initial_data_carriers
 
 
-def save_models(elements, model_class):
-    for json_element in elements:
-        model = model_class()
-        for k, v in json_element.items():
-            setattr(model, k, v)
-        db.session.add(model)
-        try:
-            db.session.commit()
-        except IntegrityError:
-            db.session.rollback()
 
 
 def populate_user():
@@ -36,11 +26,17 @@ def populate_user():
 
 def populate_carriers():
     import json
-    from app.models.carrier import Carrier
     jsonvar = json.loads(initial_data_carriers.initial_data_carriers)
     for k, v in jsonvar.items():
         if k == "carriers":
-            save_models(v, Carrier)
+            save_carriers(v)
+
+
+def save_carriers(elements):
+    from app.models.carrier import Carrier
+    for json_element in elements:
+        if json_element["mnc"] and json_element["mcc"] and json_element["name"]:
+            Carrier.add_new_carrier( mcc= json_element["mcc"], mnc= json_element["mnc"], name =json_element["name"])
 
 
 def initial_populate():

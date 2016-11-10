@@ -1,3 +1,5 @@
+from typing import TypeVar
+
 from app import db, application
 from app.models import base_model
 
@@ -6,6 +8,7 @@ class Carrier(base_model.BaseModel):
     '''
     Carrier model class
     '''
+
     __tablename__ = 'carriers'
     id = db.Column(db.Integer, primary_key=True, unique=True)
     name = db.Column(db.String(50))
@@ -15,7 +18,11 @@ class Carrier(base_model.BaseModel):
     telephony_observation_events = db.relationship('TelephonyObservationEvent', backref='carrier', lazy='dynamic')
     antennas = db.relationship("Antenna", backref='carrier', lazy='dynamic')
 
-    def __init__(self, name=None, mcc=None, mnc=None):
+    # for Type hints
+    C = TypeVar("Carrier")
+
+    def __init__(self, id, name=None, mcc=None, mnc=None):
+        self.id = id
         self.name = name
         self.mcc = mcc
         self.mnc = mnc
@@ -33,17 +40,32 @@ class Carrier(base_model.BaseModel):
             self.sims.append(sim)
 
     @staticmethod
-    def get_carrier_or_add_it(mnc, mcc):
+    def add_new_carrier(mnc: int, mcc: int, name="Unknown" ) -> None:
+        """
+        Add new carrier, giving just the mnc and mcc
+        :param mnc: value of mnc code
+        :param mcc: value of mcc code
+        :param name: vname of the carrier
+        :return: None
+        """
+        carrier = Carrier(mnc=mnc, mcc=mcc, name=name, id=int(str(mcc) + str(mnc)))
+        db.session.add(carrier)
+        db.session.commit()
+
+    @staticmethod
+    def get_carrier_or_add_it(mnc: int, mcc: int) -> C:
         """
         Search a carrier and retrieve it if exist, else create a new one and retrieve it.
+        :param mnc: value of mnc code
+        :param mcc: value of mcc code
+        :return: Carrier
         """
         if mnc and mcc:
             carrier = Carrier.query.filter(Carrier.mnc == mnc, Carrier.mcc == mcc).first()
             if not carrier:
-                carrier = Carrier(mnc=mnc, mcc=mcc, name="Unknown")
-                db.session.add(carrier)
-                db.session.commit()
-                application.logger.info("New antenna added: mnc:" + str(mnc) + ", mcc: " + str(mcc))
+                Carrier.add_new_carrier(mnc, mcc)
+                application.logger.info("New carrier added: mnc:" + str(mnc) + ", mcc: " + str(mcc))
+                carrier = Carrier.query.filter(Carrier.mnc == mnc, Carrier.mcc == mcc).first()
             return carrier
         else:
             return None
