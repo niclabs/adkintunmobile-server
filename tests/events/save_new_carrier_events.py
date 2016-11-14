@@ -1,15 +1,15 @@
 from app import application
-from tests.populate_db.populate_methods import populate_standard_test
 from app.models.carrier import Carrier
 from app.models.gsm_event import GsmEvent
 from app.models.mobile_traffic_event import MobileTrafficEvent
 from app.models.sim import Sim
 from config import AppTokens
 from tests import base_test_case
-from tests.events.new_telco_events import events_json
+from tests.events.new_carrier_events_json import events_json
+from tests.populate_db.populate_methods import populate_standard_test
 
 
-class SaveNewTelcoEventsTestCase(base_test_case.BaseTestCase):
+class SaveNewCarrierEventsTestCase(base_test_case.BaseTestCase):
     """
     Unit tests for the API
     """
@@ -41,11 +41,13 @@ class SaveNewTelcoEventsTestCase(base_test_case.BaseTestCase):
             sim = Sim.query.filter(Sim.serial_number == "800000000000000000000").first()
             assert sim
 
-            carrier = Carrier.query.filter(Carrier.mnc == 9, Carrier.mcc == 120).first()
+            carrier = Carrier.query.filter(Carrier.mnc == 99, Carrier.mcc == 9999).first()
             assert carrier
 
-            assert sim.carrier.mnc == 9
-            assert sim.carrier.mcc == 120
+            assert carrier.id == 999999
+
+            assert sim.carrier.mnc == 99
+            assert sim.carrier.mcc == 9999
 
             assert len(carrier.telephony_observation_events.all()) == 1
 

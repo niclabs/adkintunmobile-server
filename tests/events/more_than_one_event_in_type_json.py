@@ -15,7 +15,6 @@ events_json = '''{
         "app_version_code": "0.0a"
     },
     "sim_records": {
-        "carrier_id": "73008",
         "serial_number": "8000000000000000000",
         "mcc": 730,
         "mnc": 2
