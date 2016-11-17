@@ -21,8 +21,7 @@ class Carrier(base_model.BaseModel):
     # for Type hints
     C = TypeVar("Carrier")
 
-    def __init__(self, id, name=None, mcc=None, mnc=None):
-        self.id = id
+    def __init__(self, name=None, mcc=None, mnc=None):
         self.name = name
         self.mcc = mcc
         self.mnc = mnc
@@ -40,15 +39,16 @@ class Carrier(base_model.BaseModel):
             self.sims.append(sim)
 
     @staticmethod
-    def add_new_carrier(mnc: int, mcc: int, name="Unknown" ) -> None:
+    def add_new_carrier(mnc: int, mcc: int, name="Unknown") -> None:
         """
         Add new carrier, giving just the mnc and mcc
         :param mnc: value of mnc code
         :param mcc: value of mcc code
-        :param name: vname of the carrier
+        :param name: name of the carrier
         :return: None
         """
-        carrier = Carrier(mnc=mnc, mcc=mcc, name=name, id=int(str(mcc) + str(mnc)))
+        carrier = Carrier(mnc=mnc, mcc=mcc, name=name)
+        carrier.id = int(str(mcc) + str(mnc))
         db.session.add(carrier)
         db.session.commit()
 

@@ -55,7 +55,8 @@ class Antenna(base_model.BaseModel):
                 antenna = Antenna(lac=lac, cid=cid, carrier_id=carrier.id)
                 db.session.add(antenna)
                 db.session.commit()
-                application.logger.info("New antenna added: lac:" + str(lac) + ", cid:" + str(cid) + ", carrier_id:" + str(carrier.id))
+                application.logger.info(
+                    "New antenna added: lac:" + str(lac) + ", cid:" + str(cid) + ", carrier_id:" + str(carrier.id))
             return antenna
         else:
             return None
