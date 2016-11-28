@@ -3,7 +3,7 @@ from uwsgidecorators import cron
 from app import application
 from app.data.antennas_geolocalization import update_antennas_localization
 from app.report.reports_generation import monthly_reports_generation
-
+from datetime import datetime
 MAX_NUMBER_OF_QUERIES = 1000
 
 
@@ -16,7 +16,7 @@ def reports_generation(num):
     :return:
     """
     monthly_reports_generation()
-    application.logger.info("Reports has been generated")
+    application.logger.info(datetime.now().strftime("Reports has been generated. - %H:%M %d/%m/%Y"))
 
 
 # Job will be done at 3.00 am every day
@@ -28,4 +28,4 @@ def antennas_geolocalization(num):
     :return: None
     """
     ua = update_antennas_localization(MAX_NUMBER_OF_QUERIES)
-    application.logger.info("New geolocalized antennas: " + str(ua))
+    application.logger.info("New geolocalized antennas: " + str(ua) + "antennas." + datetime.now().strftime(" - %H:%M %d/%m/%Y"))
