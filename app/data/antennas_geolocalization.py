@@ -51,7 +51,7 @@ def update_antennas_localization(max_number_of_queries: int) -> int:
     antennas = Antenna.query.filter(Antenna.lat == None, Antenna.lon == None, Antenna.id > LAST_ID).limit(
         max_number_of_queries)
 
-    LAST_ID += max_number_of_queries
+    LAST_ID = LAST_ID + max_number_of_queries
 
     upload_antennas = 0
     for antenna in antennas:
@@ -64,7 +64,7 @@ def update_antennas_localization(max_number_of_queries: int) -> int:
             db.session.add(antenna)
             try:
                 db.session.commit()
-                upload_antennas += 1
+                upload_antennas = upload_antennas + 1
             except Exception as e:
                 application.logger.error("Error updating antenna id:" + str(antenna.id) + "to database - " + str(e))
                 db.session.rollback()
