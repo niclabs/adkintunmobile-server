@@ -1,6 +1,6 @@
 import requests
 
-from app import db
+from app import db, application
 
 BASE_URL = "http://opencellid.org/cell/get"
 
@@ -62,7 +62,10 @@ def update_antennas_localization(max_number_of_queries: int) -> int:
             antenna.lat = lat
             antenna.lon = lon
             db.session.add(antenna)
-            db.session.commit()
-            upload_antennas += 1
-
+            try:
+                db.session.commit()
+                upload_antennas += 1
+            except Exception as e:
+                application.logger.error("Error updating antenna id:" + str(antenna.id) + "to database - " + str(e))
+                db.session.rollback()
     return upload_antennas

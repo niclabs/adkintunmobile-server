@@ -50,7 +50,12 @@ class Carrier(base_model.BaseModel):
         carrier = Carrier(mnc=mnc, mcc=mcc, name=name)
         carrier.id = int(str(mcc) + str(mnc))
         db.session.add(carrier)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            application.logger.error(
+                "Error adding new carrier, mnc:" + str(mnc) + ", mcc: " + str(mcc) + " - " + str(e))
 
     @staticmethod
     def get_carrier_or_add_it(mnc: int, mcc: int) -> C:

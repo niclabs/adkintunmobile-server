@@ -180,7 +180,11 @@ def set_events_context(jsonvar):
         db.session.add(carrier)
 
     # add new device, sim or carrier
-    db.session.commit()
+    try:
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        application.logger.error("Error adding device or sim to database " + str(e))
 
     return device, sim, app_version_code
 

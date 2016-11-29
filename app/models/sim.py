@@ -1,4 +1,4 @@
-from app import db
+from app import db, application
 from app.models import base_model
 from app.models.device_sim import devices_sims
 
@@ -38,7 +38,12 @@ class Sim(base_model.BaseModel):
             if not sim:
                 sim = Sim(serial_number=args["serial_number"], creation_date=datetime.now())
                 db.session.add(sim)
-                db.session.commit()
+                try:
+                    db.session.commit()
+                except Exception as e:
+                    db.session.rollback()
+                    application.logger.error(
+                        "Error adding new sim, serial_number:" + str(sim.serial_number) + "-" + str(e))
             return sim
         else:
             return None
