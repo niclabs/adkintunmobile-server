@@ -9,6 +9,17 @@ class Geolocalization(Command):
     )
 
     def run(self, antennas=1000):
+        # parameters validation
+        try:
+            antennas = int(antennas)
+        except:
+            print("Antennas must be a number")
+            return
+
+        if antennas < 0:
+            print("Antennas must be a positive number")
+            return
+
         from app.data.antennas_geolocalization import update_antennas_localization
 
         geolocated_antennas = update_antennas_localization(max_number_of_queries=antennas)
@@ -23,6 +34,21 @@ class ReportsGeneration(Command):
     )
 
     def run(self, month=None, year=None):
+        # parameters validation
+        if month:
+            try:
+                month = int(month)
+            except:
+                print("Month must be a number")
+                return
+
+        if year:
+            try:
+                year = int(year)
+            except:
+                print("Year must be a number")
+                return
+
         from app.report.reports_generation import monthly_reports_generation
 
         monthly_reports_generation(month, year)
