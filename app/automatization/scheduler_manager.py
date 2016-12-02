@@ -31,4 +31,4 @@ def antennas_geolocalization(num: int):
     """
     ua = update_antennas_localization(MAX_NUMBER_OF_QUERIES)
     application.logger.info(
-        "New geolocalized antennas: " + str(ua) + "antennas." + datetime.now().strftime(" - %H:%M %d/%m/%Y"))
+        "New geolocalized antennas: " + str(ua) + " antennas." + datetime.now().strftime(" - %H:%M %d/%m/%Y"))
