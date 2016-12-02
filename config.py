@@ -40,5 +40,7 @@ class Urls:
     BASE_URL_OPENCELLID = "http://url.opencellid"
 
 class Files:
-    LOGS_FOLDER = "log_folder"
-    GEOLOCALIZATION_LOG_FILE = "geolocalizationfile.log"
+    LOGS_FOLDER = "tmp"
+    REPORTS_FOLDER = "app/static/reports"
+    GEOLOCALIZATION_LOG_FILE = "geolocalization.log"
+    PRINCIPAL_LOG_FILE = "adkintun-debug.log"

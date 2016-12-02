@@ -7,7 +7,7 @@ from flask_autoindex import AutoIndex
 from flask_httpauth import HTTPTokenAuth
 from flask_sqlalchemy import SQLAlchemy
 
-from config import AppTokens
+from config import AppTokens, Files
 
 # Create flask app
 application = Flask(__name__)
@@ -23,7 +23,8 @@ db = SQLAlchemy(application)
 auth = HTTPTokenAuth(scheme="Token")
 
 # Listing reports directory
-autoindex = AutoIndex(application, browse_root="app/static/reports", add_url_rules=False)
+autoindex = AutoIndex(application, browse_root=Files.REPORTS_FOLDER, add_url_rules=False)
+
 
 @auth.verify_token
 def verify_token(token):
@@ -46,12 +47,12 @@ from app import report
 
 # Create log files
 if not application.debug:
-    log_folder = "tmp/"
-    log_filename = "adkintun-debug.log"
+    log_folder = Files.LOGS_FOLDER
+    log_filename = Files.PRINCIPAL_LOG_FILE
     if not os.path.exists(log_folder):
         os.makedirs(log_folder)
 
-    file_handler = RotatingFileHandler(log_folder + log_filename, maxBytes=50 * 1024 * 1024)
+    file_handler = RotatingFileHandler(log_folder + "/" + log_filename, maxBytes=50 * 1024 * 1024)
     file_handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]"))
     application.logger.setLevel(logging.INFO)
     file_handler.setLevel(logging.INFO)
@@ -66,8 +67,3 @@ try:
     application.logger.info("Uwsgi mules created for antennas geolocalization and reports generation")
 except:
     application.logger.error("Problem with the mules")
-
-
-
-
-
