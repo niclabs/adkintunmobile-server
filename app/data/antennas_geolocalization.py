@@ -65,6 +65,9 @@ def update_antennas_localization(max_number_of_queries: int) -> int:
             # all antennas searched
             if last_id >= Antenna.query.count():
                 last_id = 0
+                #Borrar log
+                logfile.seek(0)
+                logfile.truncate()
 
         # first time
         else:
