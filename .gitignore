@@ -7,3 +7,4 @@ __pycache__/
 /reports/
 /config.py
 /tmp/
+/app/static/speedtest_files/

@@ -41,6 +41,8 @@ class Urls:
 
 class Files:
     LOGS_FOLDER = "tmp"
-    REPORTS_FOLDER = "app/static/reports"
     GEOLOCALIZATION_LOG_FILE = "geolocalization.log"
     PRINCIPAL_LOG_FILE = "adkintun-debug.log"
+    STATIC_FILES_FOLDER = "app/static"
+    FILES_FOLDER = "speedtest_files"
+    REPORTS_FOLDER = STATIC_FILES_FOLDER + "/" + "reports"

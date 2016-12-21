@@ -10,7 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 from config import AppTokens, Files
 
 # Create flask app
-application = Flask(__name__)
+application = Flask(__name__, static_folder="static")
 
 # Load the default configuration
 application.config.from_object("config.DefaultConfig")
