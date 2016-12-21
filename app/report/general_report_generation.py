@@ -13,18 +13,38 @@ def generate_json_general_reports(init_date, last_date):
     :return: None
     """
 
-    total_devices = total_devices_registred(init_date, last_date)
-    total_sims = total_sims_registered(init_date, last_date)
-    total_gsm = total_gsm_events(init_date, last_date)
-    total_device_carrier = total_device_for_carrier(init_date, last_date)
-    total_sims_carrier = total_sims_for_carrier(init_date, last_date)
-    total_gsm_carrier = total_gsm_events_for_carrier(init_date, last_date)
+    total_devices_of_period = total_devices_registred(init_date, last_date)
+    total_devices = total_devices_registred(max_date=last_date)
 
-    final_json = {"total_sims": total_sims,
-                  "total_devices": total_devices, "total_gsm": total_gsm,
-                  "total_gsm_carrier": serialize_pairs(total_gsm_carrier),
-                  "total_sims_carrier": serialize_pairs(total_sims_carrier),
-                  "total_device_carrier": serialize_pairs(total_device_carrier)}
+    total_sims_of_period = total_sims_registered(init_date, last_date)
+    total_sims = total_sims_registered(max_date=last_date)
+
+    total_gsm_of_period = total_gsm_events(init_date, last_date)
+    total_gsm = total_gsm_events(max_date=last_date)
+
+    total_device_carrier_of_period = total_device_for_carrier(init_date, last_date)
+    total_device_carrier = total_device_for_carrier(max_date=last_date)
+
+    total_sims_carrier_of_period = total_sims_for_carrier(init_date, last_date)
+    total_sims_carrier = total_sims_for_carrier(max_date=last_date)
+
+    total_gsm_carrier_of_period = total_gsm_events_for_carrier(init_date, last_date)
+    total_gsm_carrier = total_gsm_events_for_carrier(max_date=last_date)
+
+    final_json = {
+        "total_devices_of_period": total_devices_of_period,
+        "total_devices": total_devices,
+        "total_sims_of_period": total_sims_of_period,
+        "total_sims": total_sims,
+        "total_gsm_of_period": total_gsm_of_period,
+        "total_gsm": total_gsm,
+        "total_gsm_carrier_of_period": serialize_pairs(total_gsm_carrier_of_period),
+        "total_gsm_carrier": serialize_pairs(total_gsm_carrier),
+        "total_sims_carrier_of_period": serialize_pairs(total_sims_carrier_of_period),
+        "total_sims_carrier": serialize_pairs(total_sims_carrier),
+        "total_device_carrier_of_period": serialize_pairs(total_device_carrier_of_period),
+        "total_device_carrier": serialize_pairs(total_device_carrier)
+    }
 
     save_json_report_to_file(final_json, init_date.year, init_date.month,
                              "general_report_")  # Total devices registred

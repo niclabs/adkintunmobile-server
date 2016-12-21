@@ -14,7 +14,6 @@ def generate_json_app_reports(init_date, last_date):
     """
 
     report = app_report(init_date, last_date)
-
     save_json_report_to_file(report, init_date.year, init_date.month,
                              "apps_report_")
 
@@ -29,7 +28,6 @@ def app_report(min_date=datetime(2015, 1, 1),
         max_date = datetime.now()
 
     from app.models.carrier import Carrier
-    from app.models.application import Application
 
     carriers_id = [c.id for c in Carrier.query.all()]
     carriers_id.append("ALL_CARRIERS")
@@ -38,19 +36,19 @@ def app_report(min_date=datetime(2015, 1, 1),
     final = {}
 
     # carrier analysis
-    for c in carriers_id:
-        final[c] = {}
+    for carrier in carriers_id:
+        final[carrier] = {}
 
-        if c == "ALL_CARRIERS":
+        if carrier == "ALL_CARRIERS":
             carrier_stmt = ""
         else:
             carrier_stmt = "sims.serial_number = events.sim_serial_number AND" \
                            " sims.carrier_id = :carrier_id AND"
 
         for type, value in network_type.items():
-            final[c][type] = {}
+            final[carrier][type] = {}
             for mode, name in connection_mode.items():
-                final[c][type][mode] = {}
+                final[carrier][type][mode] = {}
 
                 if mode == "ALL":
                     connection_stmt = "SUM(traffic_events.tx_bytes + traffic_events.rx_bytes) AS bytes,"
@@ -59,32 +57,43 @@ def app_report(min_date=datetime(2015, 1, 1),
 
                 stmt = text(
                     """
-                    SELECT
-                      """ + connection_stmt + """
-                      applications.package_name
-                    FROM
-                      public.traffic_events,
-                      public.events,
-                      public.applications,
-                      public.application_traffic_events,
-                      public.sims
-                    WHERE
-                      events.id = traffic_events.id AND
-                      applications.id = application_traffic_events.application_id AND
-                      application_traffic_events.id = traffic_events.id AND
-                      """ + carrier_stmt + """
-                      traffic_events.network_type = :network_type AND
-                      events.date BETWEEN :min_date AND :max_date
-                    GROUP BY applications.package_name
-                    ORDER BY bytes DESC
-                    LIMIT :number_app;
-                    """)
+                     SELECT
+                        QUERY.bytes / NULLIF(QUERY.devices,0) as bytes_per_user,
+                        QUERY.bytes,
+                        QUERY.devices,
+                        QUERY.app_name
+                     FROM
+                        (SELECT
+                            """ + connection_stmt + """
+                            applications.package_name as app_name,
+                            COUNT (DISTINCT devices.device_id) as devices
+                        FROM
+                            public.traffic_events,
+                            public.events,
+                            public.applications,
+                            public.application_traffic_events,
+                            public.devices,
+                            public.sims
+                        WHERE
+                            traffic_events.id = application_traffic_events.id AND
+                            events.id = traffic_events.id AND
+                            events.device_id = devices.device_id AND
+                             """ + carrier_stmt + """
+                            application_traffic_events.application_id = applications.id AND
+                            traffic_events.network_type = :network_type AND
+                            events.date BETWEEN :min_date AND :max_date
+                        GROUP BY applications.package_name
+                        ORDER BY bytes DESC) AS QUERY
+                     ORDER BY bytes_per_user DESC LIMIT :number_app;""")
 
-                result = db.session.query(Application.package_name).add_columns("bytes").from_statement(stmt).params(
-                    min_date=min_date, max_date=max_date, network_type=value, carrier_id=c, number_app=10)
+                result = db.session.query().add_columns("bytes_per_user", "bytes", "devices",
+                                                        "app_name").from_statement(stmt).params(
+                    min_date=min_date, max_date=max_date, network_type=value, carrier_id=carrier, number_app=10)
                 count = 1
                 for row in result.all():
-                    final[c][type][mode][count] = dict(package_name=row[0], bytes=str(row[1]))
+                    final[carrier][type][mode][count] = dict(bytes_per_user=str(row[0]), total_bytes=str(row[1]),
+                                                             total_devices=row[2],
+                                                             app_name=str(row[3]))
                     count = count + 1
 
     return final
