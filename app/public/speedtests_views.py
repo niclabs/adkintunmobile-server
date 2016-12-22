@@ -58,12 +58,8 @@ def get_server_status():
 @application.route("/active_servers/", methods=['GET'])
 def mifun():
     from flask import jsonify
-    return jsonify({'data': [{'added': 'Wed, 12 Oct 2016 18:39:35 GMT', 'country': 'CL', 'name': 'Blasco DUCKDNS',
-                              'host': 'http://blasco.duckdns.org', 'port': '5000'},
-                             {'added': 'Wed, 12 Oct 2016 19:09:39 GMT', 'country': 'Chile', 'name': 'Dev Niclabs',
-                              'host': 'http://dev.niclabs.cl', 'port': '80'},
-                             {'added': 'Wed, 12 Oct 2015 19:09:39 GMT', 'country': 'Chile', 'name': 'Dev Borislab',
-                              'host': 'http://172.30.65.50', 'port': '9000'}
+    return jsonify({'data': [{'added': 'Wed, 12 Oct 2016 19:09:39 GMT', 'country': 'Chile', 'name': 'Dev Niclabs',
+                              'host': 'http://dev.niclabs.cl', 'port': '80'}
                              ]})
 
 
