@@ -8,12 +8,6 @@ from config import Files
 STATIC_FILES_FOLDER = Files.STATIC_FILES_FOLDER
 FILES_FOLDER = Files.FILES_FOLDER
 
-@application.route("/test/", methods=["GET"])
-def getfile():
-    print("dasdas")
-    file= application.send_static_file(FILES_FOLDER + "/" + "5.0Mo.dat")
-    return file
-
 
 @application.route("/speedtest/", methods=["POST"])
 def speedtest_post():
@@ -56,12 +50,12 @@ def create_random_binary_file(mbytes):
     return fout
 
 
-@application.route("/status/",  methods=['GET'])
+@application.route("/status/", methods=['GET'])
 def get_server_status():
     return "OK", 200
 
 
-@application.route("/activeServers/", methods=['GET'])
+@application.route("/active_servers/", methods=['GET'])
 def mifun():
     from flask import jsonify
     return jsonify({'data': [{'added': 'Wed, 12 Oct 2016 18:39:35 GMT', 'country': 'CL', 'name': 'Blasco DUCKDNS',
@@ -77,4 +71,5 @@ def mifun():
 @application.route("/recommended_sites/", methods=['GET'])
 def recommended_sites():
     from flask import jsonify
-    return jsonify({'data' : ['google.cl', 'youtube.com', 'biobiochile.cl', 'emol.com', 'lun.com', 'facebook.com', 'wikipedia.org', 'uchile.cl', 'niclabs.cl', 't13.cl']})
+    return jsonify({'data': ['google.cl', 'youtube.com', 'biobiochile.cl', 'emol.com', 'lun.com', 'facebook.com',
+                             'wikipedia.org', 'uchile.cl', 'niclabs.cl', 't13.cl']})
