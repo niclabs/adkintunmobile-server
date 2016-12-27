@@ -1,4 +1,4 @@
-from app import db
+from app import db, application
 from app.models import base_model
 
 
@@ -66,7 +66,11 @@ class Device(base_model.BaseModel):
                     sdk=args["sdk"],
                     creation_date=datetime.now())
                 db.session.add(device)
-                db.session.commit()
+                try:
+                    db.session.commit()
+                except Exception as e:
+                    db.session.rollback()
+                    application.logger.error("Error adding device to database - " + str(e))
             return device
         else:
             return None

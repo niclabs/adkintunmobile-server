@@ -35,3 +35,14 @@ class OpenCellIdToken:
     Open CellId Key token used in the antenna geolocalization process
     """
     token = "this-really-needs-to-be-changed"
+
+class Urls:
+    BASE_URL_OPENCELLID = "http://url.opencellid"
+
+class Files:
+    LOGS_FOLDER = "tmp"
+    GEOLOCALIZATION_LOG_FILE = "geolocalization.log"
+    PRINCIPAL_LOG_FILE = "adkintun-debug.log"
+    STATIC_FILES_FOLDER = "app/static"
+    FILES_FOLDER = "speedtest_files"
+    REPORTS_FOLDER = STATIC_FILES_FOLDER + "/" + "reports"

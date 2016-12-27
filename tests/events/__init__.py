@@ -5,5 +5,5 @@ from tests.events.save_events_without_sim import SaveEventsWithoutSim
 from tests.events.save_gsm_observation_event_test import SaveGsmObservationEventTestCase
 from tests.events.save_mobile_event_test import SaveMobileEventTestCase
 from tests.events.save_multiple_events_with_device_and_sim_test import SaveMultipleEventsWithDeviceAndSimTestCase
-from tests.events.save_new_telco_events import SaveNewTelcoEventsTestCase
+from tests.events.save_new_carrier_events import SaveNewCarrierEventsTestCase
 from tests.events.save_wifi_event_test import SaveWifiEventTestCase

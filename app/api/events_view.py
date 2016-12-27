@@ -180,7 +180,11 @@ def set_events_context(jsonvar):
         db.session.add(carrier)
 
     # add new device, sim or carrier
-    db.session.commit()
+    try:
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        application.logger.error("Error adding device or sim to database " + str(e))
 
     return device, sim, app_version_code
 
@@ -325,7 +329,7 @@ def save_state_events(events, device_id, sim_serial_number, app_version_code, li
         list_events.append(eventModel)
 
 
-events_names = {
+events_names_functions = {
     "traffic_records": store_traffics_events,
     "cdma_records": store_cdma_events,
     "connectivity_records": store_connectivity_events,
@@ -336,7 +340,12 @@ events_names = {
 
 
 def add_events_to_list(events_name, events, device_id, sim_serial_number, app_version_code, list_events):
-    return events_names[events_name](events, device_id, sim_serial_number, app_version_code, list_events)
+    if events_name in events_names_functions:
+        return events_names_functions[events_name](events, device_id, sim_serial_number, app_version_code, list_events)
+    else:
+        # more info that required
+        pass
+
 
 
 def vinculate_event_device_sim(event, device_id, sim_serial_number):

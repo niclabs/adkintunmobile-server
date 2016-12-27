@@ -1,4 +1,4 @@
-from app import db
+from app import db, application
 from app.models import base_model
 
 
@@ -18,13 +18,20 @@ class Application(base_model.BaseModel):
         return "<Application, package_name: %r, id: %r>" % (self.package_name, self.id)
 
     @staticmethod
-    def get_app_or_add_it(packageName):
+    def get_app_or_add_it(package_name: str):
         """
         Search an app and retrieve it if exist, else create a new one and retrieve it.
+        :param package_name: name of the application package
+        :return: App object
         """
-        app = Application.query.filter(Application.package_name == packageName).first()
+        app = Application.query.filter(Application.package_name == package_name).first()
         if not app:
-            app = Application(package_name=packageName)
+            app = Application(package_name=package_name)
             db.session.add(app)
-            db.session.commit()
+            try:
+                db.session.commit()
+            except Exception as e:
+                db.session.rollback()
+                application.logger.error(
+                    "Error adding application to database, package_name:" + package_name + " - " + str(e))
         return app

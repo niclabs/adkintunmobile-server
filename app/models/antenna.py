@@ -54,8 +54,14 @@ class Antenna(base_model.BaseModel):
             if not antenna:
                 antenna = Antenna(lac=lac, cid=cid, carrier_id=carrier.id)
                 db.session.add(antenna)
-                db.session.commit()
-                application.logger.info("New antenna added: lac:" + str(lac) + ", cid:" + str(cid) + ", carrier_id:" + str(carrier.id))
+                try:
+                    db.session.commit()
+                    application.logger.info(
+                        "New antenna added: lac:" + str(lac) + ", cid:" + str(cid) + ", carrier_id:" + str(carrier.id))
+                except Exception as e:
+                    db.session.rollback()
+                    application.logger.error("Error adding antenna to database: lac:" + str(lac) + ", cid:" + str(
+                        cid) + ", carrier_id:" + str(carrier.id) + "-" + str(e))
             return antenna
         else:
             return None

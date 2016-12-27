@@ -3,7 +3,9 @@ from datetime import datetime, timedelta
 
 from flask import json
 
-BASE_DIRECTORY_REPORTS = 'app/static/reports/'
+from config import Files
+
+BASE_DIRECTORY_REPORTS = Files.REPORTS_FOLDER
 
 
 def monthly_reports_generation(month=None, year=None):

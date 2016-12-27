@@ -15,10 +15,9 @@ events_json = '''{
         "app_version_code": "0.0a"
     },
     "sim_records": {
-        "carrier_id": 1209,
         "serial_number": "800000000000000000000",
-        "mcc": 120,
-        "mnc": 9
+        "mcc": 9999,
+        "mnc": 99
     },
     "cdma_records": [],
     "gsm_records": [
@@ -28,8 +27,8 @@ events_json = '''{
             "gsm_lac": 55700,
             "gsm_psc": -1,
             "id": 523,
-            "mcc": 120,
-            "mnc": 9,
+            "mcc": 9999,
+            "mnc": 99,
             "network_type": 16,
             "signal_strength": {
                 "id": 490,
