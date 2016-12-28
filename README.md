@@ -5,6 +5,16 @@ Adkintun Mobile server.
 
 What is new?
 -------
+* 1.3 (28.12.2016)
+   * New antennas geolocalization process setting: search is made every hour. 
+   * New geolocalization log file
+   * New folder for logs (tmp)
+   * Support for new functionality in mobile version: Speedtests
+   * Refactor: more complete reports and rankings
+   * Fixes:
+      * New carrier addition
+      * Try-catch block for db commits
+      * Discard not supported events
 * 1.2 (2.11.2016)
     * Fix admin views
     * Remove APScheduler, used uWSGI mules for background jobs.
