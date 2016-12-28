@@ -4,7 +4,7 @@ from app.models.base_model import BaseModel
 
 class Event(BaseModel):
     '''
-    Clase Eventos, base de todos los eventos
+    Events model class
     '''
     __tablename__ = 'events'
 
