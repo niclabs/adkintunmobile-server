@@ -11,10 +11,8 @@ What is new?
    * New folder for logs (tmp)
    * Support for new functionality in mobile version: Speedtests
    * Refactor: more complete reports and rankings
-   * Fixes:
-      * New carrier addition
-      * Try-catch block for db commits
-      * Discard not supported events
+   * minnor fixes
+      
 * 1.2 (2.11.2016)
     * Fix admin views
     * Remove APScheduler, used uWSGI mules for background jobs.
