@@ -1,0 +1,1 @@
+from tests.speedtest.save_connectivity_test_reports import SaveConnectivityTestReports
