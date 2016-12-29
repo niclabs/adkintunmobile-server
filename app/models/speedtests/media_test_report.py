@@ -8,7 +8,7 @@ class MediaTestReport(ActiveMeasurement):
     '''
     __tablename__ = "media_test_reports"
 
-    id = db.Column(db.Integer, db.ForeignKey("activity_measurements.id"), primary_key=True)
+    id = db.Column(db.Integer, db.ForeignKey("active_measurements.id"), primary_key=True)
     video_id = db.Column(db.String(50))
 
     # Relationships

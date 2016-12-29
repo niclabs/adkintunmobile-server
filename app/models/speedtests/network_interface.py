@@ -1,4 +1,4 @@
-from app import db
+from app import db, application
 from app.models.base_model import BaseModel
 
 
@@ -26,3 +26,25 @@ class NetworkInterface(BaseModel):
 
     def __repr__(self):
         return '<NetworkInterface, id: %r, Active interface: %r>' % (self.id, self.active_interface)
+
+    @staticmethod
+    def add_network_interface(args: dict):
+        """
+        Create a new network interface object from a dict
+        :param args: dict with network interface data
+        :return: Network interface object
+        """
+        if "active_interface" in args and "ssid" in args and "bssid" in args and "gsm_cid" in args \
+                and "gsm_lac" in args and "network_type" in args:
+            ni = NetworkInterface(active_interface=args["active_interface"], ssid=args["ssid"], bssid=args["bssid"],
+                                  gsm_cid=args["gsm_cid"], gsm_lac=args["gsm_lac"], network_type=args["network_type"])
+            db.session.add(ni)
+            try:
+                db.session.commit()
+            except Exception as e:
+                db.session.rollback()
+                application.logger.error("Error adding network interface, network type:" + args["network_type"])
+                return None
+            return ni
+        else:
+            return None

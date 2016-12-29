@@ -8,7 +8,7 @@ class SpeedTestReport(ActiveMeasurement):
     '''
     __tablename__ = "speed_test_reports"
 
-    id = db.Column(db.Integer, db.ForeignKey("activity_measurements.id"), primary_key=True)
+    id = db.Column(db.Integer, db.ForeignKey("active_measurements.id"), primary_key=True)
     host = db.Column(db.String(100))
     upload_size = db.Column(db.BigInteger)
     download_size = db.Column(db.BigInteger)

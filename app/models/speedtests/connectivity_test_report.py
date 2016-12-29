@@ -8,7 +8,7 @@ class ConnectivityTestReport(ActiveMeasurement):
     '''
     __tablename__ = "connectivity_test_reports"
 
-    id = db.Column(db.Integer, db.ForeignKey("activity_measurements.id"), primary_key=True)
+    id = db.Column(db.Integer, db.ForeignKey("active_measurements.id"), primary_key=True)
 
     # Relationships
     sites_results = db.relationship("SiteResult", backref="connectivity_test_report", lazy="dynamic")

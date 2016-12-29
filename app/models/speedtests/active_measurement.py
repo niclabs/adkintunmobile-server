@@ -13,6 +13,9 @@ class ActiveMeasurement(base_model.BaseModel):
     # transformar al guardar
     date = db.Column(db.DateTime)
     dispatched = db.Column(db.Boolean)
+    sim_serial_number = db.Column(db.String(50), db.ForeignKey("sims.serial_number"))
+    device_id = db.Column(db.String(50), db.ForeignKey("devices.device_id"))
+    app_version_code = db.Column(db.String(10))
 
     # Herencia
     type = db.Column(db.String(50))

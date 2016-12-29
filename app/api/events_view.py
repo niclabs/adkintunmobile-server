@@ -329,6 +329,93 @@ def save_state_events(events, device_id, sim_serial_number, app_version_code, li
         list_events.append(eventModel)
 
 
+def save_connectivity_test_records(events, device_id, sim_serial_number, app_version_code, list_events):
+    from app.models.speedtests.connectivity_test_report import ConnectivityTestReport
+    from app.models.speedtests.site_result import SiteResult
+    from app.models.speedtests.network_interface import NetworkInterface
+
+    for report in events:
+        report["app_version_code"] = app_version_code
+        report_model = ConnectivityTestReport()
+        for k, v in report.items():
+            if k == "timestamp":
+                report_model.date = datetime.fromtimestamp(timestamp=v / 1000)
+            elif k == "id":
+                continue
+            elif k == "sites_results":
+                # add each site result to connectivity test report
+                for sr in v:
+                    new_sr = SiteResult.add_site_result(sr)
+                    if new_sr is not None:
+                        report_model.sites_results.append(new_sr)
+            elif k == "network_interface":
+                ni = NetworkInterface.add_network_interface(v)
+                if ni is not None:
+                    report_model.network_interface_id = ni.id
+            elif hasattr(report_model, k):
+                setattr(report_model, k, v)
+
+        vinculate_event_device_sim(report_model, device_id, sim_serial_number)
+        list_events.append(report_model)
+
+
+def save_media_test_records(events, device_id, sim_serial_number, app_version_code, list_events):
+    from app.models.speedtests.media_test_report import MediaTestReport
+    from app.models.speedtests.video_result import VideoResult
+    from app.models.speedtests.network_interface import NetworkInterface
+
+    for report in events:
+        report["app_version_code"] = app_version_code
+        report_model = MediaTestReport()
+        for k, v in report.items():
+            if k == "timestamp":
+                report_model.date = datetime.fromtimestamp(timestamp=v / 1000)
+            elif k == "id":
+                continue
+            elif k == "video_results":
+                # add each video result to media test report
+                for vr in v:
+                    new_vr = VideoResult.add_video_result(vr)
+                    if new_vr is not None:
+                        report_model.video_results.append(new_vr)
+            elif k == "network_interface":
+                # add network interface
+                ni = NetworkInterface.add_network_interface(v)
+                if ni is not None:
+                    report_model.network_interface_id = ni.id
+
+            elif hasattr(report_model, k):
+                setattr(report_model, k, v)
+
+        vinculate_event_device_sim(report_model, device_id, sim_serial_number)
+        list_events.append(report_model)
+
+
+def save_speed_test_records(events, device_id, sim_serial_number, app_version_code, list_events):
+    from app.models.speedtests.speed_test_report import SpeedTestReport
+    from app.models.speedtests.network_interface import NetworkInterface
+
+    for report in events:
+        report["app_version_code"] = app_version_code
+        report_model = SpeedTestReport()
+        for k, v in report.items():
+            if k == "timestamp":
+                report_model.date = datetime.fromtimestamp(timestamp=v / 1000)
+            elif k == "id":
+                continue
+            elif k == "network_interface":
+                # add network interface
+                ni = NetworkInterface.add_network_interface(v)
+                if ni is not None:
+                    report_model.network_interface_id = ni.id
+
+            elif hasattr(report_model, k):
+                setattr(report_model, k, v)
+
+        vinculate_event_device_sim(report_model, device_id, sim_serial_number)
+        list_events.append(report_model)
+
+
 events_names_functions = {
     "traffic_records": store_traffics_events,
     "cdma_records": store_cdma_events,
@@ -336,6 +423,9 @@ events_names_functions = {
     "gsm_records": store_gsm_events,
     "telephony_records": save_telephony_events,
     "state_records": save_state_events,
+    "connectivitytest_records": save_connectivity_test_records,
+    "mediatest_records": save_media_test_records,
+    "speedtest_records": save_speed_test_records,
 }
 
 
@@ -345,7 +435,6 @@ def add_events_to_list(events_name, events, device_id, sim_serial_number, app_ve
     else:
         # more info that required
         pass
-
 
 
 def vinculate_event_device_sim(event, device_id, sim_serial_number):
