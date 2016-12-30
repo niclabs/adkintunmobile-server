@@ -1,0 +1,4 @@
+from tests.speedtest.save_connectivity_test_reports import SaveConnectivityTestReports
+from tests.speedtest.save_media_test_reports import SaveMediaTestReports
+from tests.speedtest.save_speed_test_report import SaveSpeedTestReports
+
