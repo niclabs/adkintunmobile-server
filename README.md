@@ -5,6 +5,12 @@ Adkintun Mobile server.
 
 What is new?
 -------
+* 1.31 (30.12.2016)
+  * New models for save speed tests, media tests and connectivity tests reports
+  * Modified events_view for accept new reports
+  * Tests for new views and reports save
+  * Refactor code and comments
+  
 * 1.3 (28.12.2016)
    * New antennas geolocalization process setting: search is made every hour. 
    * New geolocalization log file
