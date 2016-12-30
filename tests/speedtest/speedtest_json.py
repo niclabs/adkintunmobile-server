@@ -45,7 +45,7 @@ reports_json = '''{
             "bssid":"00:17:5a:1e:70:80",
             "gsm_cid":0,
             "gsm_lac":0,
-            "network_type":0,
+            "network_type":1,
             "ssid":"'niclabs'",
             "id":5,
             "tableName":"NETWORK_INTERFACE"
@@ -90,7 +90,7 @@ reports_json = '''{
             "bssid":"00:17:5a:1e:70:80",
             "gsm_cid":0,
             "gsm_lac":0,
-            "network_type":0,
+            "network_type":2,
             "ssid":"'niclabs'",
             "id":3,
             "tableName":"NETWORK_INTERFACE"
@@ -115,7 +115,7 @@ reports_json = '''{
             "bssid":"00:17:5a:1e:70:80",
             "gsm_cid":0,
             "gsm_lac":0,
-            "network_type":0,
+            "network_type":3,
             "ssid":"'niclabs'",
             "id":1,
             "tableName":"NETWORK_INTERFACE"
