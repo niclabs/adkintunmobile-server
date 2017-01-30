@@ -11,3 +11,4 @@ flask-httpauth
 requests
 uwsgi
 flask-autoindex
+flask-cors
