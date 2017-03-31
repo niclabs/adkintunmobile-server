@@ -11,4 +11,4 @@ def get_antenna_info(id):
     if antenna:
         return jsonify(antenna.serialize)
     else:
-        return page_not_found()
+        return page_not_found(404)
