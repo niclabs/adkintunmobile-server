@@ -4,7 +4,7 @@ from sqlalchemy import text
 
 from app import db
 from app.report.reports_generation import save_json_report_to_file
-
+from app.report import reportLogger
 
 def generate_json_general_reports(init_date, last_date):
     """
@@ -52,6 +52,7 @@ def generate_json_general_reports(init_date, last_date):
 
 def total_devices_registred(min_date=datetime(2015, 1, 1),
                             max_date=None):
+    reportLogger.info("Querying total devices registered")
     from app.models.device import Device
 
     if not min_date:
@@ -66,6 +67,7 @@ def total_devices_registred(min_date=datetime(2015, 1, 1),
 # Total sim cards registred
 def total_sims_registered(min_date=datetime(2015, 1, 1),
                           max_date=None):
+    reportLogger.info("Querying total sims registered")
     from app.models.sim import Sim
 
     if not min_date:
@@ -80,6 +82,7 @@ def total_sims_registered(min_date=datetime(2015, 1, 1),
 # Total signal meassurements registred (GSM events)
 def total_gsm_events(min_date=datetime(2015, 1, 1),
                      max_date=None):
+    reportLogger.info("Querying total gsm events")
     from app.models.gsm_event import GsmEvent
 
     if not min_date:
@@ -94,6 +97,7 @@ def total_gsm_events(min_date=datetime(2015, 1, 1),
 # Devices by company
 def total_device_for_carrier(min_date=datetime(2015, 1, 1),
                              max_date=None):
+    reportLogger.info("Querying devices per carrier")
     if not min_date:
         min_date = datetime(2015, 1, 1)
 
@@ -120,6 +124,7 @@ def total_device_for_carrier(min_date=datetime(2015, 1, 1),
 # Sims by company
 def total_sims_for_carrier(min_date=datetime(2015, 1, 1),
                            max_date=None):
+    reportLogger.info("Querying sims per carrier")
     from app.models.sim import Sim
 
     if not min_date:
@@ -143,6 +148,7 @@ def total_sims_for_carrier(min_date=datetime(2015, 1, 1),
 # GSM events by telco
 def total_gsm_events_for_carrier(min_date=datetime(2015, 1, 1),
                                  max_date=None):
+    reportLogger.info("Querying gsm events per carrier")
     from app.models.gsm_event import GsmEvent
 
     if not min_date:

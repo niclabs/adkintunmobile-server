@@ -4,7 +4,7 @@ from sqlalchemy import text
 
 from app import db
 from app.report.reports_generation import save_json_report_to_file
-
+from app.report import reportLogger
 
 def generate_json_app_reports(init_date, last_date):
     """
@@ -37,6 +37,7 @@ def app_report(min_date=datetime(2015, 1, 1),
 
     # carrier analysis
     for carrier in carriers_id:
+        reportLogger.info("Querying apps for carrier_id " + str(carrier))
         final[carrier] = {}
 
         if carrier == "ALL_CARRIERS":
@@ -46,8 +47,10 @@ def app_report(min_date=datetime(2015, 1, 1),
                            " sims.carrier_id = :carrier_id AND"
 
         for type, value in network_type.items():
+            reportLogger.info("Querying apps for network type " + type)
             final[carrier][type] = {}
             for mode, name in connection_mode.items():
+                reportLogger.info("Querying apps for connection mode " + mode)
                 final[carrier][type][mode] = {}
 
                 if mode == "ALL":

@@ -50,10 +50,10 @@ class ReportsGeneration(Command):
                 return
 
         from app.report.reports_generation import monthly_reports_generation
-
+        from app.report import reportLogger
         monthly_reports_generation(month, year)
-        application.logger.info("Reports have been generated")
-        print("Reports have been generated")
+        reportLogger.info("Reports have been generated")
+
 
 
 class Test(Command):

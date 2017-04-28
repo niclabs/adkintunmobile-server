@@ -43,6 +43,7 @@ class Files:
     LOGS_FOLDER = "tmp"
     GEOLOCALIZATION_LOG_FILE = "geolocalization.log"
     PRINCIPAL_LOG_FILE = "adkintun-debug.log"
+    REPORT_GENERATOR_LOG_FILE = "reports.log"
     STATIC_FILES_FOLDER = "app/static"
     FILES_FOLDER = "speedtest_files"
     REPORTS_FOLDER = STATIC_FILES_FOLDER + "/" + "reports"

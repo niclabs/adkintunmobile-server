@@ -1,8 +1,7 @@
 import os
 from datetime import datetime, timedelta
-
 from flask import json
-
+from app.report import reportLogger
 from config import Files
 
 BASE_DIRECTORY_REPORTS = Files.REPORTS_FOLDER
@@ -42,9 +41,13 @@ def monthly_reports_generation(month=None, year=None):
     init_date = datetime(year=year_new_report, month=month_new_report, day=1)
     last_date = datetime(year=final_year, month=final_month, day=1, hour=23, minute=59, second=59) - timedelta(days=1)
 
+    reportLogger.info("Generating general report")
     generate_json_general_reports(init_date, last_date)
+    reportLogger.info("Generating network report")
     generate_json_network_reports(init_date, last_date)
+    reportLogger.info("Generating signal report")
     generate_json_signal_reports(init_date, last_date)
+    reportLogger.info("Generating application report")
     generate_json_app_reports(init_date, last_date)
 
 
@@ -63,6 +66,6 @@ def save_json_report_to_file(json_data: dict, year: int, month: int, name: str):
 
     if not os.path.exists(file_folder):
         os.makedirs(file_folder)
-
+    reportLogger.info("Saving report to file: "+file_folder+file_name)
     with open(file_folder + file_name, "w") as outfile:
         json.dump(json_data, outfile, indent=4, sort_keys=False)
