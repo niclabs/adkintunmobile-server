@@ -33,7 +33,7 @@ def signal_strength_mean_for_antenna(min_date=datetime(2015, 1, 1),
       c2.carrier_id, c2.antenna_id,
       c2.size AS observations,
       CASE WHEN c2.size = 0 THEN 0
-           ELSE c2.ponderation / c2.size
+           ELSE 10 * (ln(c2.ponderation / c2.size) / ln(10))
            END AS signal_mean
     FROM
     (SELECT
@@ -45,7 +45,7 @@ def signal_strength_mean_for_antenna(min_date=datetime(2015, 1, 1),
       sims.carrier_id,
       antennas.id as antenna_id,
       telephony_observation_events.signal_strength_size as size,
-      telephony_observation_events.signal_strength_size * telephony_observation_events.signal_strength_mean as ponderation
+      telephony_observation_events.signal_strength_size * power(10,(telephony_observation_events.signal_strength_mean)/10.0) as ponderation
     FROM
       public.antennas,
       public.gsm_events,
