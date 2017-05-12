@@ -7,8 +7,9 @@ import uuid
 
 thread = None
 
+
 def background_thread():
-    """Example of how to send server generated events to clients."""
+    """send server generated events to clients."""
     count = 0
     while True:
         socketio.sleep(1)
@@ -16,6 +17,7 @@ def background_thread():
         socketio.emit('my_response',
                       {'data': 'Server generated event', 'count': count},
                       namespace='/gencode')
+
 
 @application.route("/auth", methods=["POST"])
 @cross_origin()
@@ -41,9 +43,11 @@ def socket_connect():
         thread = socketio.start_background_task(target=background_thread)
     emit('connection')
 
+
 @socketio.on('disconnect', namespace='/gencode')
 def socket_disconnect():
     print('disconencted')
+
 
 @socketio.on('message', namespace='/gencode')
 def socket_message(message):
