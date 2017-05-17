@@ -10,15 +10,15 @@ MAX_NUMBER_OF_QUERIES = 40
 
 
 # Job will be done the first day of every month
-@cron(0, 0, 1, -1, -1, target="mule")
-def reports_generation(num: int):
-    """
-    Job for generate diferents reports automatically
-    :param num: singal num
-    :return:
-    """
-    monthly_reports_generation()
-    application.logger.info(datetime.now().strftime("Reports has been generated. - %H:%M %d/%m/%Y"))
+# @cron(0, 0, 1, -1, -1, target="mule")
+# def reports_generation(num: int):
+#     """
+#     Job for generate diferents reports automatically
+#     :param num: singal num
+#     :return:
+#     """
+#     monthly_reports_generation()
+#     application.logger.info(datetime.now().strftime("Reports has been generated. - %H:%M %d/%m/%Y"))
 
 
 # Job will be done every hour, every day

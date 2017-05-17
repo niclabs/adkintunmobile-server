@@ -1,15 +1,14 @@
 from app import db
-from app.models.telephony_observation_event import TelephonyObservationEvent
+from app.models.base_model import BaseModel
 
 
-class CdmaEvent(TelephonyObservationEvent):
+class CdmaEvent(BaseModel):
     '''
     Clase para los eventos de observacion de telefonía tipo Cdma
     '''
     __tablename__ = 'cdma_events'
-    __mapper_args__ = {'polymorphic_identity': 'cdma_event'}
 
-    id = db.Column(db.Integer, db.ForeignKey('telephony_observation_events.id'), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     cdma_base_latitude = db.Column(db.Integer)
     cdma_base_longitude = db.Column(db.Integer)
     cdma_base_station_id = db.Column(db.Integer)
@@ -27,6 +26,18 @@ class CdmaEvent(TelephonyObservationEvent):
     evdo_snr_size = db.Column(db.Integer)
     evdo_snr_mean = db.Column(db.Float)
     evdo_snr_variance = db.Column(db.Float)
+    telephony_standard = db.Column(db.Integer)
+    network_type = db.Column(db.Integer)
+    signal_strength_size = db.Column(db.Integer)
+    signal_strength_mean = db.Column(db.Float)
+    signal_strength_variance = db.Column(db.Float)
+    mnc = db.Column(db.Integer)
+    mcc = db.Column(db.Integer)
+    date = db.Column(db.DateTime)
+    app_version_code = db.Column(db.String(10))
+    sim_serial_number = db.Column(db.String(50), db.ForeignKey("sims.serial_number"))
+    device_id = db.Column(db.String(50), db.ForeignKey("devices.device_id"))
+    carrier_id = db.Column(db.Integer, db.ForeignKey("carriers.id"))
 
     def __init__(self, date=None, app_version_code=None, sim_serial_number=None, device_id=None,
                  telephony_standard=None, network_type=None, cdma_base_latitude=None, cdma_base_longitude=None,

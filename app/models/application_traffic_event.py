@@ -1,16 +1,25 @@
 from app import db
-from app.models.traffic_event import TrafficEvent
+from app.models.base_model import BaseModel
 
 
-class ApplicationTrafficEvent(TrafficEvent):
+class ApplicationTrafficEvent(BaseModel):
     '''
     Clase para los eventos de Trafico de application
     '''
     __tablename__ = 'application_traffic_events'
-    __mapper_args__ = {'polymorphic_identity': 'application_traffic_event'}
 
-    id = db.Column(db.Integer, db.ForeignKey('traffic_events.id'), primary_key=True)
-
+    id = db.Column(db.Integer, primary_key=True)
+    network_type = db.Column(db.Integer)
+    rx_bytes = db.Column(db.BigInteger)
+    tx_bytes = db.Column(db.BigInteger)
+    rx_packets = db.Column(db.BigInteger)
+    tx_packets = db.Column(db.BigInteger)
+    tcp_rx_bytes = db.Column(db.BigInteger)
+    tcp_tx_bytes = db.Column(db.BigInteger)
+    date = db.Column(db.DateTime)
+    app_version_code = db.Column(db.String(10))
+    sim_serial_number = db.Column(db.String(50), db.ForeignKey("sims.serial_number"))
+    device_id = db.Column(db.String(50), db.ForeignKey("devices.device_id"))
     application_id = db.Column(db.Integer, db.ForeignKey('applications.id'))
 
     def __init__(self, date=None, app_version_code=None, sim_serial_number=None, device_id=None, network_type=None,

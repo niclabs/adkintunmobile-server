@@ -21,6 +21,15 @@ class Device(base_model.BaseModel):
     product = db.Column(db.String(50))
     sdk = db.Column(db.Integer)
     events = db.relationship("Event", backref="device", lazy="dynamic")
+    traffic_events = db.relationship("TrafficEvent", backref="device", lazy="dynamic")
+    application_traffic_events = db.relationship("ApplicationTrafficEvent", backref="device", lazy="dynamic")
+    mobile_traffic_events = db.relationship("MobileTrafficEvent", backref="device", lazy="dynamic")
+    wifi_traffic_events = db.relationship("WifiTrafficEvent", backref="device", lazy="dynamic")
+    telephony_events = db.relationship("TelephonyObservationEvent", backref="device", lazy="dynamic")
+    gsm_events = db.relationship("GsmEvent", backref="device", lazy="dynamic")
+    cdma_events = db.relationship("CdmaEvent", backref="device", lazy="dynamic")
+    connectivity_events = db.relationship("ConnectivityEvent", backref="device", lazy="dynamic")
+    state_change_events = db.relationship("StateChangeEvent", backref="device", lazy="dynamic")
 
     def __init__(self, device_id, brand=None, board=None, build_id=None, device=None, hardware=None,
                  manufacturer=None, model=None, release=None, release_type=None, product=None, sdk=None,

@@ -1,21 +1,24 @@
 from app import db
-from app.models.event import Event
+from app.models.base_model import BaseModel
 
 
-class ConnectivityEvent(Event):
+class ConnectivityEvent(BaseModel):
     '''
     Clase para los eventos de conectividad
     '''
     __tablename__ = 'connectivity_events'
-    __mapper_args__ = {'polymorphic_identity': 'connectivity_event'}
 
-    id = db.Column(db.Integer, db.ForeignKey('events.id'), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     detailed_state = db.Column(db.Integer)
     available = db.Column(db.Boolean)
     connected = db.Column(db.Boolean)
     roaming = db.Column(db.Boolean)
     connection_type = db.Column(db.Integer)
     connection_type_other = db.Column(db.Integer)
+    date = db.Column(db.DateTime)
+    app_version_code = db.Column(db.String(10))
+    sim_serial_number = db.Column(db.String(50), db.ForeignKey("sims.serial_number"))
+    device_id = db.Column(db.String(50), db.ForeignKey("devices.device_id"))
 
     def __init__(self, date=None, app_version_code=None, sim_serial_number=None, device_id=None, detailed_state=None,
                  available=None, connected=None, roaming=None, connection_type=None, connection_type_other=None):

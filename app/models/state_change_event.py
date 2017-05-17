@@ -1,18 +1,21 @@
 from app import db
-from app.models.event import Event
+from app.models.base_model import BaseModel
 
 
-class StateChangeEvent(Event):
+class StateChangeEvent(BaseModel):
     '''
     Clase para los eventos de cambio de estado
     '''
     __tablename__ = 'state_change_events'
-    __mapper_args__ = {'polymorphic_identity': 'state_change_event'}
 
-    id = db.Column(db.Integer, db.ForeignKey('events.id'), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     state_type = db.Column(db.Integer)
     state = db.Column(db.Integer)
     event_type = db.Column(db.Integer)
+    date = db.Column(db.DateTime)
+    app_version_code = db.Column(db.String(10))
+    sim_serial_number = db.Column(db.String(50), db.ForeignKey("sims.serial_number"))
+    device_id = db.Column(db.String(50), db.ForeignKey("devices.device_id"))
 
     def __init__(self, date=None, app_version_code=None, sim_serial_number=None, device_id=None, state_type=None,
                  state=None, event_type=None):

@@ -16,6 +16,8 @@ class Carrier(base_model.BaseModel):
     mnc = db.Column(db.Integer)
     sims = db.relationship('Sim', backref='carrier', lazy='dynamic')
     telephony_observation_events = db.relationship('TelephonyObservationEvent', backref='carrier', lazy='dynamic')
+    gsm_events = db.relationship('GsmEvent', backref='carrier', lazy='dynamic')
+    cdma_events = db.relationship('CdmaEvent', backref='carrier', lazy='dynamic')
     antennas = db.relationship("Antenna", backref='carrier', lazy='dynamic')
 
     # for Type hints

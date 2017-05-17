@@ -15,6 +15,15 @@ class Sim(base_model.BaseModel):
     devices = db.relationship("Device", secondary=devices_sims, backref=db.backref("sims", lazy="dynamic"),
                               lazy="dynamic")
     events = db.relationship("Event", backref="sim", lazy="dynamic")
+    traffic_events = db.relationship("TrafficEvent", backref="sim", lazy="dynamic")
+    application_traffic_events = db.relationship("ApplicationTrafficEvent", backref="sim", lazy="dynamic")
+    mobile_traffic_events = db.relationship("MobileTrafficEvent", backref="sim", lazy="dynamic")
+    wifi_traffic_events = db.relationship("WifiTrafficEvent", backref="sim", lazy="dynamic")
+    telephony_events = db.relationship("TelephonyObservationEvent", backref="sim", lazy="dynamic")
+    gsm_events = db.relationship("GsmEvent", backref="sim", lazy="dynamic")
+    cdma_events = db.relationship("CdmaEvent", backref="sim", lazy="dynamic")
+    connectivity_events = db.relationship("ConnectivityEvent", backref="sim", lazy="dynamic")
+    state_change_events = db.relationship("StateChangeEvent", backref="sim", lazy="dynamic")
 
     def __init__(self, serial_number=None, creation_date=None, carrier_id=None):
         self.serial_number = serial_number

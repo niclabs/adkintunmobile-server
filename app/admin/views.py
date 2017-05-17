@@ -34,13 +34,13 @@ class AntennaView(StandardView):
 
 class EventView(StandardView):
     column_sortable_list = (
-        ("sim", "sim.serial_number"), ("device", "device.device_id"), "id", "date", "app_version_code", "type")
+        ("sim", "sim.serial_number"), ("device", "device.device_id"), "id", "date", "app_version_code")
 
 
 class GsmEventView(StandardView):
     column_sortable_list = (
-        ("sim", "sim.serial_number"), ("device", "device.device_id"), ("carrier", "carrier.id"),
-        ("antenna", "antenna.id"), "id", "date", "app_version_code", "type", "telephony_standard", "network_type",
+        ("sim", "sim.serial_number"), ("device", "device.device_id"), ("carrier", "carrier_id"),
+        ("antenna", "antenna.id"), "id", "date", "app_version_code", "telephony_standard", "network_type",
         "signal_strength_size", "signal_strength_mean", "signal_strength_variance", "signal_ber_size",
         "signal_ber_mean", "signal_ber_variance", "gsm_psc", "mnc", "mcc", "gsm_lac", "gsm_cid")
 
@@ -51,25 +51,25 @@ class SimView(StandardView):
 
 class ConnectivityEventView(StandardView):
     column_sortable_list = (
-        "date", "app_version_code", "type", "detailed_state", "available", "connected", "roaming", "connection_type",
+        "date", "app_version_code", "detailed_state", "available", "connected", "roaming", "connection_type",
         "connection_type_other", ("sim", "sim.serial_number"), ("device", "device.device_id"))
 
 
 class StateChangeEventView(StandardView):
     column_sortable_list = (
-        "date", "app_version_code", "type", "state_type", "state", "event_type", ("sim", "sim.serial_number"),
+        "date", "app_version_code", "state_type", "state", "event_type", ("sim", "sim.serial_number"),
         ("device", "device.device_id"))
 
 
 class TrafficEventView(StandardView):
     column_sortable_list = (
-        "date", "app_version_code", "type", "network_type", "rx_bytes", "tx_bytes", "rx_packets", "tx_packets",
+        "date", "app_version_code", "network_type", "rx_bytes", "tx_bytes", "rx_packets", "tx_packets",
         "tcp_rx_bytes", "tcp_tx_bytes", ("sim", "sim.serial_number"),
         ("device", "device.device_id"))
 
 class ApplicationTrafficEventView(StandardView):
     column_sortable_list = (
-        "date", "app_version_code", "type", "network_type", "rx_bytes", "tx_bytes", "rx_packets", "tx_packets",
+        "date", "app_version_code", "network_type", "rx_bytes", "tx_bytes", "rx_packets", "tx_packets",
         "tcp_rx_bytes", "tcp_tx_bytes", ("sim", "sim.serial_number"), ("application", "application.id" ),
         ("device", "device.device_id"))
 
