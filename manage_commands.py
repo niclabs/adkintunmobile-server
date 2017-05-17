@@ -59,6 +59,7 @@ class ReportsGeneration(Command):
 class Test(Command):
     def run(self):
         import unittest
+        import sys
         testmodules = [
             "tests",
         ]
@@ -75,7 +76,8 @@ class Test(Command):
                 # else, just load all the test cases from the module.
                 suite.addTest(unittest.defaultTestLoader.loadTestsFromName(t))
 
-        unittest.TextTestRunner(verbosity=2).run(suite)
+        result = unittest.TextTestRunner(verbosity=2).run(suite).wasSuccessful()
+        sys.exit(not result)
 
 
 from app.data.populate_methods import initial_populate

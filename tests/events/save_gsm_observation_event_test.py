@@ -57,4 +57,4 @@ class SaveGsmObservationEventTestCase(base_test_case.BaseTestCase):
             assert antenna.gsm_events.first().id == gsm_event.id
 
             real_carrier = Carrier.query.filter(Carrier.mcc == 730, Carrier.mnc == 2).first()
-            assert real_carrier.telephony_observation_events.first().id == gsm_event.id
+            assert real_carrier.gsm_events.first().id == gsm_event.id

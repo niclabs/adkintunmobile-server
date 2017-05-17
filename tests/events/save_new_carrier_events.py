@@ -49,6 +49,6 @@ class SaveNewCarrierEventsTestCase(base_test_case.BaseTestCase):
             assert sim.carrier.mnc == 99
             assert sim.carrier.mcc == 9999
 
-            assert len(carrier.telephony_observation_events.all()) == 1
+            assert len(carrier.gsm_events.all()) == 1
 
-            assert carrier.telephony_observation_events[0].id == gsm_event.id
+            assert carrier.gsm_events[0].id == gsm_event.id

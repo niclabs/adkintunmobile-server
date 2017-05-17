@@ -47,6 +47,7 @@ class SaveSpeedTestReports(base_test_case.BaseTestCase):
             # test network interface
             from app.models.speedtests.network_interface import NetworkInterface
 
+            #self.assertEqual(len(NetworkInterface.query.all()), 3)
             assert len(NetworkInterface.query.all()) == 3
             ni = NetworkInterface.query.filter(NetworkInterface.network_type == 3).first()
 

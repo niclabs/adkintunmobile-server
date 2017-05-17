@@ -8,6 +8,8 @@ from app.models.sim import Sim
 from app.models.state_change_event import StateChangeEvent
 from app.models.traffic_event import TrafficEvent
 from app.models.wifi_traffic_event import WifiTrafficEvent
+from app.models.connectivity_event import ConnectivityEvent
+from app.models.gsm_event import GsmEvent
 from config import AppTokens
 from tests import base_test_case
 from tests.events.standard_event_without_sim_json import events_json
@@ -40,17 +42,24 @@ class SaveEventsWithoutSim(base_test_case.BaseTestCase):
             assert len(sims) == 0
 
             # assert events
-            events = Event.query.all()
             wifi_events = WifiTrafficEvent.query.all()
             state_events = StateChangeEvent.query.all()
-            traffic_events = TrafficEvent.query.all()
+            connectivity_events = ConnectivityEvent.query.all()
+            gsm_events = GsmEvent.query.all()
             application_events = ApplicationTrafficEvent.query.all()
             mobile_events = MobileTrafficEvent.query.all()
-            assert len(events) == 15
+            # Check each table has the appropriate amount of rows
+            assert len(state_events) == 2
+            assert len(connectivity_events) == 1
+            assert len(gsm_events) == 3
+            assert len(application_events) == 3
+            assert len(wifi_events) == 3
+            assert len(mobile_events) == 3
 
             # assert device and sim are linked with the event
-            all_events = [wifi_events, state_events, traffic_events, application_events, mobile_events]
+            all_events = [wifi_events, state_events, application_events,
+                          mobile_events, connectivity_events, gsm_events]
             for events in all_events:
                 for event in events:
                     assert device.device_id == event.device_id
-                    assert event.sim_serial_number == None
+                    assert event.sim_serial_number is None
