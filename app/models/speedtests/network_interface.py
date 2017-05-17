@@ -34,11 +34,21 @@ class NetworkInterface(BaseModel):
         :param args: dict with network interface data
         :return: Network interface object
         """
-        if "active_interface" in args and "ssid" in args and "bssid" in args and "gsm_cid" in args \
-                and "gsm_lac" in args and "network_type" in args:
-            ni = NetworkInterface(active_interface=args["active_interface"], ssid=args["ssid"], bssid=args["bssid"],
-                                  gsm_cid=args["gsm_cid"], gsm_lac=args["gsm_lac"], network_type=args["network_type"])
-            db.session.add(ni)
+        if "active_interface" in args and "network_type" in args:
+            if "ssid" in args and "bssid" in args and "gsm_cid" in args and "gsm_lac" in args:
+                ni = NetworkInterface(active_interface=args["active_interface"], ssid=args["ssid"], bssid=args["bssid"],
+                                      gsm_cid=args["gsm_cid"], gsm_lac=args["gsm_lac"],
+                                      network_type=args["network_type"])
+                db.session.add(ni)
+            elif "ssid" in args and "bssid" in args:
+                ni = NetworkInterface(active_interface=args["active_interface"], ssid=args["ssid"], bssid=args["bssid"],
+                                      network_type=args["network_type"])
+                db.session.add(ni)
+            elif "gsm_cid" in args and "gsm_lac" in args:
+                ni = NetworkInterface(active_interface=args["active_interface"], gsm_cid=args["gsm_cid"], gsm_lac=args["gsm_lac"],
+                                      network_type=args["network_type"])
+                db.session.add(ni)
+
             try:
                 db.session.commit()
             except Exception as e:
