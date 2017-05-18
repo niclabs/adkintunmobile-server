@@ -1,0 +1,6 @@
+from tests.report.total_devices_for_carrier import TotalDevicesForCarrierReportedTestCase
+from tests.report.total_devices_reported import TotalDevicesReportedTestCase
+from tests.report.total_events_for_carrier import TotalDevicesForCarrierReportedTestCase
+from tests.report.total_gsm_event_registered import TotalSimsRegisteredTestCase
+from tests.report.total_sims_for_carrier import TotalDevicesForCarrierReportedTestCase
+from tests.report.total_sims_registered import TotalSimsRegisteredTestCase

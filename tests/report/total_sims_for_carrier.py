@@ -34,19 +34,19 @@ class TotalDevicesForCarrierReportedTestCase(base_test_case.BaseTestCase):
     def test_two_carrier(self):
         with application.app_context():
             sims_for_carrier = total_sims_for_carrier()
-            assert len(sims_for_carrier) == 2
+            self.assertEqual(len(sims_for_carrier), 2)
 
-            assert sims_for_carrier[0].Carrier.name == "test_carrier_1"
-            assert sims_for_carrier[1].Carrier.name == "test_carrier_2"
-            assert sims_for_carrier[0].sims_count == 2
-            assert sims_for_carrier[1].sims_count == 1
+            self.assertEqual(sims_for_carrier[0].carrier_id, 1)
+            self.assertEqual(sims_for_carrier[1].carrier_id, 2)
+            self.assertEqual(sims_for_carrier[0].sims_count, 2)
+            self.assertEqual(sims_for_carrier[1].sims_count, 1)
 
     def test_date_filter(self):
         with application.app_context():
             sims_for_carrier = total_sims_for_carrier(min_date=(datetime.now() + timedelta(days=-1)))
-            assert len(sims_for_carrier) == 2
+            self.assertEqual(len(sims_for_carrier), 2)
 
-            assert sims_for_carrier[0].Carrier.name == "test_carrier_1"
-            assert sims_for_carrier[1].Carrier.name == "test_carrier_2"
-            assert sims_for_carrier[0].sims_count == 1
-            assert sims_for_carrier[1].sims_count == 1
+            self.assertEqual(sims_for_carrier[0].carrier_id, 1)
+            self.assertEqual(sims_for_carrier[1].carrier_id, 2)
+            self.assertEqual(sims_for_carrier[0].sims_count, 1)
+            self.assertEqual(sims_for_carrier[1].sims_count, 1)

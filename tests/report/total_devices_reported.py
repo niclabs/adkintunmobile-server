@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-
 from app import application, db
 from app.models.device import Device
 from app.models.state_change_event import StateChangeEvent
@@ -20,13 +19,13 @@ class TotalDevicesReportedTestCase(base_test_case.BaseTestCase):
         device4 = Device(device_id="4", creation_date=datetime.now())
 
         # Eventos
-        event1 = StateChangeEvent()
-        event2 = StateChangeEvent()
-        event3 = StateChangeEvent()
+        event1 = StateChangeEvent(date=datetime.now())
+        event2 = StateChangeEvent(date=datetime.now())
+        event3 = StateChangeEvent(date=datetime.now())
 
-        device1.events = [event1, event2]
-        device2.events = [event3]
-        device3.events = []
+        device1.state_change_events = [event1, event2]
+        device2.state_change_events = [event3]
+        device3.state_change_events = []
 
         db.session.add(device1)
         db.session.add(device2)
@@ -34,13 +33,12 @@ class TotalDevicesReportedTestCase(base_test_case.BaseTestCase):
         db.session.add(device4)
         db.session.commit()
 
-    # test de guardado de eventos: 1 wifi traffic event y 2 state change event
     def test_two_devices(self):
         with application.app_context():
             total_devices = total_devices_registred()
-            assert total_devices == 2
+            self.assertEqual(total_devices, 2)
 
     def test_date_filter(self):
         with application.app_context():
             total_devices = total_devices_registred(min_date=(datetime.now() + timedelta(days=-1)))
-            assert total_devices == 1
+            self.assertEqual(total_devices, 1)

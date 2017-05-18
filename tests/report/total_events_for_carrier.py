@@ -47,15 +47,15 @@ class TotalDevicesForCarrierReportedTestCase(base_test_case.BaseTestCase):
         event4 = GsmEvent(date=datetime.now())
         event5 = GsmEvent(date=datetime.now())
 
-        sim1.events.append(event1)
-        sim1.events.append(event2)
-        sim3.events.append(event3)
-        sim3.events.append(event4)
-        sim3.events.append(event5)
+        sim1.gsm_events.append(event1)
+        sim1.gsm_events.append(event2)
+        sim3.gsm_events.append(event3)
+        sim3.gsm_events.append(event4)
+        sim3.gsm_events.append(event5)
 
-        device1.events = [event1, event2]
-        device2.events = [event3]
-        device3.events = [event4, event5]
+        device1.gsm_events = [event1, event2]
+        device2.gsm_events = [event3]
+        device3.gsm_events = [event4, event5]
 
         db.session.add(carrier1)
         db.session.add(carrier2)
@@ -64,19 +64,21 @@ class TotalDevicesForCarrierReportedTestCase(base_test_case.BaseTestCase):
     def test_two_carrier(self):
         with application.app_context():
             events_for_carrier = total_gsm_events_for_carrier()
-            assert len(events_for_carrier) == 2
+            self.assertEqual(len(events_for_carrier), 2)
 
-            assert events_for_carrier[0].Carrier.name == "test_carrier_1"
-            assert events_for_carrier[1].Carrier.name == "test_carrier_2"
-            assert events_for_carrier[0].events_count == 2
-            assert events_for_carrier[1].events_count == 3
+            self.assertEqual(events_for_carrier[0].carrier_id, 1)
+            self.assertEqual(events_for_carrier[1].carrier_id, 2)
+            self.assertEqual(events_for_carrier[0].events_count, 2)
+            self.assertEqual(events_for_carrier[1].events_count, 3)
+
 
     def test_date_filter(self):
         with application.app_context():
             events_for_carrier = total_gsm_events_for_carrier(min_date=(datetime.now() + timedelta(days=-1)))
-            assert len(events_for_carrier) == 2
+            self.assertEqual(len(events_for_carrier), 2)
 
-            assert events_for_carrier[0].Carrier.name == "test_carrier_1"
-            assert events_for_carrier[1].Carrier.name == "test_carrier_2"
-            assert events_for_carrier[0].events_count == 1
-            assert events_for_carrier[1].events_count == 3
+            self.assertEqual(events_for_carrier[0].carrier_id, 1)
+            self.assertEqual(events_for_carrier[1].carrier_id, 2)
+            self.assertEqual(events_for_carrier[0].events_count, 1)
+            self.assertEqual(events_for_carrier[1].events_count, 3)
+

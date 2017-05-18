@@ -24,9 +24,9 @@ class TotalSimsRegisteredTestCase(base_test_case.BaseTestCase):
         event2 = GsmEvent(date=datetime.now())
         event3 = GsmEvent(date=datetime.now())
 
-        device1.events = [event1, event2]
-        device2.events = [event3]
-        device3.events = []
+        device1.gsm_events = [event1, event2]
+        device2.gsm_events = [event3]
+        device3.gsm_events = []
 
         db.session.add(device1)
         db.session.add(device2)
@@ -41,9 +41,10 @@ class TotalSimsRegisteredTestCase(base_test_case.BaseTestCase):
     def test_two_devices(self):
         with application.app_context():
             gsm_events = total_gsm_events()
-            assert gsm_events == 3
+            self.assertEqual(gsm_events, 3)
 
     def test_two_devices(self):
         with application.app_context():
             gsm_events = total_gsm_events(min_date=(datetime.now() + timedelta(days=-1)))
-            assert gsm_events == 2
+            self.assertEqual(gsm_events, 2)
+

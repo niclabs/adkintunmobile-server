@@ -46,19 +46,18 @@ class TotalDevicesForCarrierReportedTestCase(base_test_case.BaseTestCase):
     def test_two_carrier(self):
         with application.app_context():
             total_devices_for_carrier = total_device_for_carrier()
-            assert len(total_devices_for_carrier) == 2
-
-            assert total_devices_for_carrier[0].Carrier.name == "test_carrier_1"
-            assert total_devices_for_carrier[1].Carrier.name == "test_carrier_2"
-            assert total_devices_for_carrier[0].devices_count == 3
-            assert total_devices_for_carrier[1].devices_count == 1
+            self.assertEqual(len(total_devices_for_carrier), 2)
+            self.assertEqual(total_devices_for_carrier[0].carrier_id, 1)
+            self.assertEqual(total_devices_for_carrier[1].carrier_id, 2)
+            self.assertEqual(total_devices_for_carrier[0].devices_count, 3)
+            self.assertEqual(total_devices_for_carrier[1].devices_count, 1)
 
     def test_date_filter(self):
         with application.app_context():
             total_devices_for_carrier = total_device_for_carrier(min_date=(datetime.now() + timedelta(days=-1)))
-            assert len(total_devices_for_carrier) == 2
 
-            assert total_devices_for_carrier[0].Carrier.name == "test_carrier_1"
-            assert total_devices_for_carrier[1].Carrier.name == "test_carrier_2"
-            assert total_devices_for_carrier[0].devices_count == 2
-            assert total_devices_for_carrier[1].devices_count == 1
+            self.assertEqual(len(total_devices_for_carrier), 2)
+            self.assertEqual(total_devices_for_carrier[0].carrier_id, 1)
+            self.assertEqual(total_devices_for_carrier[1].carrier_id, 2)
+            self.assertEqual(total_devices_for_carrier[0].devices_count, 2)
+            self.assertEqual(total_devices_for_carrier[1].devices_count, 1)

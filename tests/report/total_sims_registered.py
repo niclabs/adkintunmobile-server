@@ -26,9 +26,9 @@ class TotalSimsRegisteredTestCase(base_test_case.BaseTestCase):
     def test_two_devices(self):
         with application.app_context():
             total_sims = total_sims_registered()
-            assert total_sims == 3
+            self.assertEqual(total_sims, 3)
 
     def test_date_filter(self):
         with application.app_context():
             total_sims = total_sims_registered(min_date=(datetime.now() + timedelta(days=-1)))
-            assert total_sims == 2
+            self.assertEqual(total_sims, 2)

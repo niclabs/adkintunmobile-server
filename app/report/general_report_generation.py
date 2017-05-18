@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import text
+from sqlalchemy import text, or_
 
 from app import db
 from app.report.reports_generation import save_json_report_to_file
@@ -61,7 +61,16 @@ def total_devices_registred(min_date=datetime(2015, 1, 1),
     if not max_date:
         max_date = datetime.now()
 
-    return Device.query.filter(Device.events != None, Device.creation_date.between(min_date, max_date)).count()
+    return Device.query.filter(
+        or_(Device.state_change_events != None,
+            Device.cdma_events != None,
+            Device.gsm_events != None,
+            Device.mobile_traffic_events != None,
+            Device.wifi_traffic_events != None,
+            Device.application_traffic_events != None,
+            Device.connectivity_events != None
+            ),
+        Device.creation_date.between(min_date, max_date)).count()
 
 
 # Total sim cards registred
