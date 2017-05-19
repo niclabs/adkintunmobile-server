@@ -9,7 +9,7 @@ class DefaultConfig(object):
 
 
 class TestingConfig(DefaultConfig):
-    SQLALCHEMY_DATABASE_URI = "postgresql://felipe:niclabs.13@127.0.0.1:8080/test_db"
+    SQLALCHEMY_DATABASE_URI = "postgresql://user_test:password_test@localhost/adkintun_test"
     PRESERVE_CONTEXT_ON_EXCEPTION = False
     TESTING = True
     DEBUG = True
