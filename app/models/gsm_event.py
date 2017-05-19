@@ -23,13 +23,13 @@ class GsmEvent(BaseModel):
     signal_strength_variance = db.Column(db.Float)
     mnc = db.Column(db.Integer)
     mcc = db.Column(db.Integer)
-    date = db.Column(db.DateTime)
+    date = db.Column(db.DateTime, index=True)
     app_version_code = db.Column(db.String(10))
     sim_serial_number = db.Column(db.String(50), db.ForeignKey("sims.serial_number"))
     device_id = db.Column(db.String(50), db.ForeignKey("devices.device_id"))
     carrier_id = db.Column(db.Integer, db.ForeignKey("carriers.id"))
 
-    def __init__(self, date=None, app_version_code=None, sim_serial_number=None, device_id=None,
+    def __init__(self, date=None, app_version_code=None, sim_serial_number=None, device_id=None, antenna_id=None,
                  telephony_standard=None, network_type=None, gsm_psc=None, gsm_cid=None, gsm_lac=None,
                  signal_strength_size=None, signal_strength_mean=None, signal_strength_variance=None,
                  signal_ber_size=None, signal_ber_mean=None, signal_ber_variance=None, mnc=None, mcc=None):
@@ -39,6 +39,7 @@ class GsmEvent(BaseModel):
         self.device_id = device_id
         self.telephony_standard = telephony_standard
         self.network_type = network_type
+        self.antenna_id = antenna_id
         self.signal_strength_size = signal_strength_size
         self.signal_strength_mean = signal_strength_mean
         self.signal_strength_variance = signal_strength_variance

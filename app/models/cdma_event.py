@@ -33,7 +33,7 @@ class CdmaEvent(BaseModel):
     signal_strength_variance = db.Column(db.Float)
     mnc = db.Column(db.Integer)
     mcc = db.Column(db.Integer)
-    date = db.Column(db.DateTime)
+    date = db.Column(db.DateTime, index=True)
     app_version_code = db.Column(db.String(10))
     sim_serial_number = db.Column(db.String(50), db.ForeignKey("sims.serial_number"))
     device_id = db.Column(db.String(50), db.ForeignKey("devices.device_id"))
