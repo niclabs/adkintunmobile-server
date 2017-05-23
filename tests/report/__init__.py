@@ -4,3 +4,4 @@ from tests.report.total_events_for_carrier import TotalDevicesForCarrierReported
 from tests.report.total_gsm_event_registered import TotalSimsRegisteredTestCase
 from tests.report.total_sims_for_carrier import TotalDevicesForCarrierReportedTestCase
 from tests.report.total_sims_registered import TotalSimsRegisteredTestCase
+from tests.report.antenna_network_report_test import AntennaNetworkReportTestCase
