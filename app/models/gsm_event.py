@@ -26,7 +26,7 @@ class GsmEvent(BaseModel):
     date = db.Column(db.DateTime, index=True)
     app_version_code = db.Column(db.String(10))
     sim_serial_number = db.Column(db.String(50), db.ForeignKey("sims.serial_number"))
-    device_id = db.Column(db.String(50), db.ForeignKey("devices.device_id"))
+    device_id = db.Column(db.String(50), db.ForeignKey("devices.device_id"), index=True)
     carrier_id = db.Column(db.Integer, db.ForeignKey("carriers.id"))
 
     def __init__(self, date=None, app_version_code=None, sim_serial_number=None, device_id=None, antenna_id=None,

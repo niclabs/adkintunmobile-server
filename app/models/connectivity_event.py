@@ -18,7 +18,7 @@ class ConnectivityEvent(BaseModel):
     date = db.Column(db.DateTime, index=True)
     app_version_code = db.Column(db.String(10))
     sim_serial_number = db.Column(db.String(50), db.ForeignKey("sims.serial_number"))
-    device_id = db.Column(db.String(50), db.ForeignKey("devices.device_id"))
+    device_id = db.Column(db.String(50), db.ForeignKey("devices.device_id"), index=True)
 
     def __init__(self, date=None, app_version_code=None, sim_serial_number=None, device_id=None, detailed_state=None,
                  available=None, connected=None, roaming=None, connection_type=None, connection_type_other=None):
