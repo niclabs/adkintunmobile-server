@@ -12,7 +12,7 @@ def background_thread():
     """send server generated events to clients."""
     count = 0
     while True:
-        socketio.sleep(1)
+        socketio.sleep(10)
         count += 1
         socketio.emit('my_response',
                       {'data': 'Server generated event', 'count': count},
@@ -30,6 +30,7 @@ def request_auth():
         "accessToken": body["access_token"]
     }}
     uuid = body["uuid"]
+    application.logger.info("Received token: "+str(body["access_token"])+", uuid:"+str(uuid))
     emit("message", msg, room=uuid)
     close_room(uuid)
     return jsonify({"status":"OK"}), 200
@@ -46,7 +47,7 @@ def socket_connect():
 
 @socketio.on('disconnect', namespace='/gencode')
 def socket_disconnect():
-    print('disconencted')
+    print('disconnected')
 
 
 @socketio.on('message', namespace='/gencode')
@@ -61,6 +62,5 @@ def socket_message(message):
             "op": 'hello',
             "token": uuid_token
         }}
-
-        print(hello)
+        application.logger.info("Sent token:" + str(uuid_token))
         emit('message', hello)
