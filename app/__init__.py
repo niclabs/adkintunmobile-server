@@ -6,7 +6,6 @@ from flask import Flask, g
 from flask_autoindex import AutoIndex
 from flask_httpauth import HTTPTokenAuth
 from flask_sqlalchemy import SQLAlchemy
-from flask_socketio import SocketIO
 
 from config import AppTokens, Files
 
@@ -25,8 +24,6 @@ auth = HTTPTokenAuth(scheme="Token")
 
 # Listing reports directory
 autoindex = AutoIndex(application, browse_root=Files.REPORTS_FOLDER, add_url_rules=False)
-
-socketio = SocketIO(application)
 
 
 @auth.verify_token
