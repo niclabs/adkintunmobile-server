@@ -42,22 +42,16 @@ def signal_strength_mean_for_antenna(min_date=datetime(2015, 1, 1),
       sum(c1.ponderation) as ponderation
     FROM
     (SELECT
-      sims.carrier_id,
+      gsm_events.carrier_id,
       antennas.id as antenna_id,
-      telephony_observation_events.signal_strength_size as size,
-      telephony_observation_events.signal_strength_size * power(10,(telephony_observation_events.signal_strength_mean)/10.0) as ponderation
+      gsm_events.signal_strength_size as size,
+      gsm_events.signal_strength_size * power(10,(gsm_events.signal_strength_mean)/10.0) as ponderation
     FROM
       public.antennas,
-      public.gsm_events,
-      public.events,
-      public.sims,
-      public.telephony_observation_events
+      public.gsm_events
     WHERE
       gsm_events.antenna_id = antennas.id AND
-      gsm_events.id = events.id AND
-      events.sim_serial_number = sims.serial_number AND
-      telephony_observation_events.id = gsm_events.id AND
-      events.date BETWEEN :min_date AND :max_date
+      gsm_events.date BETWEEN :min_date AND :max_date
     ) AS c1
     GROUP BY carrier_id, antenna_id) AS c2;""")
 
