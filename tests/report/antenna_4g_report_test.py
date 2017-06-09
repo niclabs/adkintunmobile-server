@@ -5,7 +5,7 @@ from app.models.carrier import Carrier
 from app.models.device import Device
 from app.models.gsm_event import GsmEvent
 from app.models.antenna import Antenna
-from app.report.antenna_network_report_generation import network_report_for_carrier
+from app.report.antenna_4g_report_generation import network_report_for_4g
 from tests import base_test_case
 
 
@@ -26,8 +26,10 @@ class Antenna4GReportTestCase(base_test_case.BaseTestCase):
         carrier2 = Carrier(name="test_carrier_2")
 
         carrier1.antennas.append(antenna1)
-        carrier2.antennas.append(antenna2)
+        carrier1.antennas.append(antenna2)
         carrier2.antennas.append(antenna3)
+        carrier2.antennas.append(antenna4)
+
 
         # devices
 
@@ -60,22 +62,51 @@ class Antenna4GReportTestCase(base_test_case.BaseTestCase):
 
     def test_network_report_uses_all_antennas(self):
         with application.app_context():
-            antenna_network_report = network_report_for_carrier()
-            self.assertEqual(len(antenna_network_report), 4)
-            antenna_network_report.sort(key=lambda d: (d['carrier_id'], d['antenna_id']))
-            antenna_network_report_expected = [
-                {'carrier_id': 1, 'antenna_id': 1, '4g_events': 1, "non_4g_events": 0},
-                {'carrier_id': 1, 'antenna_id': 2, '4g_events': 1, "non_4g_events": 1},
-                {'carrier_id': 2, 'antenna_id': 3, '4g_events': 2, "non_4g_events": 1}
-            ]
-            self.assertEqual(antenna_network_report, antenna_network_report_expected)
+            antenna_network_report = network_report_for_4g()
+            antenna_network_report_expected = {
+                'test_carrier_1': {
+                    '1': {'4g_events': 1, 'non_4g_events': 0},
+                    '2': {'4g_events': 1, 'non_4g_events': 1}
+                },
+                'test_carrier_2': {
+                    '3': {'4g_events': 2, 'non_4g_events': 1}
+                }
+            }
+            self.assertEqual(len(antenna_network_report), len(antenna_network_report_expected),
+                             msg="Report has unexpected size")
+            for carrier in antenna_network_report_expected:
+                self.assertEqual(len(antenna_network_report[carrier]),
+                                 len(antenna_network_report_expected[carrier]),
+                                 msg="Report for carrier %s has unexpected size" % carrier)
+                self.assertIn(carrier, antenna_network_report, msg="Carrier %s not in report" % carrier)
+                for antenna in antenna_network_report_expected[carrier]:
+                    self.assertIn(antenna, antenna_network_report[carrier],
+                                  msg="Antenna %s not in report for carrier %s" % (antenna, carrier))
+                    self.assertDictEqual(antenna_network_report[carrier][antenna],
+                                         antenna_network_report_expected[carrier][antenna],
+                                         msg="Mismatch for antenna: %s, carrier: %s" % (antenna, carrier))
 
     def test_network_report_filters_events_by_date(self):
         with application.app_context():
-            antenna_network_report = network_report_for_carrier(min_date=datetime.now() + timedelta(days=-1))
-            self.assertEqual(len(antenna_network_report), 3)
-            antenna_network_report.sort(key=lambda d: (d['carrier_id'], d['antenna_id'], d['network_type']))
-            antenna_network_report_expected = [
-                {'carrier_id': 1, 'antenna_id': 2, '4g_events': 1, "non_4g_events": 1},
-                {'carrier_id': 2, 'antenna_id': 3, '4g_events': 2, "non_4g_events": 1}]
-            self.assertEqual(antenna_network_report, antenna_network_report_expected)
+            antenna_network_report = network_report_for_4g(min_date=datetime.now() + timedelta(days=-1))
+            antenna_network_report_expected = {
+                'test_carrier_1': {
+                    '2': {'4g_events': 1, 'non_4g_events': 1}
+                },
+                'test_carrier_2': {
+                    '3': {'4g_events': 2, 'non_4g_events': 1}
+                }
+            }
+            self.assertEqual(len(antenna_network_report), len(antenna_network_report_expected),
+                             msg="Report has unexpected size")
+            for carrier in antenna_network_report_expected:
+                self.assertEqual(len(antenna_network_report[carrier]),
+                                 len(antenna_network_report_expected[carrier]),
+                                 msg="Report for carrier %s has unexpected size" % carrier)
+                self.assertIn(carrier, antenna_network_report, msg="Carrier %s not in report" % carrier)
+                for antenna in antenna_network_report_expected[carrier]:
+                    self.assertIn(antenna, antenna_network_report[carrier],
+                                  msg="Antenna %s not in report for carrier %s" % (antenna, carrier))
+                    self.assertDictEqual(antenna_network_report[carrier][antenna],
+                                         antenna_network_report_expected[carrier][antenna],
+                                         msg="Mismatch for antenna: %s, carrier: %s" % (antenna, carrier))

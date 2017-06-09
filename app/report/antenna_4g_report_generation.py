@@ -38,22 +38,23 @@ def network_report_for_4g(min_date=datetime(2015, 1, 1),
         ELSE 'OTHER' END as network_type,
         antennas_4g_capable.id as antenna,
         carriers.name as carrier,
-        count(gsm_events_4g_capable.id) as size
+        sum(gsm_events_4g_capable.size) as size
     FROM
-        (SELECT DISTINCT antennas.id
-            FROM antennas, gsm_events
+        (SELECT DISTINCT gsm_events.antenna_id as id
+            FROM gsm_events
             WHERE
                 gsm_events.date BETWEEN :min_date AND :max_date AND
-                gsm_events.antenna_id = antennas.id AND
                 gsm_events.network_type = 14) as antennas_4g_capable,
-        (SELECT gsm_events.id, gsm_events.carrier_id, gsm_events.antenna_id, gsm_events.network_type
+        (SELECT gsm_events.id, gsm_events.carrier_id, gsm_events.date,
+                gsm_events.antenna_id, gsm_events.network_type,
+                gsm_events.signal_strength_size as size
             FROM
              gsm_events,
              (SELECT DISTINCT gsm_events.device_id
-                FROM gsm_events, devices
+                FROM gsm_events
                 WHERE
                     gsm_events.date BETWEEN :min_date AND :max_date AND
-                    gsm_events.device_id = devices.device_id) as devices_4g_capable
+                    gsm_events.network_type = 14) as devices_4g_capable
             WHERE
                 gsm_events.date BETWEEN :min_date AND :max_date AND
                 gsm_events.device_id = devices_4g_capable.device_id
@@ -71,11 +72,22 @@ def network_report_for_4g(min_date=datetime(2015, 1, 1),
         carriers.name,
         antennas_4g_capable.id""")
 
-    result = db.session.query(TelephonyObservationEvent.network_type, Antenna.id,
-                              Sim.carrier_id).add_columns("size").from_statement(stmt).params(
+    result = db.session.query().add_columns("network_type", "antenna", "carrier", "size").from_statement(stmt).params(
         min_date=min_date, max_date=max_date)
 
-    final = [dict(network_type=row[0], antenna_id=row[1], carrier_id=row[2], size=row[3]) for row in
-             result.all()]
+    final = {}
+    for row in result.all():
+        network_type = row[0]
+        antenna_id = str(row[1])
+        carrier = row[2]
+        size = row[3]
+        if carrier not in final:
+            final[carrier] = {}
+        if antenna_id not in final[carrier]:
+            final[carrier][antenna_id] = {'4g_events': 0, 'non_4g_events': 0}
+        if network_type == '4G':
+            final[carrier][antenna_id]['4g_events'] = size
+        elif network_type == 'OTHER':
+            final[carrier][antenna_id]['non_4g_events'] = size
 
     return final

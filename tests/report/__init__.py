@@ -9,4 +9,4 @@ from tests.report.antenna_signal_report import AntennaSignalReportTestCase
 from tests.report.application_report_test import ApplicationReportTestCase
 from tests.report.application_report_empty_carrier_test import ApplicationReportEmptyCarrierTestCase
 from tests.report.application_report_top_ten_test import ApplicationReportTopTenTestCase
-#from tests.report.antenna_4g_report_test import Antenna4GReportTestCase
+from tests.report.antenna_4g_report_test import Antenna4GReportTestCase
