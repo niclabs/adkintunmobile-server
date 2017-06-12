@@ -37,7 +37,7 @@ def network_report_for_4g(min_date=datetime(2015, 1, 1),
         CASE WHEN gsm_events_4g_capable.network_type = 14 THEN '4G'
         ELSE 'OTHER' END as network_type,
         antennas_4g_capable.id as antenna,
-        carriers.name as carrier,
+        carriers.id as carrier,
         sum(gsm_events_4g_capable.size) as size
     FROM
         (SELECT DISTINCT gsm_events.antenna_id as id
@@ -67,10 +67,7 @@ def network_report_for_4g(min_date=datetime(2015, 1, 1),
     GROUP BY
         gsm_events_4g_capable.network_type,
         antennas_4g_capable.id,
-        carriers.name
-    ORDER BY
-        carriers.name,
-        antennas_4g_capable.id""")
+        carriers.id""")
 
     result = db.session.query().add_columns("network_type", "antenna", "carrier", "size").from_statement(stmt).params(
         min_date=min_date, max_date=max_date)
@@ -79,7 +76,7 @@ def network_report_for_4g(min_date=datetime(2015, 1, 1),
     for row in result.all():
         network_type = row[0]
         antenna_id = str(row[1])
-        carrier = row[2]
+        carrier = str(row[2])
         size = row[3]
         if carrier not in final:
             final[carrier] = {}

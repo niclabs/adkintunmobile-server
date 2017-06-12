@@ -64,17 +64,19 @@ class Antenna4GReportTestCase(base_test_case.BaseTestCase):
         with application.app_context():
             antenna_network_report = network_report_for_4g()
             antenna_network_report_expected = {
-                'test_carrier_1': {
+                '1': {
                     '1': {'4g_events': 1, 'non_4g_events': 0},
                     '2': {'4g_events': 1, 'non_4g_events': 1}
                 },
-                'test_carrier_2': {
+                '2': {
                     '3': {'4g_events': 2, 'non_4g_events': 1}
                 }
             }
             self.assertEqual(len(antenna_network_report), len(antenna_network_report_expected),
                              msg="Report has unexpected size")
             for carrier in antenna_network_report_expected:
+                self.assertIn(carrier, antenna_network_report,
+                              msg="Carrier %s not in report" % carrier)
                 self.assertEqual(len(antenna_network_report[carrier]),
                                  len(antenna_network_report_expected[carrier]),
                                  msg="Report for carrier %s has unexpected size" % carrier)
@@ -90,16 +92,18 @@ class Antenna4GReportTestCase(base_test_case.BaseTestCase):
         with application.app_context():
             antenna_network_report = network_report_for_4g(min_date=datetime.now() + timedelta(days=-1))
             antenna_network_report_expected = {
-                'test_carrier_1': {
+                '1': {
                     '2': {'4g_events': 1, 'non_4g_events': 1}
                 },
-                'test_carrier_2': {
+                '2': {
                     '3': {'4g_events': 2, 'non_4g_events': 1}
                 }
             }
             self.assertEqual(len(antenna_network_report), len(antenna_network_report_expected),
                              msg="Report has unexpected size")
             for carrier in antenna_network_report_expected:
+                self.assertIn(carrier, antenna_network_report,
+                              msg="Carrier %s not in report" % carrier)
                 self.assertEqual(len(antenna_network_report[carrier]),
                                  len(antenna_network_report_expected[carrier]),
                                  msg="Report for carrier %s has unexpected size" % carrier)
