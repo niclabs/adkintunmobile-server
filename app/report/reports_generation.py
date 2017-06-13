@@ -18,6 +18,7 @@ def monthly_reports_generation(month=None, year=None):
     from app.report.antenna_network_report_generation import generate_json_network_reports
     from app.report.antenna_signal_report_generation import generate_json_signal_reports
     from app.report.application_report_generation import generate_json_app_reports
+    from app.report.antenna_4g_report_generation import generate_json_4g_reports
 
     # get month for the report, not added month or year
     if not month or not year:
@@ -41,6 +42,8 @@ def monthly_reports_generation(month=None, year=None):
     init_date = datetime(year=year_new_report, month=month_new_report, day=1)
     last_date = datetime(year=final_year, month=final_month, day=1, hour=23, minute=59, second=59) - timedelta(days=1)
 
+    reportLogger.info("Generating 4G antenna report")
+    generate_json_4g_reports(init_date, last_date)
     reportLogger.info("Generating general report")
     generate_json_general_reports(init_date, last_date)
     reportLogger.info("Generating network report")
