@@ -53,25 +53,39 @@ def generate_json_general_reports(init_date, last_date):
 def total_devices_registred(min_date=datetime(2015, 1, 1),
                             max_date=None):
     reportLogger.info("Querying total devices registered")
-    from app.models.device import Device
-
     if not min_date:
         min_date = datetime(2015, 1, 1)
 
     if not max_date:
         max_date = datetime.now()
 
-    return Device.query.filter(
-        or_(Device.state_change_events != None,
-            Device.cdma_events != None,
-            Device.gsm_events != None,
-            Device.mobile_traffic_events != None,
-            Device.wifi_traffic_events != None,
-            Device.application_traffic_events != None,
-            Device.connectivity_events != None
-            ),
-        Device.creation_date.between(min_date, max_date)).count()
+    stmt = text("""
+        SELECT COUNT(*) as device_count
+        FROM
+        (
+            (SELECT device_id FROM devices
+            WHERE devices.creation_date BETWEEN :min_date AND :max_date)
+            INTERSECT
+            (SELECT DISTINCT device_id FROM connectivity_events
+            WHERE date BETWEEN :min_date AND :max_date UNION
+            SELECT DISTINCT device_id FROM state_change_events
+            WHERE date BETWEEN :min_date AND :max_date UNION
+            SELECT DISTINCT device_id FROM cdma_events
+            WHERE date BETWEEN :min_date AND :max_date UNION
+            SELECT DISTINCT device_id FROM gsm_events
+            WHERE date BETWEEN :min_date AND :max_date UNION
+            SELECT DISTINCT device_id FROM application_traffic_events
+            WHERE date BETWEEN :min_date AND :max_date UNION
+            SELECT DISTINCT device_id FROM wifi_traffic_events
+            WHERE date BETWEEN :min_date AND :max_date UNION
+            SELECT DISTINCT device_id FROM mobile_traffic_events
+            WHERE date BETWEEN :min_date AND :max_date)
+        ) as active_devices
+        """)
+    result = db.session.query().add_columns("device_count").from_statement(stmt).params(
+        min_date=min_date, max_date=max_date)
 
+    return result.scalar()
 
 # Total sim cards registred
 def total_sims_registered(min_date=datetime(2015, 1, 1),
