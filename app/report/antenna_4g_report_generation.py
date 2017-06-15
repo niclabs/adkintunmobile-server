@@ -37,7 +37,7 @@ def network_report_for_4g(min_date=datetime(2015, 1, 1),
         CASE WHEN gsm_events_4g_capable.network_type = 14 THEN '4G'
         ELSE 'OTHER' END as network_type,
         antennas_4g_capable.id as antenna,
-        carriers.id as carrier,
+        sims.carrier_id as carrier,
         sum(gsm_events_4g_capable.size) as size
     FROM
         (SELECT DISTINCT gsm_events.antenna_id as id
@@ -45,7 +45,7 @@ def network_report_for_4g(min_date=datetime(2015, 1, 1),
             WHERE
                 gsm_events.date BETWEEN :min_date AND :max_date AND
                 gsm_events.network_type = 14) as antennas_4g_capable,
-        (SELECT gsm_events.id, gsm_events.carrier_id, gsm_events.date,
+        (SELECT gsm_events.id, gsm_events.sim_serial_number, gsm_events.date,
                 gsm_events.antenna_id, gsm_events.network_type,
                 gsm_events.signal_strength_size as size
             FROM
@@ -59,15 +59,15 @@ def network_report_for_4g(min_date=datetime(2015, 1, 1),
                 gsm_events.date BETWEEN :min_date AND :max_date AND
                 gsm_events.device_id = devices_4g_capable.device_id
         ) as gsm_events_4g_capable,
-        public.carriers
+        public.sims
     WHERE
         gsm_events_4g_capable.date BETWEEN :min_date AND :max_date AND
         gsm_events_4g_capable.antenna_id = antennas_4g_capable.id AND
-        gsm_events_4g_capable.carrier_id = carriers.id
+        gsm_events_4g_capable.sim_serial_number = sims.serial_number
     GROUP BY
         gsm_events_4g_capable.network_type,
         antennas_4g_capable.id,
-        carriers.id""")
+        sims.carrier_id""")
 
     result = db.session.query().add_columns("network_type", "antenna", "carrier", "size").from_statement(stmt).params(
         min_date=min_date, max_date=max_date)

@@ -5,6 +5,7 @@ from app.models.carrier import Carrier
 from app.models.device import Device
 from app.models.gsm_event import GsmEvent
 from app.models.antenna import Antenna
+from app.models.sim import Sim
 from app.report.antenna_4g_report_generation import network_report_for_4g
 from tests import base_test_case
 
@@ -30,12 +31,20 @@ class Antenna4GReportTestCase(base_test_case.BaseTestCase):
         carrier2.antennas.append(antenna3)
         carrier2.antennas.append(antenna4)
 
-
         # devices
-
         device1 = Device(device_id="1")
         device2 = Device(device_id="2")
         device3 = Device(device_id="3")
+
+        # sims
+        sim1 = Sim(serial_number="1")
+        sim2 = Sim(serial_number="2")
+        sim3 = Sim(serial_number="3")
+        sim1.devices.append(device1)
+        sim2.devices.append(device2)
+        sim3.devices.append(device3)
+        carrier1.sims = [sim1]
+        carrier2.sims = [sim2, sim3]
 
         # GSM events
         event1 = GsmEvent(date=datetime.now() + timedelta(days=-2), antenna_id=1,
@@ -49,13 +58,16 @@ class Antenna4GReportTestCase(base_test_case.BaseTestCase):
         device1.gsm_events = [event1, event2, event3]
         device2.gsm_events = [event4, event5]
         device3.gsm_events = [event6]
+        sim1.gsm_events = [event1, event2, event3]
+        sim2.gsm_events = [event4, event5]
+        sim3.gsm_events = [event6]
 
         carrier1.gsm_events = [event1, event2, event3]
         carrier2.gsm_events = [event4, event5, event6]
 
-        db.session.add(device1)
-        db.session.add(device2)
-        db.session.add(device3)
+        db.session.add(sim1)
+        db.session.add(sim2)
+        db.session.add(sim3)
         db.session.add(carrier1)
         db.session.add(carrier2)
         db.session.commit()
