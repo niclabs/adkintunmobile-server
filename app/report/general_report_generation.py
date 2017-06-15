@@ -58,34 +58,8 @@ def total_devices_registred(min_date=datetime(2015, 1, 1),
 
     if not max_date:
         max_date = datetime.now()
-
-    stmt = text("""
-        SELECT COUNT(*) as device_count
-        FROM
-        (
-            (SELECT device_id FROM devices
-            WHERE devices.creation_date BETWEEN :min_date AND :max_date)
-            INTERSECT
-            (SELECT DISTINCT device_id FROM connectivity_events
-            WHERE date BETWEEN :min_date AND :max_date UNION
-            SELECT DISTINCT device_id FROM state_change_events
-            WHERE date BETWEEN :min_date AND :max_date UNION
-            SELECT DISTINCT device_id FROM cdma_events
-            WHERE date BETWEEN :min_date AND :max_date UNION
-            SELECT DISTINCT device_id FROM gsm_events
-            WHERE date BETWEEN :min_date AND :max_date UNION
-            SELECT DISTINCT device_id FROM application_traffic_events
-            WHERE date BETWEEN :min_date AND :max_date UNION
-            SELECT DISTINCT device_id FROM wifi_traffic_events
-            WHERE date BETWEEN :min_date AND :max_date UNION
-            SELECT DISTINCT device_id FROM mobile_traffic_events
-            WHERE date BETWEEN :min_date AND :max_date)
-        ) as active_devices
-        """)
-    result = db.session.query().add_columns("device_count").from_statement(stmt).params(
-        min_date=min_date, max_date=max_date)
-
-    return result.scalar()
+    from app.models.device import Device
+    return Device.query.filter(Device.creation_date.between(min_date, max_date)).count()
 
 # Total sim cards registred
 def total_sims_registered(min_date=datetime(2015, 1, 1),
@@ -128,17 +102,17 @@ def total_device_for_carrier(min_date=datetime(2015, 1, 1),
         max_date = datetime.now()
 
     stmt = text("""
-    SELECT consulta_1.id, count(id) as devices_count
+    SELECT consulta_1.carrier_id, count(device_id) as devices_count
     FROM
-    (SELECT DISTINCT devices.device_id, carriers.id
+    (SELECT DISTINCT devices.device_id, carriers.id as carrier_id
     FROM devices
     JOIN devices_sims ON devices.device_id = devices_sims.device_id
     JOIN sims ON sims.serial_number = devices_sims.sim_id
     JOIN carriers on sims.carrier_id = carriers.id
     WHERE devices.creation_date BETWEEN :min_date AND :max_date) as consulta_1
-    GROUP BY consulta_1.id""")
+    GROUP BY consulta_1.carrier_id""")
 
-    result = db.session.query().add_columns("id", "devices_count").from_statement(stmt).params(
+    result = db.session.query().add_columns("carrier_id", "devices_count").from_statement(stmt).params(
         min_date=min_date, max_date=max_date)
 
     return result.all()
@@ -181,11 +155,10 @@ def total_gsm_events_for_carrier(min_date=datetime(2015, 1, 1),
         max_date = datetime.now()
 
     stmt = text("""
-    SELECT gsm_events.carrier_id, count(gsm_events.id) AS events_count
-    FROM gsm_events
-    JOIN sims ON gsm_events.sim_serial_number = sims.serial_number
+    SELECT sims.carrier_id, count(gsm_events.id) AS events_count
+    FROM gsm_events join sims on gsm_events.sim_serial_number = sims.serial_number
     WHERE gsm_events.date BETWEEN :min_date AND :max_date
-    GROUP BY carrier_id """)
+    GROUP BY sims.carrier_id """)
 
     result = db.session.query(GsmEvent.carrier_id).add_columns("events_count").from_statement(stmt).params(
         min_date=min_date, max_date=max_date)

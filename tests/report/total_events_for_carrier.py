@@ -9,28 +9,16 @@ from app.report.general_report_generation import total_gsm_events_for_carrier
 from tests import base_test_case
 
 
-class TotalDevicesForCarrierReportedTestCase(base_test_case.BaseTestCase):
+class TotalGSMEventsForCarrierReportedTestCase(base_test_case.BaseTestCase):
     '''
     Unit tests for the API
     '''
 
     def populate(self):
-        # devices
-        device1 = Device(device_id="1")
-        device2 = Device(device_id="2")
-        device3 = Device(device_id="3")
-        device4 = Device(device_id="4")
-
         # sims
         sim1 = Sim(serial_number="123")
         sim2 = Sim(serial_number="456")
         sim3 = Sim(serial_number="789")
-
-        sim1.devices.append(device1)
-        sim1.devices.append(device2)
-        sim2.devices.append(device1)
-        sim2.devices.append(device3)
-        sim3.devices.append(device4)
 
         # carriers
         carrier1 = Carrier(name="test_carrier_1")
@@ -47,15 +35,12 @@ class TotalDevicesForCarrierReportedTestCase(base_test_case.BaseTestCase):
         event4 = GsmEvent(date=datetime.now())
         event5 = GsmEvent(date=datetime.now())
 
-        sim1.gsm_events.append(event1)
-        sim1.gsm_events.append(event2)
-        sim3.gsm_events.append(event3)
-        sim3.gsm_events.append(event4)
-        sim3.gsm_events.append(event5)
+        sim1.gsm_events = [event1, event2]
+        sim3.gsm_events = [event3, event4, event5]
 
-        device1.gsm_events = [event1, event2]
-        device2.gsm_events = [event3]
-        device3.gsm_events = [event4, event5]
+        # Associate all events to carrier1 to show carrier_id is taken
+        # the the sim and not the gsm_event
+        carrier1.gsm_events = [event1, event2, event3, event4, event5]
 
         db.session.add(carrier1)
         db.session.add(carrier2)
@@ -67,8 +52,8 @@ class TotalDevicesForCarrierReportedTestCase(base_test_case.BaseTestCase):
             self.assertEqual(len(events_for_carrier), 2)
 
             self.assertEqual(events_for_carrier[0].carrier_id, 1)
-            self.assertEqual(events_for_carrier[1].carrier_id, 2)
             self.assertEqual(events_for_carrier[0].events_count, 2)
+            self.assertEqual(events_for_carrier[1].carrier_id, 2)
             self.assertEqual(events_for_carrier[1].events_count, 3)
 
 
@@ -78,7 +63,7 @@ class TotalDevicesForCarrierReportedTestCase(base_test_case.BaseTestCase):
             self.assertEqual(len(events_for_carrier), 2)
 
             self.assertEqual(events_for_carrier[0].carrier_id, 1)
-            self.assertEqual(events_for_carrier[1].carrier_id, 2)
             self.assertEqual(events_for_carrier[0].events_count, 1)
+            self.assertEqual(events_for_carrier[1].carrier_id, 2)
             self.assertEqual(events_for_carrier[1].events_count, 3)
 

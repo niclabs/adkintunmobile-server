@@ -36,9 +36,9 @@ class TotalDevicesReportedTestCase(base_test_case.BaseTestCase):
     def test_two_devices(self):
         with application.app_context():
             total_devices = total_devices_registred()
-            self.assertEqual(total_devices, 2)
+            self.assertEqual(total_devices, 4)
 
     def test_date_filter(self):
         with application.app_context():
             total_devices = total_devices_registred(min_date=(datetime.now() + timedelta(days=-1)))
-            self.assertEqual(total_devices, 1)
+            self.assertEqual(total_devices, 3)

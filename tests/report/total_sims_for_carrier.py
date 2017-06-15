@@ -7,7 +7,7 @@ from app.report.general_report_generation import total_sims_for_carrier
 from tests import base_test_case
 
 
-class TotalDevicesForCarrierReportedTestCase(base_test_case.BaseTestCase):
+class TotalSimsForCarrierReportedTestCase(base_test_case.BaseTestCase):
     '''
     Unit tests for the API
     '''
