@@ -51,6 +51,7 @@ def signal_strength_mean_for_antenna(min_date=datetime(2015, 1, 1),
       public.gsm_events
     WHERE
       gsm_events.antenna_id = antennas.id AND
+      gsm_events.signal_strength_mean < 100 AND
       gsm_events.date BETWEEN :min_date AND :max_date
     ) AS c1
     GROUP BY carrier_id, antenna_id) AS c2;""")
