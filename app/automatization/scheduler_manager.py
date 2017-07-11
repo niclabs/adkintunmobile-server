@@ -5,8 +5,9 @@ from uwsgidecorators import cron
 from app import application
 from app.data.antennas_geolocalization import update_antennas_localization
 from app.report.reports_generation import monthly_reports_generation
+from config import OpenCellIdToken
 
-MAX_NUMBER_OF_QUERIES = 40
+MAX_NUMBER_OF_QUERIES = OpenCellIdToken.max_daily_queries // 24
 
 
 # Job will be done the first day of every month

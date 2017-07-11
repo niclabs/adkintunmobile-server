@@ -35,6 +35,7 @@ class OpenCellIdToken:
     Open CellId Key token used in the antenna geolocalization process
     """
     token = "this-really-needs-to-be-changed"
+    max_daily_queries = 1000  # Set to your own daily query limit
 
 class Urls:
     BASE_URL_OPENCELLID = "http://url.opencellid"
