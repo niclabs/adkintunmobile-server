@@ -4,6 +4,7 @@ import requests
 
 from app import db, application
 from config import Urls, Files
+from time import sleep
 
 BASE_URL = Urls.BASE_URL_OPENCELLID
 LOG_FOLDER = Files.LOGS_FOLDER
@@ -78,10 +79,11 @@ def update_antennas_localization(max_number_of_queries: int) -> int:
 
         # searching for antennas
         for antenna in antennas:
+            sleep(1)
             carrier = Carrier.query.filter(Carrier.id == antenna.carrier_id).first()
             lat, lon = get_antenna_geolocalization(mcc=carrier.mcc, mnc=carrier.mnc, lac=antenna.lac, cid=antenna.cid,
                                                    key_id=OpenCellIdToken.token)
-            if lat and lon:
+            if lat is not None and lon is not None:
                 antenna.lat = lat
                 antenna.lon = lon
                 db.session.add(antenna)
